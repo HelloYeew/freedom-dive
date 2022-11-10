@@ -8,7 +8,6 @@ from rest_framework.views import APIView
 from apps.models import ScoreStore
 
 
-# Create a dummy django rest framework view that will print the request body to the console
 class SubmitSoloScoreView(APIView):
     permissions_classes = [permissions.AllowAny]
 
