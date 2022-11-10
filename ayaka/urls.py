@@ -27,6 +27,7 @@ urlpatterns = [
     path('signup/', users_views.signup, name='signup'),
     path('logout/', users_views.LogoutAndRedirect.as_view(), name='logout'),
     path('settings/', users_views.settings, name='settings'),
+    path('api/', include('client_api.urls')),
     path('', include('apps.urls')),
 ]
 
