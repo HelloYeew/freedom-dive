@@ -1,0 +1,142 @@
+::selection {
+    color: var(--color-primary);
+    background: var(--color-accent);
+}
+
+* {
+    font-family: 'Comfortaa', cursive;
+    font-size: 14px;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+    color: var(--color-primary);
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--color-primary);
+}
+
+.main-padding {
+    padding: 4rem !important;
+    z-index: 10;
+}
+
+#video-background {
+    object-fit: cover;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -2;
+    transition: .3s;
+}
+
+#mask {
+    object-fit: cover;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    opacity: var(--mask-opacity);
+    background: linear-gradient(0deg, var(--color-background), var(--color-background));
+}
+
+#background {
+    object-fit: cover;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -2;
+}
+
+/* Our own styling that override bootstrap */
+.btn-ayaka {
+    background-color: var(--color-accent);
+    border: none;
+    transition: all .2s;
+}
+
+.btn-ayaka:hover {
+    background-color: var(--color-accent);
+    filter: brightness(85%);
+    transition: all .2s;
+    box-shadow: 0 0 15px var(--color-accent);
+}
+
+.btn-ayaka:focus {
+    outline: none;
+    background-color: var(--color-accent);
+    filter: brightness(85%);
+}
+
+.form-label {
+    color: var(--color-primary);
+}
+
+.form-select {
+    background-color: var(--color-background);
+    color: var(--color-primary);
+}
+
+.card {
+    background-color: var(--color-background);
+}
+
+.navbar {
+    background-color: var(--color-background);
+}
+
+.nav-item .nav-link {
+    color: var(--color-primary);
+    transition: all .3s;
+}
+
+.nav-item:hover .nav-link:hover {
+    color: var(--color-primary);
+    filter: brightness(85%);
+}
+
+.navbar-brand {
+    color: var(--color-primary);
+    transition: all .3s;
+    --bs-navbar-active-color: var(--color-primary);
+}
+
+.navbar-brand:hover {
+    color: var(--color-primary);
+    filter: brightness(85%);
+}
+
+.navbar-nav .nav-link.active, .navbar-nav .show>.nav-link {
+    color: var(--color-primary);
+}
+
+.dropdown-menu {
+    background-color: var(--color-background)!important;
+    transition: all .3s;
+    --bs-dropdown-link-active-bg: var(--color-background);
+}
+
+.dropdown-item {
+    color: var(--color-primary);
+}
+
+.form-control {
+    background-color: var(--color-background)!important;
+    color: var(--color-primary)!important;
+}
+
+small.text-muted {
+    color: var(--color-primary)!important;
+    filter: brightness(85%);
+}

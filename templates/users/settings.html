@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 5rem;">
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">Settings</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <button class="btn btn-ayaka" type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    let colorPrimaryPicker = document.getElementById('id_color_primary');
+    let colorAccentPicker = document.getElementById('id_color_accent');
+    let colorBackgroundPicker = document.getElementById('id_color_background');
+    let maskOpacityInput = document.getElementById('id_mask_opacity');
+
+    colorPrimaryPicker.addEventListener('change', function() {
+        document.body.style.setProperty('--color-primary', colorPrimaryPicker.value);
+    });
+    colorAccentPicker.addEventListener('change', function() {
+        document.body.style.setProperty('--color-accent', colorAccentPicker.value);
+    });
+    colorBackgroundPicker.addEventListener('change', function() {
+        document.body.style.setProperty('--color-background', colorBackgroundPicker.value);
+    });
+    maskOpacityInput.addEventListener('change', function() {
+        document.body.style.setProperty('--mask-opacity', maskOpacityInput.value);
+    });
+{% endblock %}

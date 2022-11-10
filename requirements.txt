@@ -1,0 +1,8 @@
+Django~=4.1
+python-decouple~=3.6
+django-admin-interface~=0.19.2
+django-colorfield~=0.7.2
+django-crispy-forms~=1.14.0
+crispy-bootstrap5~=0.6
+gunicorn~=20.1.0
+psycopg2-binary~=2.9.3
