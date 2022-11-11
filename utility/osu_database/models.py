@@ -2,7 +2,8 @@ from datetime import datetime
 
 
 class OsuUser:
-    """A model that represents an osu! user"""
+    """A model that represents an osu! user (phpbb_users table in osu! database)"""
+
     def __init__(self, register_date: datetime, username: str, username_clean: str, email: str, last_visit: datetime,
                  avatar: str, signature: str, come_from: str, country_acronym: str, twitter: str, website: str,
                  occupation: str, interest: str, playstyle: int, playmode: int, is_subscriber: bool,
@@ -45,3 +46,17 @@ class OsuUser:
         self.playmode = playmode
         self.is_subscriber = is_subscriber
         self.subscription_expires = subscription_expires
+
+
+class Score:
+    """A model that represents a score (solo_scores table in osu! database)"""
+    def __init__(self, user_id: int, beatmap_id: int, ruleset_id: int, data: dict, has_replay: bool, preserve: bool,
+                 created_at: datetime, updated_at: datetime):
+        self.user_id = user_id
+        self.beatmap_id = beatmap_id
+        self.ruleset_id = ruleset_id
+        self.data = data
+        self.has_replay = has_replay
+        self.preserve = preserve
+        self.created_at = created_at
+        self.updated_at = updated_at
