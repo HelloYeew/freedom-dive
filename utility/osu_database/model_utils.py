@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from . import get_connection
 from .database_models import *
 
 
@@ -71,6 +72,67 @@ def create_beatmapset_from_database_row(db_row: tuple) -> BeatmapSet:
     )
 
 
+def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('USE osu')
+    cursor.execute(f'''
+        INSERT INTO osu_beatmapsets (
+            beatmapset_id,
+            user_id,
+            artist,
+            artist_unicode,
+            title,
+            title_unicode,
+            creator,
+            source,
+            tags,
+            video,
+            storyboard,
+            epilepsy,
+            bpm,
+            approved,
+            approved_date,
+            submit_date,
+            last_update,
+            displaytitle,
+            genre_id,
+            language_id,
+            download_disabled,
+            favourite_count,
+            play_count,
+            difficulty_names
+        ) VALUES (
+            {beatmapset.beatmapset_id},
+            {beatmapset.user_id},
+            {beatmapset.artist},
+            {beatmapset.artist_unicode},
+            {beatmapset.title},
+            {beatmapset.title_unicode},
+            {beatmapset.creator},
+            {beatmapset.source},
+            {beatmapset.tags},
+            {beatmapset.video},
+            {beatmapset.storyboard},
+            {beatmapset.epilepsy},
+            {beatmapset.bpm},
+            {beatmapset.approved},
+            {beatmapset.approved_date},
+            {beatmapset.submit_date},
+            {beatmapset.last_update},
+            {beatmapset.display_title},
+            {beatmapset.genre_id},
+            {beatmapset.language_id},
+            {beatmapset.download_disabled},
+            {beatmapset.favorite_count},
+            {beatmapset.play_count},
+            {beatmapset.difficulty_names}
+        )''')
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+
 def create_beatmap_from_database_row(db_row: tuple) -> Beatmap:
     """Create a Beatmap from a database row"""
     return Beatmap(
@@ -99,3 +161,61 @@ def create_beatmap_from_database_row(db_row: tuple) -> Beatmap:
         bpm=db_row[26]
     )
 
+
+def insert_beatmap_object_to_database(beatmap: Beatmap):
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('USE osu')
+    cursor.execute(f'''
+        INSERT INTO osu_beatmaps (
+            beatmap_id,
+            beatmapset_id,
+            user_id,
+            filename,
+            checksum,
+            version,
+            total_length,
+            hit_length,
+            countTotal,
+            countNormal,
+            countSlider
+            countSpinner,
+            diff_drain,
+            diff_size,
+            diff_overall,
+            diff_approach,
+            playmode
+            approved,
+            last_update,
+            difficultyrating
+            playcount,
+            passcount,
+            bpm
+        ) VALUES (
+            {beatmap.beatmap_id},
+            {beatmap.beatmapset_id},
+            {beatmap.user_id},
+            {beatmap.filename},
+            {beatmap.checksum},
+            {beatmap.version},
+            {beatmap.total_length},
+            {beatmap.hit_length},
+            {beatmap.count_total},
+            {beatmap.count_normal},
+            {beatmap.count_slider},
+            {beatmap.count_spinner},
+            {beatmap.diff_drain},
+            {beatmap.diff_size},
+            {beatmap.diff_overall},
+            {beatmap.diff_approach},
+            {beatmap.play_mode},
+            {beatmap.approved},
+            {beatmap.last_update},
+            {beatmap.difficulty_rating},
+            {beatmap.play_count},
+            {beatmap.pass_count},
+            {beatmap.bpm}
+        )''')
+    connection.commit()
+    cursor.close()
+    connection.close()

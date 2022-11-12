@@ -110,7 +110,7 @@ class BeatmapSet:
         :param language_id: language id (language_id)
         :param download_disabled: download disabled (download_disabled)
         :param favorite_count: favorite count (favourite_count)
-        :param play_count: play count (playcount)
+        :param play_count: play count (play_count)
         :param difficulty_names: difficulty names (difficulty_names)
         """
         self.beatmapset_id = beatmapset_id
