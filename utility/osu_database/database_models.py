@@ -144,7 +144,7 @@ class Beatmap:
 
     def __init__(self, beatmap_id: int, beatmapset_id: int, user_id: int, filename: str, checksum: str, version: str,
                  total_length: int, hit_length: int, count_total: int, count_normal: int, count_slider: int,
-                 count_spinner: int, diff_drain: int, diff_size: float, diff_overall: float, diff_approach: float,
+                 count_spinner: int, diff_drain: float, diff_size: float, diff_overall: float, diff_approach: float,
                  play_mode: int, approved: int, last_update: datetime, difficulty_rating: float, play_count: int,
                  pass_count: int, bpm: float):
         """
@@ -156,7 +156,7 @@ class Beatmap:
         :param filename: filename (filename)
         :param checksum: checksum (checksum)
         :param version: version (version)
-        :param total_length: total length (total_length)
+        :param total_length: seconds from first note to last note including breaks (total_length)
         :param hit_length: hit length (hit_length)
         :param count_total: count total (countTotal)
         :param count_normal: count normal (countNormal)
@@ -198,4 +198,10 @@ class Beatmap:
         self.pass_count = pass_count
         self.bpm = bpm
 
-    # TODO: Beatmapset fetch
+    def beatmapset(self) -> BeatmapSet:
+        """
+        Get the beatmap set of this beatmap
+
+        :return: the beatmap set of this beatmap
+        """
+        return get_beatmapset_by_id(self.beatmapset_id)

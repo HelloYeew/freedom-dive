@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from utility.osu_database.models import OsuUser, Score, BeatmapSet, Beatmap
+from .database_models import *
 
 
 def create_user_from_database_row(db_row: tuple) -> OsuUser:
@@ -98,3 +98,4 @@ def create_beatmap_from_database_row(db_row: tuple) -> Beatmap:
         pass_count=db_row[21],
         bpm=db_row[26]
     )
+

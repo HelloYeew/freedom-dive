@@ -1,7 +1,7 @@
 import mysql.connector
 from decouple import config
 
-from models import OsuUser, Score, BeatmapSet, Beatmap
+from utility.osu_database.database_models import *
 from utility.osu_database.model_utils import create_user_from_database_row, create_score_from_database_row, \
     create_beatmapset_from_database_row, create_beatmap_from_database_row
 

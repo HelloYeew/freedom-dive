@@ -4,8 +4,6 @@ from django.shortcuts import render
 from users.models import ColourSettings
 
 
-# Create your views here.
-
 @login_required
 def homepage(request):
     colour_settings = ColourSettings.objects.filter(user=request.user).first()
