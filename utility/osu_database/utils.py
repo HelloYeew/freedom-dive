@@ -1,8 +1,8 @@
 import mysql.connector
 from decouple import config
 
-from models import OsuUser
-from utility.osu_database.model_utils import create_user_from_database_row
+from models import OsuUser, Score
+from utility.osu_database.model_utils import create_user_from_database_row, create_score_from_database_row
 
 
 def get_connection():
@@ -41,4 +41,13 @@ def get_user_by_id(user_id: int) -> OsuUser:
     return create_user_from_database_row(row)
 
 
-# TODO: Solo score import
+def get_score_by_id(score_id: int) -> Score:
+    """Get a score by its id from osu! database"""
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('USE osu')
+    cursor.execute('SELECT * FROM solo_scores WHERE id = %s', (score_id,))
+    row = cursor.fetchone()
+    cursor.close()
+    connection.close()
+    return create_score_from_database_row(row)

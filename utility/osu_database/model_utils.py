@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from utility.osu_database.models import OsuUser
+from utility.osu_database.models import OsuUser, Score
 
 
 def create_user_from_database_row(db_row: tuple) -> OsuUser:
@@ -23,4 +23,19 @@ def create_user_from_database_row(db_row: tuple) -> OsuUser:
         playmode=int(db_row[82]),
         is_subscriber=bool(db_row[72]),
         subscription_expires=db_row[73]
+    )
+
+
+def create_score_from_database_row(db_row: tuple) -> Score:
+    """Create a Score from a database row"""
+    return Score(
+        database_id=db_row[0],
+        user_id=db_row[1],
+        beatmap_id=db_row[2],
+        ruleset_id=db_row[3],
+        data=db_row[4],
+        has_replay=bool(db_row[5]),
+        preserve=bool(db_row[6]),
+        created_at=datetime.fromtimestamp(db_row[7]),
+        updated_at=datetime.fromtimestamp(db_row[8])
     )

@@ -50,8 +50,23 @@ class OsuUser:
 
 class Score:
     """A model that represents a score (solo_scores table in osu! database)"""
-    def __init__(self, user_id: int, beatmap_id: int, ruleset_id: int, data: dict, has_replay: bool, preserve: bool,
-                 created_at: datetime, updated_at: datetime):
+
+    def __init__(self, database_id: int, user_id: int, beatmap_id: int, ruleset_id: int, data: dict, has_replay: bool,
+                 preserve: bool, created_at: datetime, updated_at: datetime):
+        """
+        Initialize a Score object
+
+        :param database_id: score id (id)
+        :param user_id: user id (user_id)
+        :param beatmap_id: beatmap id (beatmap_id)
+        :param ruleset_id: ruleset id (ruleset_id)
+        :param data: score data (data)
+        :param has_replay: has replay (has_replay)
+        :param preserve: preserve (preserve)
+        :param created_at: created at (created_at)
+        :param updated_at: updated at (updated_at)
+        """
+        self.database_id = database_id
         self.user_id = user_id
         self.beatmap_id = beatmap_id
         self.ruleset_id = ruleset_id
