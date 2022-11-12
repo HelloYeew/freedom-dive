@@ -1,8 +1,9 @@
 import mysql.connector
 from decouple import config
 
-from models import OsuUser, Score
-from utility.osu_database.model_utils import create_user_from_database_row, create_score_from_database_row
+from models import OsuUser, Score, BeatmapSet, Beatmap
+from utility.osu_database.model_utils import create_user_from_database_row, create_score_from_database_row, \
+    create_beatmapset_from_database_row, create_beatmap_from_database_row
 
 
 def get_connection():
@@ -51,3 +52,27 @@ def get_score_by_id(score_id: int) -> Score:
     cursor.close()
     connection.close()
     return create_score_from_database_row(row)
+
+
+def get_beatmapset_by_id(beatmapset_id: int) -> BeatmapSet:
+    """Get a beatmapset by its id from osu! database"""
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('USE osu')
+    cursor.execute('SELECT * FROM osu_beatmapsets WHERE beatmapset_id = %s', (beatmapset_id,))
+    row = cursor.fetchone()
+    cursor.close()
+    connection.close()
+    return create_beatmapset_from_database_row(row)
+
+
+def get_beatmap_by_id(beatmap_id: int) -> Beatmap:
+    """Get a beatmap by its id from osu! database"""
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('USE osu')
+    cursor.execute('SELECT * FROM osu_beatmaps WHERE beatmap_id = %s', (beatmap_id,))
+    row = cursor.fetchone()
+    cursor.close()
+    connection.close()
+    return create_beatmap_from_database_row(row)
