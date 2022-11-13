@@ -24,6 +24,59 @@ def create_user_from_database_row(db_row: tuple) -> OsuUser:
     )
 
 
+def insert_user_to_database(user: OsuUser):
+    # Import the database connection locally to avoid circular imports
+    from utility.osu_database.utils import get_connection
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('USE osu')
+    command = f'''
+        INSERT INTO phpbb_users (
+            user_regdate,
+            username,
+            username_clean,
+            user_email,
+            user_lastvisit,
+            user_avatar,
+            user_sig,
+            user_from,
+            country_acronym,
+            user_twitter,
+            user_website,
+            user_occ,
+            user_interests,
+            osu_playstyle,
+            osu_playmode,
+            osu_subscriber,
+            osu_subscriptionexpiry,
+            user_permissions
+        ) VALUES (
+            {int(user.register_date.timestamp())},
+            {"'" + user.username + "'"},
+            {"'" + user.username_clean + "'"},
+            {"'" + user.email + "'"},
+            {int(user.last_visit.timestamp())},
+            {"'" + user.avatar + "'"},
+            {"'" + user.signature + "'"},
+            {"'" + user.come_from + "'"},
+            {"'" + user.country_acronym + "'"},
+            {"'" + user.twitter + "'"},
+            {"'" + user.website + "'"},
+            {"'" + user.occupation + "'"},
+            {"'" + user.interest + "'"},
+            {user.playstyle},
+            {user.playmode},
+            {'false' if not user.is_subscriber else 'true'},
+            {"'" + str(user.subscription_expires.date()) + "'"},
+            'bot'
+        )
+        '''
+    print(command)
+    cursor.execute(command)
+    connection.commit()
+    cursor.close()
+    connection.close()
+
 def create_score_from_database_row(db_row: tuple) -> Score:
     """Create a Score from a database row"""
     return Score(

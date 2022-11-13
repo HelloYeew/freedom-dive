@@ -4,13 +4,14 @@ from datetime import datetime
 class OsuUser:
     """A model that represents an osu! user (phpbb_users table in osu! database)"""
 
-    def __init__(self, register_date: datetime, username: str, username_clean: str, email: str, last_visit: datetime,
+    def __init__(self, user_id: int, register_date: datetime, username: str, username_clean: str, email: str, last_visit: datetime,
                  avatar: str, signature: str, come_from: str, country_acronym: str, twitter: str, website: str,
                  occupation: str, interest: str, playstyle: int, playmode: int, is_subscriber: bool,
                  subscription_expires: datetime.date):
         """
         Initialize an OsuUser object
 
+        :param user_id: user ID (user_id)
         :param register_date: date of registration (user_regdate)
         :param username: username (username)
         :param username_clean: username without special characters (username_clean)
@@ -29,6 +30,7 @@ class OsuUser:
         :param is_subscriber: is subscriber (osu_subscriber)
         :param subscription_expires: subscription expires (osu_subscriptionexpiry)
         """
+        self.user_id = user_id
         self.register_date = register_date
         self.username = username
         self.username_clean = username_clean
