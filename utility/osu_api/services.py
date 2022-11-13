@@ -2,8 +2,8 @@ import json
 import requests
 from decouple import config
 
-from utility.osu_api.utils import create_beatmap_object_from_api
-from utility.osu_database.database_models import Beatmap
+from utility.osu_api.utils import create_beatmap_object_from_api, create_beatmapset_object_from_api
+from utility.osu_database.database_models import Beatmap, BeatmapSet
 
 OSU_API_KEY = config('OSU_API_KEY', default='')
 OSU_API_URL = 'https://osu.ppy.sh/api'
@@ -40,3 +40,9 @@ def get_beatmap_object_list_from_api(beatmapset_id: int) -> list[Beatmap]:
     """Get a list of Beatmap objects from osu! api"""
     raw_api_result = get_raw_beatmapset_info(beatmapset_id)
     return [create_beatmap_object_from_api(beatmap) for beatmap in raw_api_result]
+
+
+def get_beatmapset_object_from_api(beatmapset_id: int) -> BeatmapSet:
+    """Get a BeatmapSet object from osu! api"""
+    raw_api_result = get_raw_beatmapset_info(beatmapset_id)
+    return create_beatmapset_object_from_api(raw_api_result)

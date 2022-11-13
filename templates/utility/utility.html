@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Utility{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 5rem;">
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">Utility</h1>
+    {% if user.is_superuser %}
+    <a href="{% url 'utility_log' %}" class="btn btn-ayaka"><i class="mdi mdi-history" aria-hidden="true" style="font-size: 20px"></i> Log</a>
+    {% endif %}
+    <p></p>
+    <div style="overflow:hidden">
+        <h3>Beatmaps</h3>
+        <a href="{% url 'import_specific_beatmapset_from_osu_api' %}" class="btn btn-ayaka btn-sm"><i class="mdi mdi-plus" aria-hidden="true" style="font-size: 20px"></i> Import specific beatmapset from osu! API</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

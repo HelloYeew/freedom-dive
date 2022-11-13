@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Utility Log{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 5rem;">
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Utility Log</h1>
+    <div style="overflow:hidden">
+        <table class="table table-striped table-dark" style="vertical-align: middle;">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Field</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in utility_log %}
+                <tr>
+                    <th scope="row">{{ log.id }}</th>
+                    <td>{{ log.user.username }}</td>
+                    <td>{{ log.time }}</td>
+                    <td>{{ log.field }}</td>
+                    <td>
+                        {% if log.status == 0 %}
+                        <div class="spinner-grow text-light" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        {% elif log.status == 1 %}
+                        <div class="spinner-border text-light" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        {% elif log.status == 2 %}
+                        <i class="mdi mdi-check" aria-hidden="true" style="font-size: 20px; color: #5cb85c"></i>
+                        {% elif log.status == 3 %}
+                        <i class="mdi mdi-alert-circle" aria-hidden="true" style="font-size: 20px; color: #d9534f"></i>
+                        {% endif %}
+                    </td>
+                    <td>{{ log.description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

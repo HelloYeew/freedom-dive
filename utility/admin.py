@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from utility.models import UtilityLog
+
+admin.site.register(UtilityLog)

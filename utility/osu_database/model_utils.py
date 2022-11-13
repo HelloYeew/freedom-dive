@@ -1,6 +1,3 @@
-from datetime import datetime
-
-from . import get_connection
 from .database_models import *
 
 
@@ -73,19 +70,18 @@ def create_beatmapset_from_database_row(db_row: tuple) -> BeatmapSet:
 
 
 def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
+    # Import the database connection locally to avoid circular imports
+    from utility.osu_database.utils import get_connection
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute('USE osu')
-    cursor.execute(f'''
+    command = f'''
         INSERT INTO osu_beatmapsets (
             beatmapset_id,
             user_id,
-            artist,
-            artist_unicode,
-            title,
-            title_unicode,
-            creator,
-            source,
+            artist,{f'artist_unicode,' if beatmapset.artist_unicode else ''}
+            title,{f'title_unicode,' if beatmapset.title_unicode else ''}
+            creator,{f'source' if beatmapset.source else ''}
             tags,
             video,
             storyboard,
@@ -100,34 +96,30 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
             language_id,
             download_disabled,
             favourite_count,
-            play_count,
-            difficulty_names
+            play_count{f',difficulty_names' if beatmapset.difficulty_names else ''}
         ) VALUES (
             {beatmapset.beatmapset_id},
             {beatmapset.user_id},
-            {beatmapset.artist},
-            {beatmapset.artist_unicode},
-            {beatmapset.title},
-            {beatmapset.title_unicode},
-            {beatmapset.creator},
-            {beatmapset.source},
-            {beatmapset.tags},
-            {beatmapset.video},
-            {beatmapset.storyboard},
-            {beatmapset.epilepsy},
+            {"'" + beatmapset.artist + "'"},{'' if beatmapset.artist_unicode is None or '' else beatmapset.artist_unicode + ','}
+            {"'" + beatmapset.title + "'"},{'' if beatmapset.title_unicode is None or '' else beatmapset.title_unicode + ','}
+            {"'" + beatmapset.creator + "'"},{'' if beatmapset.source == '' else beatmapset.source + ','}
+            {"'" + beatmapset.tags + "'"},
+            {'false' if not beatmapset.video else 'true'},
+            {'false' if not beatmapset.storyboard else 'true'},
+            {'false' if not beatmapset.epilepsy else 'true'},
             {beatmapset.bpm},
             {beatmapset.approved},
-            {beatmapset.approved_date},
-            {beatmapset.submit_date},
-            {beatmapset.last_update},
-            {beatmapset.display_title},
+            {"'" + str(beatmapset.approved_date) + "'"},
+            {"'" + str(beatmapset.submit_date) + "'"},
+            {"'" + str(beatmapset.last_update) + "'"},
+            {"'" + beatmapset.display_title + "'"},
             {beatmapset.genre_id},
             {beatmapset.language_id},
-            {beatmapset.download_disabled},
+            {'false' if not beatmapset.download_disabled else 'true'},
             {beatmapset.favorite_count},
-            {beatmapset.play_count},
-            {beatmapset.difficulty_names}
-        )''')
+            {beatmapset.play_count}{'' if beatmapset.difficulty_names == '' else ',' + beatmapset.difficulty_names}
+        )'''
+    cursor.execute(command)
     connection.commit()
     cursor.close()
     connection.close()
@@ -163,11 +155,12 @@ def create_beatmap_from_database_row(db_row: tuple) -> Beatmap:
 
 
 def insert_beatmap_object_to_database(beatmap: Beatmap):
+    # Import the database connection locally to avoid circular imports
+    from utility.osu_database.utils import get_connection
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute('USE osu')
-    cursor.execute(f'''
-        INSERT INTO osu_beatmaps (
+    command = f'''INSERT INTO osu_beatmaps (
             beatmap_id,
             beatmapset_id,
             user_id,
@@ -178,16 +171,16 @@ def insert_beatmap_object_to_database(beatmap: Beatmap):
             hit_length,
             countTotal,
             countNormal,
-            countSlider
+            countSlider,
             countSpinner,
             diff_drain,
             diff_size,
             diff_overall,
             diff_approach,
-            playmode
+            playmode,
             approved,
             last_update,
-            difficultyrating
+            difficultyrating,
             playcount,
             passcount,
             bpm
@@ -195,9 +188,9 @@ def insert_beatmap_object_to_database(beatmap: Beatmap):
             {beatmap.beatmap_id},
             {beatmap.beatmapset_id},
             {beatmap.user_id},
-            {beatmap.filename},
-            {beatmap.checksum},
-            {beatmap.version},
+            {"'" + beatmap.filename + "'"},
+            {"'" + beatmap.checksum + "'"},
+            {"'" + beatmap.version + "'"},
             {beatmap.total_length},
             {beatmap.hit_length},
             {beatmap.count_total},
@@ -210,12 +203,14 @@ def insert_beatmap_object_to_database(beatmap: Beatmap):
             {beatmap.diff_approach},
             {beatmap.play_mode},
             {beatmap.approved},
-            {beatmap.last_update},
+            {"'" + str(beatmap.last_update) + "'"},
             {beatmap.difficulty_rating},
             {beatmap.play_count},
             {beatmap.pass_count},
             {beatmap.bpm}
-        )''')
+        )'''
+    # TODO: Create dummy user for support foreign key on creator
+    cursor.execute(command)
     connection.commit()
     cursor.close()
     connection.close()

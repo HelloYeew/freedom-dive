@@ -4,9 +4,8 @@ from django.shortcuts import render
 from users.models import ColourSettings
 
 
-@login_required
 def homepage(request):
-    colour_settings = ColourSettings.objects.filter(user=request.user).first()
-    return render(request, 'homepage.html', {
-        'colour_settings': colour_settings
-    })
+    if request.user.is_authenticated:
+        return render(request, 'homepage.html', {'colour_settings': ColourSettings.objects.get(user=request.user)})
+    else:
+        return render(request, 'homepage.html')
