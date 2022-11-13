@@ -32,8 +32,8 @@ def import_specific_beatmapset_from_osu_api(request):
         if request.method == 'POST':
             form = ImportSpecificBeatmapSetForm(request.POST)
             if form.is_valid():
-                import_beatmapset_from_api(form.cleaned_data['beatmapset_id'])
                 try:
+                    import_beatmapset_from_api(form.cleaned_data['beatmapset_id'])
                     messages.success(request, 'Imported beatmapset successfully!')
                     UtilityLog.objects.create(
                         user=request.user,
