@@ -71,11 +71,11 @@ def insert_user_to_database(user: OsuUser):
             'bot'
         )
         '''
-    print(command)
     cursor.execute(command)
     connection.commit()
     cursor.close()
     connection.close()
+
 
 def create_score_from_database_row(db_row: tuple) -> Score:
     """Create a Score from a database row"""
