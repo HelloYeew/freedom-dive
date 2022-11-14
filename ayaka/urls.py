@@ -29,6 +29,7 @@ urlpatterns = [
     path('settings/', users_views.settings, name='settings'),
     path('api/', include('client_api.urls')),
     path('', include('apps.urls')),
+    path('', include('utility.urls')),
 ]
 
 if settings.DEBUG:

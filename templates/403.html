@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Access Denied{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 5rem;">
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;"><i class="mdi mdi-cancel" aria-hidden="true" style="font-size: 40px; color: #ffcc00"></i> Forbidden</h1>
+    <p></p>
+    <div style="overflow:hidden">
+        <div class="text-center">
+            <p class="fs-3">You do not have permission to access this page!</p>
+            <p class="fs-3">Maybe you should <a href="/" class="fs-3">go back</a> ?</p>
+            <p class="fs-5">But, why are you here first...?</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}
