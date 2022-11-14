@@ -41,14 +41,14 @@ def import_specific_beatmapset_from_osu_api(request):
                         status=2,
                         description=f'Imported beatmapset {form.cleaned_data["beatmapset_id"]} from osu! api'
                     )
-                    return redirect('utility')
+                    return redirect('utility_log')
                 except Exception as e:
                     messages.error(request, f'Importing beatmapset failed: ({e.__class__.__name__}) {e}')
                     UtilityLog.objects.create(
                         user=request.user,
                         field='import_specific_beatmapset_from_osu_api',
                         status=3,
-                        description=f'Importing beatmapset failed: ({e.__class__.__name__}) {e}'
+                        description=f'Importing beatmapset {form.cleaned_data["beatmapset_id"]} failed: ({e.__class__.__name__}) {e}'
                     )
                     return redirect('utility_log')
         else:

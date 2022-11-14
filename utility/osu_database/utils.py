@@ -8,6 +8,9 @@ from utility.osu_database.model_utils import create_user_from_database_row, crea
     insert_beatmap_object_to_database
 
 
+BEATMAP_CREATOR_DUMMY_ID = int(config('BEATMAP_CREATOR_ID', default='10'))
+
+
 def get_connection() -> mysql.connector.connection.MySQLConnection:
     """Get a connection to osu! database"""
     return mysql.connector.connect(
@@ -91,6 +94,8 @@ def get_beatmap_by_id(beatmap_id: int) -> Beatmap | None:
 def import_beatmapset_from_api(beatmapset_id: int):
     """Import a beatmapset and beatmap in beatmapset to osu! database"""
     beatmapset = get_beatmapset_object_from_api(beatmapset_id)
+    beatmapset.user_id = BEATMAP_CREATOR_DUMMY_ID
     insert_beatmapset_object_to_database(beatmapset)
     for beatmap in get_beatmap_object_list_from_api(beatmapset_id):
+        beatmap.user_id = BEATMAP_CREATOR_DUMMY_ID
         insert_beatmap_object_to_database(beatmap)

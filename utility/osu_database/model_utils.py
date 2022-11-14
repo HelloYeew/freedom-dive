@@ -134,7 +134,7 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
             user_id,
             artist,{f'artist_unicode,' if beatmapset.artist_unicode else ''}
             title,{f'title_unicode,' if beatmapset.title_unicode else ''}
-            creator,{f'source' if beatmapset.source else ''}
+            creator,{f'source,' if beatmapset.source else ''}
             tags,
             video,
             storyboard,
@@ -153,9 +153,9 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
         ) VALUES (
             {beatmapset.beatmapset_id},
             {beatmapset.user_id},
-            {"'" + beatmapset.artist + "'"},{'' if beatmapset.artist_unicode is None or '' else beatmapset.artist_unicode + ','}
-            {"'" + beatmapset.title + "'"},{'' if beatmapset.title_unicode is None or '' else beatmapset.title_unicode + ','}
-            {"'" + beatmapset.creator + "'"},{'' if beatmapset.source == '' else beatmapset.source + ','}
+            {"'" + beatmapset.artist + "'"},{'' if beatmapset.artist_unicode is None or '' else "'" + beatmapset.artist_unicode + "',"}
+            {"'" + beatmapset.title + "'"},{'' if beatmapset.title_unicode is None or '' else "'" + beatmapset.title_unicode + "',"}
+            {"'" + beatmapset.creator + "'"},{'' if beatmapset.source == '' else "'" + beatmapset.source + "',"}
             {"'" + beatmapset.tags + "'"},
             {'false' if not beatmapset.video else 'true'},
             {'false' if not beatmapset.storyboard else 'true'},
@@ -243,7 +243,7 @@ def insert_beatmap_object_to_database(beatmap: Beatmap):
             {beatmap.user_id},
             {"'" + beatmap.filename + "'"},
             {"'" + beatmap.checksum + "'"},
-            {"'" + beatmap.version + "'"},
+            {'"' + beatmap.version + '"'},
             {beatmap.total_length},
             {beatmap.hit_length},
             {beatmap.count_total},
@@ -262,7 +262,7 @@ def insert_beatmap_object_to_database(beatmap: Beatmap):
             {beatmap.pass_count},
             {beatmap.bpm}
         )'''
-    # TODO: Create dummy user for support foreign key on creator
+    print(command)
     cursor.execute(command)
     connection.commit()
     cursor.close()
