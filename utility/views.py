@@ -26,6 +26,7 @@ def utility_log(request):
     else:
         return render(request, '403.html', status=403)
 
+
 @login_required
 def import_specific_beatmapset_from_osu_api(request):
     if request.user.is_superuser or request.user.is_staff:

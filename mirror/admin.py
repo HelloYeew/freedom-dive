@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import *
 
-# Register your models here.
+admin.site.register(Beatmap)
+admin.site.register(BeatmapSet)
+admin.site.register(Score)

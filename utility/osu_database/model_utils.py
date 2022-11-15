@@ -178,6 +178,42 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
     connection.close()
 
 
+def update_beatmapset_object_in_database(beatmapset: BeatmapSet):
+    # Import the database connection locally to avoid circular imports
+    from utility.osu_database.utils import get_connection
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('USE osu')
+    command = f'''
+        UPDATE osu_beatmapsets
+        SET
+            user_id = {beatmapset.user_id},
+            artist = {"'" + beatmapset.artist + "'"},{'' if beatmapset.artist_unicode is None or '' else "artist_unicode = '" + beatmapset.artist_unicode + "',"}
+            title = {"'" + beatmapset.title + "'"},{'' if beatmapset.title_unicode is None or '' else "title_unicode = '" + beatmapset.title_unicode + "',"}
+            creator = {"'" + beatmapset.creator + "'"},{'' if beatmapset.source == '' else "source = '" + beatmapset.source + "',"}
+            tags = {"'" + beatmapset.tags + "'"},
+            video = {'false' if not beatmapset.video else 'true'},
+            storyboard = {'false' if not beatmapset.storyboard else 'true'},
+            epilepsy = {'false' if not beatmapset.epilepsy else 'true'},
+            bpm = {beatmapset.bpm},
+            approved = {beatmapset.approved},
+            approved_date = {"'" + str(beatmapset.approved_date) + "'"},
+            submit_date = {"'" + str(beatmapset.submit_date) + "'"},
+            last_update = {"'" + str(beatmapset.last_update) + "'"},
+            displaytitle = {"'" + beatmapset.display_title + "'"},
+            genre_id = {beatmapset.genre_id},
+            language_id = {beatmapset.language_id},
+            download_disabled = {'false' if not beatmapset.download_disabled else 'true'},
+            favourite_count = {beatmapset.favorite_count},
+            play_count = {beatmapset.play_count}{'' if beatmapset.difficulty_names == '' else ',difficulty_names = ' + beatmapset.difficulty_names}
+        WHERE beatmapset_id = {beatmapset.beatmapset_id}
+        '''
+    cursor.execute(command)
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+
 def create_beatmap_from_database_row(db_row: tuple) -> Beatmap:
     """Create a Beatmap from a database row"""
     return Beatmap(
@@ -262,7 +298,45 @@ def insert_beatmap_object_to_database(beatmap: Beatmap):
             {beatmap.pass_count},
             {beatmap.bpm}
         )'''
-    print(command)
+    cursor.execute(command)
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+
+def update_beatmap_object_in_database(beatmap: Beatmap):
+    # Import the database connection locally to avoid circular imports
+    from utility.osu_database.utils import get_connection
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('USE osu')
+    command = f'''
+        UPDATE osu_beatmaps
+        SET
+            beatmapset_id = {beatmap.beatmapset_id},
+            user_id = {beatmap.user_id},
+            filename = {"'" + beatmap.filename + "'"},
+            checksum = {"'" + beatmap.checksum + "'"},
+            version = {'"' + beatmap.version + '"'},
+            total_length = {beatmap.total_length},
+            hit_length = {beatmap.hit_length},
+            countTotal = {beatmap.count_total},
+            countNormal = {beatmap.count_normal},
+            countSlider = {beatmap.count_slider},
+            countSpinner = {beatmap.count_spinner},
+            diff_drain = {beatmap.diff_drain},
+            diff_size = {beatmap.diff_size},
+            diff_overall = {beatmap.diff_overall},
+            diff_approach = {beatmap.diff_approach},
+            playmode = {beatmap.play_mode},
+            approved = {beatmap.approved},
+            last_update = {"'" + str(beatmap.last_update) + "'"},
+            difficultyrating = {beatmap.difficulty_rating},
+            playcount = {beatmap.play_count},
+            passcount = {beatmap.pass_count},
+            bpm = {beatmap.bpm}
+        WHERE beatmap_id = {beatmap.beatmap_id}
+        '''
     cursor.execute(command)
     connection.commit()
     cursor.close()

@@ -75,6 +75,7 @@
                             {% if user.is_authenticated %}
                             {% if user.is_staff or user.is_superuser %}
                             <li><a class="dropdown-item" href="{% url 'utility' %}">Utility</a></li>
+                            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a></li>
                             <li><hr class="dropdown-divider"></li>
                             {% endif %}
                             <li><a class="dropdown-item" href="{% url 'settings' %}">Settings</a></li>

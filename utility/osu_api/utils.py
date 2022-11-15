@@ -32,7 +32,9 @@ def create_beatmap_object_from_api(raw_api_result: dict) -> Beatmap:
     )
 
 
-def create_beatmapset_object_from_api(raw_api_result: dict) -> BeatmapSet:
+def create_beatmapset_object_from_api(raw_api_result: dict) -> BeatmapSet | None:
+    if len(raw_api_result) == 0:
+        return None
     raw_api_result = raw_api_result[0]
     return BeatmapSet(
         beatmapset_id=int(raw_api_result['beatmapset_id']),
