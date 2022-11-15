@@ -15,6 +15,7 @@ class SubmitSoloScoreView(APIView):
     permissions_classes = [permissions.AllowAny]
 
     def post(self, request):
+        # TODO: Ignore -1 ruleset ID and name
         try:
             ScoreStore.objects.create(
                 user_id=request.data['user_id'],
