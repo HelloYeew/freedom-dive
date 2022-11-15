@@ -26,7 +26,7 @@ class BeatmapSet(models.Model):
     download_disabled = models.BooleanField(default=False)
     favorite_count = models.IntegerField(default=0)
     play_count = models.IntegerField(default=0)
-    difficulty_names = models.CharField(max_length=2048)
+    difficulty_names = models.CharField(max_length=2048, blank=True, null=True)
 
     def __str__(self):
         return self.artist + ' - ' + self.title + ' [' + self.creator + ']'

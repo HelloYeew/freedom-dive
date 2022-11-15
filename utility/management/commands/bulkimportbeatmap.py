@@ -3,6 +3,7 @@ import traceback
 
 from decouple import config
 from django.core.management import BaseCommand
+from django.utils import timezone
 from mysql.connector import InterfaceError, IntegrityError
 
 from mirror import models
@@ -25,14 +26,14 @@ class Command(BaseCommand):
         end = options['end']
         # create text file for store failed beatmapset id
         failed_file = open("failed.txt", "w")
-        # clean up failed file
-        failed_file.truncate(0)
+        # add ---------- to separate each import
+        failed_file.write("----------\n")
         # loop through beatmapset id
         for i in range(start, end + 1):
             try:
                 # find beatmapset by id in osu! database
                 beatmapset = get_beatmapset_by_id(i)
-                if beatmapset is not None:
+                if beatmapset:
                     self.stdout.write(self.style.SUCCESS('Beatmapset "%s" already exists in database, updating...' % beatmapset.title))
                     update_beatmapset_from_api(i)
                     import_beatmapset_to_mirror(beatmapset)
@@ -43,7 +44,7 @@ class Command(BaseCommand):
                 else:
                     self.stdout.write(self.style.SUCCESS('Beatmapset with id "%s" not found in database, importing...' % i))
                     import_beatmapset_from_api(i)
-                    self.stdout.write(self.style.SUCCESS(f"Beatmapset {i} has been imported, import to mirror database."))
+                    self.stdout.write(self.style.SUCCESS(f"Beatmapset {i} has been imported, importing to mirror database..."))
                     beatmapset = get_beatmapset_by_id(i)
                     if beatmapset is not None:
                         import_beatmapset_to_mirror(beatmapset)
@@ -58,14 +59,14 @@ class Command(BaseCommand):
                     failed_file.write(str(i) + "\n")
                     traceback.print_exc()
             # sleep for 3 second to avoid rate limit
-            time.sleep(1)
+            time.sleep(3)
         failed_file.close()
         self.stdout.write(self.style.SUCCESS(f'Successfully imported {start} to {end} beatmapsets'))
 
 
 def import_beatmapset_to_mirror(beatmapset:BeatmapSet):
-    beatmapset_mirror = models.BeatmapSet.objects.get(beatmapset_id=beatmapset.beatmapset_id)
-    if beatmapset_mirror is None:
+    beatmapset_mirror = models.BeatmapSet.objects.filter(beatmapset_id=beatmapset.beatmapset_id).exists()
+    if not beatmapset_mirror:
         models.BeatmapSet.objects.create(
             beatmapset_id=beatmapset.beatmapset_id,
             user_id=beatmapset.user_id,
@@ -81,9 +82,9 @@ def import_beatmapset_to_mirror(beatmapset:BeatmapSet):
             epilepsy=beatmapset.epilepsy,
             bpm=beatmapset.bpm,
             approved=beatmapset.approved,
-            approved_date=beatmapset.approved_date,
-            submit_date=beatmapset.submit_date,
-            last_update=beatmapset.last_update,
+            approved_date=timezone.make_aware(beatmapset.approved_date),
+            submit_date=timezone.make_aware(beatmapset.submit_date),
+            last_update=timezone.make_aware(beatmapset.last_update),
             display_title=beatmapset.display_title,
             genre_id=beatmapset.genre_id,
             language_id=beatmapset.language_id,
@@ -93,6 +94,7 @@ def import_beatmapset_to_mirror(beatmapset:BeatmapSet):
             difficulty_names=beatmapset.difficulty_names
         )
     else:
+        beatmapset_mirror = models.BeatmapSet.objects.get(beatmapset_id=beatmapset.beatmapset_id)
         beatmapset_mirror.user_id = beatmapset.user_id
         beatmapset_mirror.artist = beatmapset.artist
         beatmapset_mirror.artist_unicode = beatmapset.artist_unicode
@@ -106,9 +108,9 @@ def import_beatmapset_to_mirror(beatmapset:BeatmapSet):
         beatmapset_mirror.epilepsy = beatmapset.epilepsy
         beatmapset_mirror.bpm = beatmapset.bpm
         beatmapset_mirror.approved = beatmapset.approved
-        beatmapset_mirror.approved_date = beatmapset.approved_date
-        beatmapset_mirror.submit_date = beatmapset.submit_date
-        beatmapset_mirror.last_update = beatmapset.last_update
+        beatmapset_mirror.approved_date = timezone.make_aware(beatmapset.approved_date)
+        beatmapset_mirror.submit_date = timezone.make_aware(beatmapset.submit_date)
+        beatmapset_mirror.last_update = timezone.make_aware(beatmapset.last_update)
         beatmapset_mirror.display_title = beatmapset.display_title
         beatmapset_mirror.genre_id = beatmapset.genre_id
         beatmapset_mirror.language_id = beatmapset.language_id
@@ -120,8 +122,8 @@ def import_beatmapset_to_mirror(beatmapset:BeatmapSet):
 
 
 def import_beatmap_to_mirror(beatmap:Beatmap):
-    beatmap_mirror = models.Beatmap.objects.get(beatmap_id=beatmap.beatmap_id)
-    if beatmap_mirror is None:
+    beatmap_mirror = models.Beatmap.objects.filter(beatmap_id=beatmap.beatmap_id).exists()
+    if not beatmap_mirror:
         beatmapset_mirror = models.BeatmapSet.objects.get(beatmapset_id=beatmap.beatmapset_id)
         models.Beatmap.objects.create(
             beatmap_id=beatmap.beatmap_id,
@@ -142,13 +144,14 @@ def import_beatmap_to_mirror(beatmap:Beatmap):
             diff_approach=beatmap.diff_approach,
             play_mode=beatmap.play_mode,
             approved=beatmap.approved,
-            last_update=beatmap.last_update,
+            last_update=timezone.make_aware(beatmap.last_update),
             difficulty_rating=beatmap.difficulty_rating,
             play_count=beatmap.play_count,
             pass_count=beatmap.pass_count,
             bpm=beatmap.bpm,
         )
     else:
+        beatmap_mirror = models.Beatmap.objects.get(beatmap_id=beatmap.beatmap_id)
         beatmap_mirror.user_id = BEATMAP_CREATOR_DUMMY_ID
         beatmap_mirror.filename = beatmap.filename
         beatmap_mirror.checksum = beatmap.checksum
@@ -165,7 +168,7 @@ def import_beatmap_to_mirror(beatmap:Beatmap):
         beatmap_mirror.diff_approach = beatmap.diff_approach
         beatmap_mirror.play_mode = beatmap.play_mode
         beatmap_mirror.approved = beatmap.approved
-        beatmap_mirror.last_update = beatmap.last_update
+        beatmap_mirror.last_update = timezone.make_aware(beatmap.last_update)
         beatmap_mirror.difficulty_rating = beatmap.difficulty_rating
         beatmap_mirror.play_count = beatmap.play_count
         beatmap_mirror.pass_count = beatmap.pass_count
