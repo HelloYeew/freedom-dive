@@ -133,9 +133,9 @@ def import_beatmapset_to_mirror(beatmapset:BeatmapSet):
             epilepsy=beatmapset.epilepsy,
             bpm=beatmapset.bpm,
             approved=beatmapset.approved,
-            approved_date=timezone.make_aware(beatmapset.approved_date),
-            submit_date=timezone.make_aware(beatmapset.submit_date),
-            last_update=timezone.make_aware(beatmapset.last_update),
+            approved_date=timezone.make_aware(beatmapset.approved_date) if beatmapset.approved_date else None,
+            submit_date=timezone.make_aware(beatmapset.submit_date) if beatmapset.submit_date else None,
+            last_update=timezone.make_aware(beatmapset.last_update) if beatmapset.last_update else None,
             display_title=beatmapset.display_title,
             genre_id=beatmapset.genre_id,
             language_id=beatmapset.language_id,
@@ -159,9 +159,9 @@ def import_beatmapset_to_mirror(beatmapset:BeatmapSet):
         beatmapset_mirror.epilepsy = beatmapset.epilepsy
         beatmapset_mirror.bpm = beatmapset.bpm
         beatmapset_mirror.approved = beatmapset.approved
-        beatmapset_mirror.approved_date = timezone.make_aware(beatmapset.approved_date)
-        beatmapset_mirror.submit_date = timezone.make_aware(beatmapset.submit_date)
-        beatmapset_mirror.last_update = timezone.make_aware(beatmapset.last_update)
+        beatmapset_mirror.approved_date = timezone.make_aware(beatmapset.approved_date) if beatmapset.approved_date else None
+        beatmapset_mirror.submit_date = timezone.make_aware(beatmapset.submit_date) if beatmapset.submit_date else None
+        beatmapset_mirror.last_update = timezone.make_aware(beatmapset.last_update) if beatmapset.last_update else None
         beatmapset_mirror.display_title = beatmapset.display_title
         beatmapset_mirror.genre_id = beatmapset.genre_id
         beatmapset_mirror.language_id = beatmapset.language_id
@@ -195,7 +195,7 @@ def import_beatmap_to_mirror(beatmap:Beatmap):
             diff_approach=beatmap.diff_approach,
             play_mode=beatmap.play_mode,
             approved=beatmap.approved,
-            last_update=timezone.make_aware(beatmap.last_update),
+            last_update=timezone.make_aware(beatmap.last_update) if beatmap.last_update else None,
             difficulty_rating=beatmap.difficulty_rating,
             play_count=beatmap.play_count,
             pass_count=beatmap.pass_count,
@@ -219,7 +219,7 @@ def import_beatmap_to_mirror(beatmap:Beatmap):
         beatmap_mirror.diff_approach = beatmap.diff_approach
         beatmap_mirror.play_mode = beatmap.play_mode
         beatmap_mirror.approved = beatmap.approved
-        beatmap_mirror.last_update = timezone.make_aware(beatmap.last_update)
+        beatmap_mirror.last_update = timezone.make_aware(beatmap.last_update) if beatmap.last_update else None
         beatmap_mirror.difficulty_rating = beatmap.difficulty_rating
         beatmap_mirror.play_count = beatmap.play_count
         beatmap_mirror.pass_count = beatmap.pass_count
