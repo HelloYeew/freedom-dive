@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'users',
     'apps',
     'client_api',
-    'utility'
+    'utility',
+    'mirror'
 ]
 
 MIDDLEWARE = [
