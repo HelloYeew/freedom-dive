@@ -197,7 +197,7 @@ def update_beatmapset_object_in_database(beatmapset: BeatmapSet):
             epilepsy = {'false' if not beatmapset.epilepsy else 'true'},
             bpm = {beatmapset.bpm},
             approved = {beatmapset.approved},
-            approved_date = {"'" + str(beatmapset.approved_date) + "'"},
+            approved_date = {"'" + str(beatmapset.approved_date) + "'" if beatmapset.approved_date else 'NULL'},
             submit_date = {"'" + str(beatmapset.submit_date) + "'"},
             last_update = {"'" + str(beatmapset.last_update) + "'"},
             displaytitle = {"'" + beatmapset.display_title + "'"},
