@@ -109,8 +109,8 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS(f"Beatmapset {i} picture has been imported to S3."))
             except Exception as e:
                 self.stdout.write(self.style.ERROR(f"Beatmapset {i} picture import failed: {e}"))
-            # sleep for 3 second to avoid rate limit
-            time.sleep(3)
+            # sleep for 1 second to not make it too fast
+            time.sleep(1)
         failed_file.close()
         self.stdout.write(self.style.SUCCESS(f'Successfully imported {start} to {end} beatmapsets'))
 
