@@ -165,8 +165,8 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
             {beatmapset.user_id},
             {"'" + beatmapset.artist + "'"},{'' if beatmapset.artist_unicode is None or '' else "'" + beatmapset.artist_unicode + "',"}
             {"'" + beatmapset.title + "'"},{'' if beatmapset.title_unicode is None or '' else "'" + beatmapset.title_unicode + "',"}
-            {"'" + beatmapset.creator + "'"},{'' if beatmapset.source == '' else "'" + beatmapset.source + "',"}
-            {"'" + beatmapset.tags + "'"},
+            {"'" + beatmapset.creator + "'"},{'' if beatmapset.source is None or '' else "'" + beatmapset.source + "',"}
+            {"'" + beatmapset.tags + "'" if beatmapset.tags else 'NULL'},
             {'false' if not beatmapset.video else 'true'},
             {'false' if not beatmapset.storyboard else 'true'},
             {'false' if not beatmapset.epilepsy else 'true'},
