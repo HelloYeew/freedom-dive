@@ -128,6 +128,16 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute('USE osu')
+    # Check artist, artist_unicode, title, title_unicode, creator, source, tags,
+    # display_title that if it has ' in it, replace it with '' since SQL don't like '
+    beatmapset.artist = beatmapset.artist.replace("'", "''")
+    beatmapset.artist_unicode = beatmapset.artist_unicode.replace("'", "''")
+    beatmapset.title = beatmapset.title.replace("'", "''")
+    beatmapset.title_unicode = beatmapset.title_unicode.replace("'", "''")
+    beatmapset.creator = beatmapset.creator.replace("'", "''")
+    beatmapset.source = beatmapset.source.replace("'", "''")
+    beatmapset.tags = beatmapset.tags.replace("'", "''")
+    beatmapset.display_title = beatmapset.display_title.replace("'", "''")
     command = f'''
         INSERT INTO osu_beatmapsets (
             beatmapset_id,
@@ -184,6 +194,16 @@ def update_beatmapset_object_in_database(beatmapset: BeatmapSet):
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute('USE osu')
+    # Check artist, artist_unicode, title, title_unicode, creator, source, tags,
+    # display_title that if it has ' in it, replace it with '' since SQL don't like '
+    beatmapset.artist = beatmapset.artist.replace("'", "''")
+    beatmapset.artist_unicode = beatmapset.artist_unicode.replace("'", "''")
+    beatmapset.title = beatmapset.title.replace("'", "''")
+    beatmapset.title_unicode = beatmapset.title_unicode.replace("'", "''")
+    beatmapset.creator = beatmapset.creator.replace("'", "''")
+    beatmapset.source = beatmapset.source.replace("'", "''")
+    beatmapset.tags = beatmapset.tags.replace("'", "''")
+    beatmapset.display_title = beatmapset.display_title.replace("'", "''")
     command = f'''
         UPDATE osu_beatmapsets
         SET
@@ -249,6 +269,9 @@ def insert_beatmap_object_to_database(beatmap: Beatmap):
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute('USE osu')
+    # Check filename, version that if it has ' in it, replace it with '' since SQL don't like '
+    beatmap.filename = beatmap.filename.replace("'", "''")
+    beatmap.version = beatmap.version.replace("'", "''")
     command = f'''INSERT INTO osu_beatmaps (
             beatmap_id,
             beatmapset_id,
@@ -310,6 +333,9 @@ def update_beatmap_object_in_database(beatmap: Beatmap):
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute('USE osu')
+    # Check filename, version that if it has ' in it, replace it with '' since SQL don't like '
+    beatmap.filename = beatmap.filename.replace("'", "''")
+    beatmap.version = beatmap.version.replace("'", "''")
     command = f'''
         UPDATE osu_beatmaps
         SET
