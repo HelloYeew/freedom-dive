@@ -207,7 +207,7 @@ def update_beatmapset_object_in_database(beatmapset: BeatmapSet):
         SET
             user_id = {beatmapset.user_id},
             {'' if not beatmapset.artist else "artist = '" + beatmapset.artist + "',"}{'' if not beatmapset.artist_unicode else "artist_unicode = '" + beatmapset.artist_unicode + "',"}
-            {'' if not beatmapset.title else "title = '" + beatmapset.artist + "',"}{'' if not beatmapset.title_unicode else "title_unicode = '" + beatmapset.title_unicode + "',"}
+            {'' if not beatmapset.title else "title = '" + beatmapset.title + "',"}{'' if not beatmapset.title_unicode else "title_unicode = '" + beatmapset.title_unicode + "',"}
             {'' if not beatmapset.creator else "creator = '" + beatmapset.creator + "',"}{'' if not beatmapset.source else "source = '" + beatmapset.source + "',"}
             tags = {"'" + beatmapset.tags + "'"},
             video = {'false' if not beatmapset.video else 'true'},
