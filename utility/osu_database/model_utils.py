@@ -180,7 +180,6 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
             {beatmapset.favorite_count},
             {beatmapset.play_count}{'' if beatmapset.difficulty_names == '' else ',' + beatmapset.difficulty_names}
         )'''
-    print(command)
     cursor.execute(command)
     connection.commit()
     cursor.close()
