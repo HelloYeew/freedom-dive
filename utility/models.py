@@ -7,4 +7,7 @@ class UtilityLog(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     field = models.CharField(max_length=100)
     description = models.TextField(default='')
-    status = models.IntegerField(default=0) # 0 = pending, 1 = running, 2 = done, 3 = error
+    status = models.IntegerField(default=0)  # 0 = pending, 1 = running, 2 = done, 3 = error
+
+    def __str__(self):
+        return f'{self.user} - {self.field} - {self.time}'

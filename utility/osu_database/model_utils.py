@@ -130,6 +130,7 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
     cursor.execute('USE osu')
     # Check artist, artist_unicode, title, title_unicode, creator, source, tags,
     # display_title that if it has ' in it, replace it with '' since SQL don't like '
+    print('beatmapset tag : ' + beatmapset.tags)
     beatmapset.artist = beatmapset.artist.replace("'", "''") if beatmapset.artist else None
     beatmapset.artist_unicode = beatmapset.artist_unicode.replace("'", "''") if beatmapset.artist_unicode else None
     beatmapset.title = beatmapset.title.replace("'", "''") if beatmapset.title else None
@@ -144,8 +145,7 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
             user_id,
             artist,{f'artist_unicode,' if beatmapset.artist_unicode else ''}
             title,{f'title_unicode,' if beatmapset.title_unicode else ''}
-            creator,{f'source,' if beatmapset.source else ''}
-            tags,
+            creator,{f'source,' if beatmapset.source else ''}{f'tags,' if beatmapset.tags else ''}
             video,
             storyboard,
             epilepsy,
@@ -165,8 +165,7 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
             {beatmapset.user_id},
             {"'" + beatmapset.artist + "'"},{'' if beatmapset.artist_unicode is None or '' else "'" + beatmapset.artist_unicode + "',"}
             {"'" + beatmapset.title + "'"},{'' if beatmapset.title_unicode is None or '' else "'" + beatmapset.title_unicode + "',"}
-            {"'" + beatmapset.creator + "'"},{'' if beatmapset.source is None or '' else "'" + beatmapset.source + "',"}
-            {"'" + beatmapset.tags + "'" if beatmapset.tags else 'NULL'},
+            {"'" + beatmapset.creator + "'"},{'' if beatmapset.source is None or '' else "'" + beatmapset.source + "',"}{'' if beatmapset.tags is None or '' else "'" + beatmapset.tags + "',"}
             {'false' if not beatmapset.video else 'true'},
             {'false' if not beatmapset.storyboard else 'true'},
             {'false' if not beatmapset.epilepsy else 'true'},
@@ -182,6 +181,7 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
             {beatmapset.favorite_count},
             {beatmapset.play_count}{'' if beatmapset.difficulty_names == '' else ',' + beatmapset.difficulty_names}
         )'''
+    print(command)
     cursor.execute(command)
     connection.commit()
     cursor.close()

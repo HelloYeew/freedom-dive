@@ -12,10 +12,7 @@ class Command(BaseCommand):
                 # create a list of beatmapset ids from failed.txt with remove duplicates and
                 # string that cannot be converted to int
                 beatmapset_ids = list(set([int(line) for line in f.readlines() if line.strip().isdigit()]))
-                # clean up failed.txt
-                with open('failed.txt', 'w') as f:
-                    f.write('')
                 self.stdout.write(self.style.SUCCESS(f'Found {len(beatmapset_ids)} beatmapset ids in failed.txt'))
-                import_beatmapset(self, beatmapset_ids)
+                import_beatmapset(self, beatmapset_ids, 'failed_fix')
         except FileNotFoundError:
             self.stdout.write(self.style.ERROR('failed.txt not found'))
