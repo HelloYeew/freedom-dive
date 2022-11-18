@@ -206,9 +206,9 @@ def update_beatmapset_object_in_database(beatmapset: BeatmapSet):
         UPDATE osu_beatmapsets
         SET
             user_id = {beatmapset.user_id},
-            artist = {"'" + beatmapset.artist + "'"},{'' if beatmapset.artist_unicode is None or '' else "artist_unicode = '" + beatmapset.artist_unicode + "',"}
-            title = {"'" + beatmapset.title + "'"},{'' if beatmapset.title_unicode is None or '' else "title_unicode = '" + beatmapset.title_unicode + "',"}
-            creator = {"'" + beatmapset.creator + "'"},{'' if beatmapset.source is None or '' else "source = '" + beatmapset.source + "',"}
+            {'' if not beatmapset.artist else "artist = '" + beatmapset.artist + "',"}{'' if not beatmapset.artist_unicode else "artist_unicode = '" + beatmapset.artist_unicode + "',"}
+            {'' if not beatmapset.title else "title = '" + beatmapset.artist + "',"}{'' if not beatmapset.title_unicode else "title_unicode = '" + beatmapset.title_unicode + "',"}
+            {'' if not beatmapset.creator else "creator = '" + beatmapset.creator + "',"}{'' if not beatmapset.source else "source = '" + beatmapset.source + "',"}
             tags = {"'" + beatmapset.tags + "'"},
             video = {'false' if not beatmapset.video else 'true'},
             storyboard = {'false' if not beatmapset.storyboard else 'true'},
@@ -218,7 +218,7 @@ def update_beatmapset_object_in_database(beatmapset: BeatmapSet):
             approved_date = {"'" + str(beatmapset.approved_date) + "'" if beatmapset.approved_date else 'NULL'},
             submit_date = {"'" + str(beatmapset.submit_date) + "'"},
             last_update = {"'" + str(beatmapset.last_update) + "'"},
-            displaytitle = {"'" + beatmapset.display_title + "'"},
+            {'' if not beatmapset.display_title else "displaytitle = '" + beatmapset.display_title + "',"}
             genre_id = {beatmapset.genre_id},
             language_id = {beatmapset.language_id},
             download_disabled = {'false' if not beatmapset.download_disabled else 'true'},
