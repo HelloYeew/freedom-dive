@@ -130,7 +130,6 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
     cursor.execute('USE osu')
     # Check artist, artist_unicode, title, title_unicode, creator, source, tags,
     # display_title that if it has ' in it, replace it with '' since SQL don't like '
-    print('beatmapset tag : ' + beatmapset.tags)
     beatmapset.artist = beatmapset.artist.replace("'", "''") if beatmapset.artist else None
     beatmapset.artist_unicode = beatmapset.artist_unicode.replace("'", "''") if beatmapset.artist_unicode else None
     beatmapset.title = beatmapset.title.replace("'", "''") if beatmapset.title else None
@@ -143,9 +142,9 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
         INSERT INTO osu_beatmapsets (
             beatmapset_id,
             user_id,
-            artist,{f'artist_unicode,' if beatmapset.artist_unicode else ''}
-            title,{f'title_unicode,' if beatmapset.title_unicode else ''}
-            creator,{f'source,' if beatmapset.source else ''}{f'tags,' if beatmapset.tags else ''}
+            {f'artist,' if beatmapset.artist else ''}{f'artist_unicode,' if beatmapset.artist_unicode else ''}
+            {f'title,' if beatmapset.title else ''}{f'title_unicode,' if beatmapset.title_unicode else ''}
+            {f'creator,' if beatmapset.creator else ''}{f'source,' if beatmapset.source else ''}{f'tags,' if beatmapset.tags else ''}
             video,
             storyboard,
             epilepsy,
@@ -154,7 +153,7 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
             approved_date,
             submit_date,
             last_update,
-            displaytitle,
+            {f'displaytitle,' if beatmapset.display_title else ''}
             genre_id,
             language_id,
             download_disabled,
@@ -163,9 +162,9 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
         ) VALUES (
             {beatmapset.beatmapset_id},
             {beatmapset.user_id},
-            {"'" + beatmapset.artist + "'"},{'' if beatmapset.artist_unicode is None or '' else "'" + beatmapset.artist_unicode + "',"}
-            {"'" + beatmapset.title + "'"},{'' if beatmapset.title_unicode is None or '' else "'" + beatmapset.title_unicode + "',"}
-            {"'" + beatmapset.creator + "'"},{'' if beatmapset.source is None or '' else "'" + beatmapset.source + "',"}{'' if beatmapset.tags is None or '' else "'" + beatmapset.tags + "',"}
+            {"" if not beatmapset.artist else "'" + beatmapset.artist + "',"}{'' if not beatmapset.artist_unicode else "'" + beatmapset.artist_unicode + "',"}
+            {"" if not beatmapset.title else "'" + beatmapset.title + "',"}{'' if not beatmapset.title_unicode else "'" + beatmapset.title_unicode + "',"}
+            {"" if not beatmapset.creator else "'" + beatmapset.creator + "',"}{'' if not beatmapset.source else "'" + beatmapset.source + "',"}{'' if not beatmapset.tags else "'" + beatmapset.tags + "',"}
             {'false' if not beatmapset.video else 'true'},
             {'false' if not beatmapset.storyboard else 'true'},
             {'false' if not beatmapset.epilepsy else 'true'},
@@ -174,7 +173,7 @@ def insert_beatmapset_object_to_database(beatmapset: BeatmapSet):
             {"'" + str(beatmapset.approved_date) + "'" if beatmapset.approved_date else 'NULL'},
             {"'" + str(beatmapset.submit_date) + "'" if beatmapset.submit_date else 'NULL'},
             {"'" + str(beatmapset.last_update) + "'" if beatmapset.last_update else 'NULL'},
-            {"'" + beatmapset.display_title + "'"},
+            {"" if not beatmapset.display_title else "'" + beatmapset.display_title + "',"}
             {beatmapset.genre_id},
             {beatmapset.language_id},
             {'false' if not beatmapset.download_disabled else 'true'},
