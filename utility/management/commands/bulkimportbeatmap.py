@@ -21,16 +21,17 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('start', type=int)
         parser.add_argument('end', type=int)
+        parser.add_argument('--sleep', type=int, default=1.5)
 
     def handle(self, *args, **options):
         start = options['start']
         end = options['end']
         # Create list of beatmapset ids
         beatmapset_id_list = list(range(start, end + 1))
-        import_beatmapset(self, beatmapset_id_list)
+        import_beatmapset(self, beatmapset_id_list, sleep_time=options['sleep'])
 
 
-def import_beatmapset(self: BaseCommand, id_list: list[int], failed_file_path: str = 'failed'):
+def import_beatmapset(self: BaseCommand, id_list: list[int], failed_file_path: str = 'failed', sleep_time: float = 1.5):
     s3_client = get_s3_client()
     # create text file for store failed beatmapset id
     failed_file = open(f"{failed_file_path}.txt", "w")
@@ -117,6 +118,6 @@ def import_beatmapset(self: BaseCommand, id_list: list[int], failed_file_path: s
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Beatmapset {i} picture import failed: {e}"))
         # sleep to not make it too fast
-        time.sleep(1.5)
+        time.sleep(sleep_time)
     failed_file.close()
     self.stdout.write(self.style.SUCCESS(f'Successfully imported {len(id_list)} beatmapset(s).'))
