@@ -116,7 +116,7 @@ def import_beatmapset(self: BaseCommand, id_list: list[int], failed_file_path: s
             self.stdout.write(self.style.SUCCESS(f"Beatmapset {i} picture has been imported to S3."))
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Beatmapset {i} picture import failed: {e}"))
-        # sleep for 2 second to not make it too fast
-        time.sleep(2)
+        # sleep to not make it too fast
+        time.sleep(1.5)
     failed_file.close()
     self.stdout.write(self.style.SUCCESS(f'Successfully imported {len(id_list)} beatmapset(s).'))
