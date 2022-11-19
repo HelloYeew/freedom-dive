@@ -41,7 +41,7 @@ class ClientUserRegistration(APIView):
     permissions_classes = [permissions.AllowAny]
 
     def post(self, request):
-        if request.data['client_id'] == CLIENT_ID and request.data['client_secret'] == CLIENT_SECRET:
+        if int(request.data['client_id']) == CLIENT_ID and request.data['client_secret'] == CLIENT_SECRET:
             if request.data['username'] and request.data['email'] and request.data['password']:
                 try:
                     user = User.objects.create_user(username=request.data['username'], email=request.data['email'],
