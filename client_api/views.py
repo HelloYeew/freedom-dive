@@ -18,7 +18,7 @@ class SubmitSoloScoreView(APIView):
 
     def post(self, request):
         # TODO: Ignore -1 ruleset ID and name
-        if request.data['client_id'] == CLIENT_ID and request.data['client_secret'] == CLIENT_SECRET:
+        if int(request.data['client_id']) == CLIENT_ID and request.data['client_secret'] == CLIENT_SECRET:
             try:
                 ScoreStore.objects.create(
                     user_id=request.data['user_id'],
