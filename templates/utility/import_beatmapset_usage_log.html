@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Import beatmapset usage log{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 5rem;">
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Import beatmapset usage log</h1>
+    <div style="overflow:hidden">
+        <table class="table table-striped table-dark" style="vertical-align: middle;">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Beatmapset ID</th>
+                    <th scope="col">Success</th>
+                    <th scope="col">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in import_beatmapset_usage_log %}
+                <tr>
+                    <th scope="row">{{ log.id }}</th>
+                    <td>{{ log.time }}</td>
+                    <td>{{ log.beatmapset_id }}</td>
+                    <td>
+                        {% if log.success %}
+                        <i class="mdi mdi-check" aria-hidden="true" style="font-size: 20px; color: #5cb85c"></i>
+                        {% else %}
+                        <i class="mdi mdi-alert-circle" aria-hidden="true" style="font-size: 20px; color: #d9534f"></i>
+                        {% endif %}
+                    </td>
+                    <td>{{ log.description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

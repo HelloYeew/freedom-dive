@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Import beatmapset from osu! API{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 5rem;">
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Import specific beatmapset from osu! API</h1>
+    <form method="POST">
+        <p>
+            We are running a script to cache all beatmapsets from osu! API but this may take a while. If you specifically want to import a beatmapset
+            to make score submission and multiplayer work, you can use this form to import it.
+        </p>
+        <p>
+            <i class="mdi mdi-alert-circle" aria-hidden="true" style="font-size: 20px"></i> Please note that if you have already import this beatmaps to the client please
+            re-import it since currently osu!lazer client cannot update the beatmapset's online status.
+        </p>
+        {% csrf_token %}
+        {{ form | crispy }}
+        <button class="btn btn-ayaka" type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}
