@@ -22,7 +22,7 @@
         --color-primary: #dfd9d6;
         --color-accent: #dbc2d1;
         --color-background:#0a0a0a;
-        --mask-opacity: 0.5;
+        --mask-opacity: 0.7;
         {% else %}
         --color-primary: {{ colour_settings.color_primary }};
         --color-accent: {{ colour_settings.color_accent }};
@@ -57,11 +57,14 @@
 {#                    <li class="nav-item">#}
 {#                        <a class="nav-link" href="#">Not Active</a>#}
 {#                    </li>#}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Dummy menu</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Dummy dropdown</a></li>
-                        </ul>
+{#                    <li class="nav-item dropdown">#}
+{#                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Dummy menu</a>#}
+{#                        <ul class="dropdown-menu">#}
+{#                            <li><a class="dropdown-item" href="#">Dummy dropdown</a></li>#}
+{#                        </ul>#}
+{#                    </li>#}
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'beatmaps' %}">Beatmaps</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
