@@ -119,7 +119,12 @@ def import_beatmaps_from_osu_public(request):
                 return redirect('beatmaps')
     else:
         form = ImportSpecificBeatmapSetForm()
-    return render(request, 'apps/beatmaps/import_beatmaps_from_osu_api.html', {
-        'colour_settings': ColourSettings.objects.get(user=request.user),
-        'form': form
-    })
+    if request.user.is_authenticated:
+        return render(request, 'apps/beatmaps/import_beatmaps_from_osu_api.html', {
+            'colour_settings': ColourSettings.objects.get(user=request.user),
+            'form': form
+        })
+    else:
+        return render(request, 'apps/beatmaps/import_beatmaps_from_osu_api.html', {
+            'form': form
+        })
