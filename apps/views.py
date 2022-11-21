@@ -18,4 +18,6 @@ def beatmaps(request):
             'statistics_osu': get_osu_beatmap_statistics(),
         })
     else:
-        return render(request, 'apps/beatmaps/beatmaps.html')
+        return render(request, 'apps/beatmaps/beatmaps.html', {
+            'statistics_osu': get_osu_beatmap_statistics(),
+        })
