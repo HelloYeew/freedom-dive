@@ -127,3 +127,27 @@ def update_beatmapset_from_api(beatmapset_id: int):
     for beatmap in get_beatmap_object_list_from_api(beatmapset_id):
         beatmap.user_id = BEATMAP_CREATOR_DUMMY_ID
         update_beatmap_object_in_database(beatmap)
+
+
+def count_beatmapset():
+    """Count the number of beatmapset in osu! database"""
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('USE osu')
+    cursor.execute('SELECT COUNT(*) FROM osu_beatmapsets;')
+    count = cursor.fetchone()[0]
+    cursor.close()
+    connection.close()
+    return count
+
+
+def count_beatmap():
+    """Count the number of beatmap in osu! database"""
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('USE osu')
+    cursor.execute('SELECT COUNT(*) FROM osu_beatmaps;')
+    count = cursor.fetchone()[0]
+    cursor.close()
+    connection.close()
+    return count

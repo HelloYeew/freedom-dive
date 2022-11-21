@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 from users.models import ColourSettings
+from utility.utils import get_beatmap_statistics
 
 
 def homepage(request):
@@ -12,6 +13,9 @@ def homepage(request):
 
 def beatmaps(request):
     if request.user.is_authenticated:
-        return render(request, 'apps/beatmaps/beatmaps.html', {'colour_settings': ColourSettings.objects.get(user=request.user)})
+        return render(request, 'apps/beatmaps/beatmaps.html', {
+            'colour_settings': ColourSettings.objects.get(user=request.user),
+            'statistics': get_beatmap_statistics()
+        })
     else:
         return render(request, 'apps/beatmaps/beatmaps.html')

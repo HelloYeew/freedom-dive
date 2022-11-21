@@ -11,6 +11,7 @@
     <p></p>
     <div style="overflow:hidden">
         <h3>Beatmaps</h3>
+        {% include 'snippets/beatmap_statistics.html' %}
         <a href="{% url 'import_specific_beatmapset_from_osu_api' %}" class="btn btn-ayaka btn-sm"><i class="mdi mdi-plus" aria-hidden="true" style="font-size: 20px"></i> Import specific beatmapset from osu! API</a>
         <a href="{% url 'import_beatmapset_usage_log' %}" class="btn btn-ayaka btn-sm"><i class="mdi mdi-history" aria-hidden="true" style="font-size: 20px"></i> Import beatmapset usage log</a>
     </div>
