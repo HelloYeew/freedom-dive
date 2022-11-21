@@ -11,7 +11,7 @@ from users.models import ColourSettings
 from utility.forms import ImportSpecificBeatmapSetForm
 from utility.models import UtilityLog, ImportBeatmapsetUsageLog
 from utility.osu_database import import_beatmapset_from_api, get_beatmapset_by_id, get_beatmap_by_beatmapset
-from utility.utils import get_beatmap_statistics
+from utility.utils import get_osu_beatmap_statistics, get_mirror_beatmap_statistics
 
 
 @login_required
@@ -19,7 +19,8 @@ def utility(request):
     if request.user.is_superuser or request.user.is_staff:
         return render(request, 'utility/utility.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
-            'statistics': get_beatmap_statistics()
+            'statistics_osu': get_osu_beatmap_statistics(),
+            'statistics_mirror': get_mirror_beatmap_statistics()
         })
     else:
         return render(request, '403.html', status=403)

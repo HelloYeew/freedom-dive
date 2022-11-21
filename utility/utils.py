@@ -2,11 +2,17 @@ from mirror.models import BeatmapSet, Beatmap
 from utility.osu_database import count_beatmapset, count_beatmap
 
 
-def get_beatmap_statistics() -> dict[str, int]:
-    """Get statistics of beatmaps in the database"""
+def get_osu_beatmap_statistics() -> dict[str, int]:
+    """Get statistics of beatmaps in the osu! database."""
     return {
-        'beatmapset_osu': int(count_beatmapset()),
-        'beatmapset_mirror': BeatmapSet.objects.count(),
-        'beatmap_osu': int(count_beatmap()),
-        'beatmap_mirror': Beatmap.objects.count()
+        'beatmapset': int(count_beatmapset()),
+        'beatmap': int(count_beatmap()),
+    }
+
+
+def get_mirror_beatmap_statistics() -> dict[str, int]:
+    """Get statistics of beatmaps in the mirror database."""
+    return {
+        'beatmapset': BeatmapSet.objects.count(),
+        'beatmap': Beatmap.objects.count()
     }
