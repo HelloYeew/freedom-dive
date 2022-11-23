@@ -3,7 +3,9 @@ from .database_models import *
 
 def create_user_from_database_row(db_row: tuple) -> OsuUser:
     """Create an OsuUser from a database row"""
+    print(db_row)
     return OsuUser(
+        user_id=db_row[0],
         register_date=datetime.fromtimestamp(db_row[6]),
         username=db_row[7],
         username_clean=db_row[8],

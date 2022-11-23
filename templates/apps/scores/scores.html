@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Scores List{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 5rem;">
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;"><i class="mdi mdi-clipboard-list" aria-hidden="true" style="font-size: 40px;"></i> Scores List</h1>
+{#    <a href="{% url 'import_beatmaps_from_osu_public' %}" class="btn btn-ayaka"><i class="mdi mdi-plus" aria-hidden="true" style="font-size: 20px"></i> Import beatmaps from osu!</a>#}
+    <p></p>
+    <p><i class="mdi mdi-alert-circle" aria-hidden="true" style="font-size: 20px;"></i> Time is showing in UTC.</p>
+    <p></p>
+    <div style="overflow:hidden">
+        <table class="table table-striped table-dark" style="vertical-align: middle;">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Beatmapset</th>
+                    <th scope="col">Difficulty Name</th>
+                    <th scope="col">Ruleset</th>
+                    <th scope="col">Submitted At</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for score in scores %}
+                <tr>
+                    <th scope="row">{{ score.score.id }}</th>
+                    <th>{{ score.user.username }}</th>
+                    <td>{{ score.beatmapset.title }}</td>
+                    <td>{{ score.beatmap.version }}</td>
+                    <td>{{ score.score.ruleset_short_name }}</td>
+                    <td>{{ score.score.date }}</td>
+                    <td>
+                        <a href="{% url 'score_detail' score.score.id %}" class="btn btn-ayaka"><i class="mdi mdi-eye" aria-hidden="true" style="font-size: 15px"></i> View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ score.id }} Scores Detail{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 5rem;">
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} {{ score.id }} Scores List</h1>
+{#    <a href="{% url 'import_beatmaps_from_osu_public' %}" class="btn btn-ayaka"><i class="mdi mdi-plus" aria-hidden="true" style="font-size: 20px"></i> Import beatmaps from osu!</a>#}
+    <p></p>
+    <div style="overflow:hidden">
+        <h2>Beatmaps</h2>
+        <img src="https://freedom-dive-assets.nyc3.digitaloceanspaces.com/cover/{{ beatmapset.beatmapset_id }}.jpg" alt="Cover" style="width: 100%; height: 300px; object-fit: cover; border-radius: 10px;">
+        <p></p>
+        <p>{{ beatmapset.title }} [{{ beatmap.version }}] ({{ beatmap.difficulty_rating }}★)</p>
+        <p>{{ beatmapset.artist }}</p>
+        <p>by {{ beatmapset.creator }}</p>
+        <p>Tags: {{ beatmapset.tags }}</p>
+        <p></p>
+        <h2>User</h2>
+        <p>{{ user.username }}</p>
+        <h2>Score</h2>
+        <p>Score: {{ score_json }}</p>
+        <p>Submitted at: {{ score.date }}</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}
