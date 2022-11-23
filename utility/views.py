@@ -11,7 +11,7 @@ from users.models import ColourSettings
 from utility.forms import ImportSpecificBeatmapSetForm
 from utility.models import UtilityLog, ImportBeatmapsetUsageLog
 from utility.osu_database import import_beatmapset_from_api, get_beatmapset_by_id, get_beatmap_by_beatmapset
-from utility.utils import get_osu_beatmap_statistics, get_mirror_beatmap_statistics
+from utility.utils import get_osu_beatmap_statistics, get_mirror_beatmap_statistics, download_beatmap_pic_to_s3
 
 
 @login_required
@@ -58,6 +58,7 @@ def import_specific_beatmapset_from_osu_api(request):
                     import_beatmapset_from_api(form.cleaned_data['beatmapset_id'])
                     import_beatmapset_to_mirror(get_beatmapset_by_id(form.cleaned_data['beatmapset_id']))
                     beatmapset = get_beatmap_by_beatmapset(form.cleaned_data['beatmapset_id'])
+                    download_beatmap_pic_to_s3(form.cleaned_data['beatmapset_id'])
                     for beatmap in beatmapset:
                         import_beatmap_to_mirror(beatmap)
                     messages.success(request, 'Imported beatmapset successfully!')
@@ -103,6 +104,7 @@ def import_beatmaps_from_osu_public(request):
                 import_beatmapset_from_api(form.cleaned_data['beatmapset_id'])
                 import_beatmapset_to_mirror(get_beatmapset_by_id(form.cleaned_data['beatmapset_id']))
                 beatmapset = get_beatmap_by_beatmapset(form.cleaned_data['beatmapset_id'])
+                download_beatmap_pic_to_s3(form.cleaned_data['beatmapset_id'])
                 for beatmap in beatmapset:
                     import_beatmap_to_mirror(beatmap)
                 ImportBeatmapsetUsageLog.objects.create(

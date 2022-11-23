@@ -10,9 +10,9 @@ from mirror.utils import import_beatmapset_to_mirror, import_beatmap_to_mirror
 from utility.osu_database import get_beatmapset_by_id, import_beatmapset_from_api, update_beatmapset_from_api, \
     get_beatmap_by_beatmapset
 from utility.s3.utils import get_s3_client
+from utility.utils import download_beatmap_pic_to_s3
 
 BEATMAP_CREATOR_DUMMY_ID = int(config('BEATMAP_CREATOR_ID', default='10'))
-S3_BUCKET_NAME = config('S3_BUCKET_NAME', default='')
 
 
 class Command(BaseCommand):
@@ -32,7 +32,6 @@ class Command(BaseCommand):
 
 
 def import_beatmapset(self: BaseCommand, id_list: list[int], failed_file_path: str = 'failed', sleep_time: float = 1.5):
-    s3_client = get_s3_client()
     # create text file for store failed beatmapset id
     failed_file = open(f"{failed_file_path}.txt", "w")
     # add ---------- to separate each import
@@ -64,56 +63,12 @@ def import_beatmapset(self: BaseCommand, id_list: list[int], failed_file_path: s
                         import_beatmap_to_mirror(beatmap)
         except Exception as e:
             self.stdout.write(self.style.ERROR('Error importing beatmapset with id "%s": %s' % (i, e)))
-            # Ignored InterfaceError and IntegrityError, only log when other error occured
+            # Ignored InterfaceError and IntegrityError, only log when other error occurred
             if not isinstance(e, (InterfaceError, IntegrityError)):
                 failed_file.write(str(i) + "\n")
                 traceback.print_exc()
         try:
-            card_pic = requests.get(f"https://assets.ppy.sh/beatmaps/{i}/covers/card.jpg")
-            list_pic = requests.get(f"https://assets.ppy.sh/beatmaps/{i}/covers/list.jpg")
-            cover_pic = requests.get(f"https://assets.ppy.sh/beatmaps/{i}/covers/cover.jpg")
-            thumbnail_pic = requests.get(f"https://b.ppy.sh/thumb/{i}l.jpg")
-            if ("Access Denied" or "Not Found") not in str(card_pic.content) and card_pic.status_code == 200:
-                print("Uploading card pic...")
-                s3_client.put_object(
-                    Bucket=S3_BUCKET_NAME,
-                    Key=f"card/{i}.jpg",
-                    Body=card_pic.content,
-                    ContentType="image/jpeg",
-                    ACL="public-read",
-                    CacheControl="max-age=31536000"
-                )
-            if ("Access Denied" or "Not Found") not in str(list_pic.content) and list_pic.status_code == 200:
-                print("Uploading list pic...")
-                s3_client.put_object(
-                    Bucket=S3_BUCKET_NAME,
-                    Key=f"list/{i}.jpg",
-                    Body=list_pic.content,
-                    ContentType="image/jpeg",
-                    ACL="public-read",
-                    CacheControl="max-age=31536000"
-                )
-            if ("Access Denied" or "Not Found") not in str(cover_pic.content) and cover_pic.status_code == 200:
-                print("Uploading cover pic...")
-                s3_client.put_object(
-                    Bucket=S3_BUCKET_NAME,
-                    Key=f"cover/{i}.jpg",
-                    Body=cover_pic.content,
-                    ContentType="image/jpeg",
-                    ACL="public-read",
-                    CacheControl="max-age=31536000"
-                )
-            if ("Access Denied" or "Not Found") not in str(
-                    thumbnail_pic.content) and thumbnail_pic.status_code == 200:
-                print("Uploading thumbnail pic...")
-                s3_client.put_object(
-                    Bucket=S3_BUCKET_NAME,
-                    Key=f"thumbnail/{i}.jpg",
-                    Body=thumbnail_pic.content,
-                    ContentType="image/jpeg",
-                    ACL="public-read",
-                    CacheControl="max-age=31536000"
-                )
+            download_beatmap_pic_to_s3(i)
             self.stdout.write(self.style.SUCCESS(f"Beatmapset {i} picture has been imported to S3."))
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Beatmapset {i} picture import failed: {e}"))
