@@ -24,13 +24,13 @@ def get_mirror_beatmap_statistics() -> dict[str, int]:
     }
 
 
-def download_beatmap_pic_to_s3(beatmap_id:int):
+def download_beatmap_pic_to_s3(beatmap_id: int):
     """Import beatmap picture from osu! website to S3."""
     s3_client = get_s3_client()
-    card_pic = requests.get(f"https://assets.ppy.sh/beatmaps/{i}/covers/card.jpg")
-    list_pic = requests.get(f"https://assets.ppy.sh/beatmaps/{i}/covers/list.jpg")
-    cover_pic = requests.get(f"https://assets.ppy.sh/beatmaps/{i}/covers/cover.jpg")
-    thumbnail_pic = requests.get(f"https://b.ppy.sh/thumb/{i}l.jpg")
+    card_pic = requests.get(f"https://assets.ppy.sh/beatmaps/{beatmap_id}/covers/card.jpg")
+    list_pic = requests.get(f"https://assets.ppy.sh/beatmaps/{beatmap_id}/covers/list.jpg")
+    cover_pic = requests.get(f"https://assets.ppy.sh/beatmaps/{beatmap_id}/covers/cover.jpg")
+    thumbnail_pic = requests.get(f"https://b.ppy.sh/thumb/{beatmap_id}l.jpg")
     if ("Access Denied" or "Not Found") not in str(card_pic.content) and card_pic.status_code == 200:
         print("Uploading card pic...")
         s3_client.put_object(
