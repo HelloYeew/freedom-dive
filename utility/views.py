@@ -100,6 +100,11 @@ def import_beatmaps_from_osu_public(request):
             if beatmaps:
                 messages.error(request, f'Beatmapset {beatmaps.title} is already in the database!')
                 download_beatmap_pic_to_s3(form.cleaned_data['beatmapset_id'])
+                ImportBeatmapsetUsageLog.objects.create(
+                    beatmapset_id=form.cleaned_data['beatmapset_id'],
+                    success=True,
+                    description=f'Beatmapset {beatmaps.title} is already in the database'
+                )
                 return redirect('beatmaps')
             try:
                 import_beatmapset_from_api(form.cleaned_data['beatmapset_id'])
