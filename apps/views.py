@@ -1,5 +1,6 @@
 import json
 
+from django.core.paginator import Paginator
 from django.shortcuts import render
 
 from apps.models import ScoreStore
@@ -17,14 +18,21 @@ def homepage(request):
 
 
 def beatmaps_list(request):
+    beatmaps = BeatmapSet.objects.all().order_by('-beatmapset_id')
+    paginator = Paginator(beatmaps, 20)
+    page_number = request.GET.get('page')
+    beatmaps_pagination = paginator.get_page(page_number)
+
     if request.user.is_authenticated:
         return render(request, 'apps/beatmaps/beatmaps.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'statistics_osu': get_osu_beatmap_statistics(),
+            'beatmapsets': beatmaps_pagination
         })
     else:
         return render(request, 'apps/beatmaps/beatmaps.html', {
             'statistics_osu': get_osu_beatmap_statistics(),
+            'beatmapsets': beatmaps_pagination
         })
 
 

@@ -140,3 +140,23 @@ small.text-muted {
     color: var(--color-primary)!important;
     filter: brightness(85%);
 }
+
+.active>.page-link, .page-link.active {
+    background-color: var(--color-accent)!important;
+    border-color: var(--color-accent)!important;
+    color: var(--color-background)!important;
+}
+
+.page-item {
+    color: var(--color-primary)!important;
+}
+
+.page-link {
+    color: var(--color-primary)!important;
+    background-color: var(--color-background)!important;
+}
+
+.page-item.disabled, .page-link.disabled{
+    color: var(--color-primary)!important;
+    filter: brightness(75%);
+}

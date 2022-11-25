@@ -1,14 +1,95 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Beatmaps List{% endblock %}
 
 {% block content %}
+<style>
+    .card-background {
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover!important;
+        background-repeat: no-repeat!important;
+        background-position: center center!important;
+    }
+</style>
 <div class="container" style="padding: 5rem;">
     <h1 style="padding-top: 1rem; padding-bottom: 1rem;"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 40px;"></i> Beatmaps List</h1>
     <a href="{% url 'import_beatmaps_from_osu_public' %}" class="btn btn-ayaka"><i class="mdi mdi-plus" aria-hidden="true" style="font-size: 20px"></i> Import beatmaps from osu!</a>
     <p></p>
     <div style="overflow:hidden">
         {% include 'snippets/beatmap_statistics_osu.html' %}
+        <div class="container">
+            <div class="row">
+                {% for beatmapset in beatmapsets %}
+                <div class="col-lg-6">
+                    <div class="card mb-3" style="max-width: 540px;">
+                        <div class="row g-0">
+                            <div class="col-md-3 card-background">
+                                <div class="card-background" style="background: url('https://freedom-dive-assets.nyc3.digitaloceanspaces.com/card/{{ beatmapset.beatmapset_id }}.jpg'), url('{% static "img/default_beatmaps.png" %}'); width: 100%; height: 100%;"></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="card-body">
+                                    {% if beatmapset.title != "" %}
+                                    <h5 class="card-title">{{ beatmapset.title }}</h5>
+                                    {% else %}
+                                    <h5 class="card-title"></h5>
+                                    {% endif %}
+                                    <p class="card-text">by {{ beatmapset.artist }}</p>
+                                    <p class="card-text"><small class="text-muted">mapped by {{ beatmapset.creator }}</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+            {% if beatmapsets.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ beatmapsets.previous_page_number }}">Previous</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Previous</a>
+            </li>
+            {% endif %}
+    
+            {% if beatmapsets.number|add:'-4' > 1 %}
+            <li class="page-item"><a class="page-link" href="?page={{ beatmapsets.number|add:'-5' }}">&hellip;</a></li>
+            {% endif %}
+    
+            {% for i in beatmapsets.paginator.page_range %}
+                {% if beatmapsets.number == i %}
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">
+                        {{ i }}
+                        <span class="sr-only">(current)</span>
+                    </span>
+                </li>
+                {% elif i > beatmapsets.number|add:'-5' and i < beatmapsets.number|add:'5' %}
+                     <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+    
+            {% if beatmapsets.paginator.num_pages > beatmapsets.number|add:'4' %}
+            <li class="page-item"><a class="page-link" href="?page={{ beatmapsets.number|add:'5' }}">&hellip;</a></li>
+            {% endif %}
+    
+            {% if beatmapsets.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ beatmapsets.next_page_number }}">Next</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Next</a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
     </div>
 </div>
 {% endblock %}
