@@ -19,7 +19,7 @@ def homepage(request):
 
 def beatmaps_list(request):
     beatmaps = BeatmapSet.objects.all().order_by('-beatmapset_id')
-    paginator = Paginator(beatmaps, 20)
+    paginator = Paginator(beatmaps, 30)
     page_number = request.GET.get('page')
     beatmaps_pagination = paginator.get_page(page_number)
 
