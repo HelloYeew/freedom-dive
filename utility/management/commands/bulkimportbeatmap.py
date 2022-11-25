@@ -32,8 +32,8 @@ class Command(BaseCommand):
 
 
 def import_beatmapset(self: BaseCommand, id_list: list[int], failed_file_path: str = 'failed', sleep_time: float = 1.5):
-    # create text file for store failed beatmapset id
-    failed_file = open(f"{failed_file_path}.txt", "w")
+    # create text file for store failed beatmapset id, if the file is not exist, else just open and continue write to it
+    failed_file = open(f"{failed_file_path}.txt", "a+")
     # add ---------- to separate each import
     failed_file.write("----------\n")
     # loop through beatmapset id
