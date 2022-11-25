@@ -1,7 +1,6 @@
 import time
 import traceback
 
-import requests
 from decouple import config
 from django.core.management import BaseCommand
 from mysql.connector import InterfaceError, IntegrityError
@@ -9,7 +8,6 @@ from mysql.connector import InterfaceError, IntegrityError
 from mirror.utils import import_beatmapset_to_mirror, import_beatmap_to_mirror
 from utility.osu_database import get_beatmapset_by_id, import_beatmapset_from_api, update_beatmapset_from_api, \
     get_beatmap_by_beatmapset
-from utility.s3.utils import get_s3_client
 from utility.utils import download_beatmap_pic_to_s3
 
 BEATMAP_CREATOR_DUMMY_ID = int(config('BEATMAP_CREATOR_ID', default='10'))
