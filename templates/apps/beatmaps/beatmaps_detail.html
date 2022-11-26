@@ -6,7 +6,9 @@
 {% block content %}
 <div class="container" style="padding: 5rem;">
     <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Beatmaps info</h1>
+    {% if user.is_staff %}
     <a href="#" class="btn btn-ayaka"><i class="mdi mdi-cog" aria-hidden="true" style="font-size: 20px"></i> Utility</a>
+    {% endif %}
     <p></p>
     <div style="overflow:hidden">
         <div class="card" style="background-image: url('https://freedom-dive-assets.nyc3.digitaloceanspaces.com/cover/{{ beatmapset.beatmapset_id }}.jpg'), url('{% static "img/default_beatmaps.png" %}'); background-size: cover; background-repeat: no-repeat; background-position: center; height: 300px; width: 100%; border-color: var(--color-accent)">
