@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ beatmapset.title }} detail{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 5rem;">
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Beatmaps info</h1>
+    <a href="#" class="btn btn-ayaka"><i class="mdi mdi-cog" aria-hidden="true" style="font-size: 20px"></i> Utility</a>
+    <p></p>
+    <div style="overflow:hidden">
+        <div class="card" style="background-image: url('https://freedom-dive-assets.nyc3.digitaloceanspaces.com/cover/{{ beatmapset.beatmapset_id }}.jpg'), url('{% static "img/default_beatmaps.png" %}'); background-size: cover; background-repeat: no-repeat; background-position: center; height: 300px; width: 100%; border-color: var(--color-accent)">
+            <div class="card-img" style="background-color: var(--color-background); opacity: 80%; width: 100%; height: 100%;"></div>
+            <div class="card-img-overlay">
+                {% if beatmapset.title != "" %}
+                <h5>{{ beatmapset.title }}</h5>
+                {% else %}
+                <h5> </h5>
+                {% endif %}
+                {% if beatmapset.artist != "" %}
+                <p>{{ beatmapset.artist }}</p>
+                {% else %}
+                <p> </p>
+                {% endif %}
+                <p class="card-text text-muted">{{ beatmapset.source }}</p>
+                <h3 style="position: absolute; top: 0; right: 0; margin: 0.5rem;">{% include "snippets/beatmaps/approve-status-badge.html" %}</h3>
+                <div style="position: absolute; bottom: 0; right: 0; margin: 0.5rem;">
+                    <audio controls>
+                        <source src="//b.ppy.sh/preview/{{ beatmapset.beatmapset_id }}.mp3" type="audio/mp3">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <div style="position: absolute; bottom: 0; left: 0; margin: 1rem;">
+                    <p class="beatmap-infobox-date">mapped by {{ beatmapset.creator }}</p>
+                    <p class="beatmap-infobox-date">submitted {{ beatmapset.submit_date | date:"j F Y H:i:s" }}</p>
+                    {% if beatmap.approved == '1' %}
+                    <p class="beatmap-infobox-date">ranked {{ beatmapset.approved_date | date:"j F Y H:i:s" }}</p>
+                    {% elif beatmap.approved == '3' %}
+                    <p class="beatmap-infobox-date">qualified {{ beatmapset.approved_date | date:"j F Y H:i:s" }}</p>
+                    {% else %}
+                    <p class="beatmap-infobox-date">last updated {{ beatmapset.last_update | date:"j F Y H:i:s" }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

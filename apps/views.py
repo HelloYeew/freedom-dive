@@ -17,7 +17,7 @@ def homepage(request):
         return render(request, 'homepage.html')
 
 
-def beatmaps_list(request):
+def beatmapset_list(request):
     beatmaps = BeatmapSet.objects.all().order_by('-beatmapset_id')
     paginator = Paginator(beatmaps, 30)
     page_number = request.GET.get('page')
@@ -33,6 +33,22 @@ def beatmaps_list(request):
         return render(request, 'apps/beatmaps/beatmaps.html', {
             'statistics_osu': get_osu_beatmap_statistics(),
             'beatmapsets': beatmaps_pagination
+        })
+
+
+def beatmapset_detail(request, beatmapset_id):
+    beatmapset = BeatmapSet.objects.get(beatmapset_id=beatmapset_id)
+    beatmaps = Beatmap.objects.filter(beatmapset=beatmapset).order_by('difficulty_rating')
+    if request.user.is_authenticated:
+        return render(request, 'apps/beatmaps/beatmaps_detail.html', {
+            'colour_settings': ColourSettings.objects.get(user=request.user),
+            'beatmapset': beatmapset,
+            'beatmaps': beatmaps
+        })
+    else:
+        return render(request, 'apps/beatmaps/beatmaps_detail.html', {
+            'beatmapset': beatmapset,
+            'beatmaps': beatmaps
         })
 
 

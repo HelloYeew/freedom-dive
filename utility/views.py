@@ -105,7 +105,7 @@ def import_beatmaps_from_osu_public(request):
                     success=True,
                     description=f'Beatmapset {beatmaps.title} is already in the database'
                 )
-                return redirect('beatmaps')
+                return redirect('beatmapset')
             try:
                 import_beatmapset_from_api(form.cleaned_data['beatmapset_id'])
                 import_beatmapset_to_mirror(get_beatmapset_by_id(form.cleaned_data['beatmapset_id']))
@@ -119,7 +119,7 @@ def import_beatmaps_from_osu_public(request):
                     description='Import beatmaps successfully'
                 )
                 messages.success(request, f'Imported {BeatmapSet.objects.get(beatmapset_id=form.cleaned_data["beatmapset_id"]).title} successfully!')
-                return redirect('beatmaps')
+                return redirect('beatmapset')
             except Exception as e:
                 messages.error(request, 'Something went wrong while importing beatmapset :( We have been notified of this issue!')
                 if settings.DEBUG:
@@ -129,7 +129,7 @@ def import_beatmaps_from_osu_public(request):
                     success=False,
                     description=f'Importing beatmapset failed: ({e.__class__.__name__}) {e}'
                 )
-                return redirect('beatmaps')
+                return redirect('beatmapset')
     else:
         form = ImportSpecificBeatmapSetForm()
     if request.user.is_authenticated:
