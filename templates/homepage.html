@@ -1,14 +1,48 @@
 {% extends "base.html" %}
+{% load static %}
+{% load humanize %}
 
 {% block title %}Template here{% endblock %}
 
 {% block content %}
 <div class="container" style="padding: 5rem;">
-    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">Dummy Header</h1>
-    <a href="#" class="btn btn-ayaka"><i class="mdi mdi-plus" aria-hidden="true" style="font-size: 20px"></i> Dummy Button</a>
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">Welcome to freedom dive!</h1>
+    <a href="{% url 'beatmapset' %}" class="btn btn-ayaka"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 20px"></i> Beatmaps</a>
+    <a href="{% url 'scores' %}" class="btn btn-ayaka"><i class="mdi mdi-clipboard-list" aria-hidden="true" style="font-size: 20px"></i> Scores</a>
     <p></p>
     <div style="overflow:hidden; color:var(--color-primary)">
-        Dummy homepage detail
+        <h2>Latest submitted score</h2>
+        <div class="card" style="background-image: url('https://freedom-dive-assets.nyc3.digitaloceanspaces.com/cover/{{ latest_score.beatmapset.beatmapset_id }}.jpg'), url('{% static "img/default_beatmaps.png" %}'); background-size: cover; background-repeat: no-repeat; background-position: center; height: 300px; width: 100%; border-color: var(--color-accent)">
+            <div class="card-img" style="background-color: var(--color-background); opacity: 80%; width: 100%; height: 100%;"></div>
+            <div class="card-img-overlay">
+                {% if latest_score.beatmapset.title != "" %}
+                <h3 style="font-weight: 800; color: var(--color-accent);">{{ latest_score.beatmapset.title }}</h3>
+                {% else %}
+                <h3> </h3>
+                {% endif %}
+                {% if latest_score.beatmapset.artist != "" %}
+                <h5>{{ latest_score.beatmapset.artist }}</h5>
+                {% else %}
+                <h5> </h5>
+                {% endif %}
+                <p class="card-text text-muted">{{ latest_score.beatmapset.source }}</p>
+                <p style="position: absolute; top: 0; right: 0; margin: 0.5rem;">
+                    Submitted by {{ latest_score.user.username }} at {{ latest_score.score.date|date:"d/m/Y H:i" }}
+                </p>
+                <div style="position: absolute; bottom: 0; right: 0; margin: 0.5rem;">
+                    <audio controls>
+                        <source src="//b.ppy.sh/preview/{{ latest_score.beatmapset.beatmapset_id }}.mp3" type="audio/mp3">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <div style="position: absolute; bottom: 0; left: 0; margin: 1rem; font-size: 1.2rem;">
+                    Ruleset: {{ latest_score.score.ruleset_short_name }}<br>
+                    Passed: {{ latest_score.score.passed }}<br>
+                    Score: {{ latest_score.score_json.total_score | intcomma }}<br>
+                    Accuracy: {% widthratio latest_score.score_json.accuracy 1 100 %}%
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

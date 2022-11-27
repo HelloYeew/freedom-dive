@@ -11,10 +11,33 @@ from utility.utils import get_osu_beatmap_statistics
 
 
 def homepage(request):
+    latest_score = ScoreStore.objects.latest('id')
+    try:
+        beatmap = Beatmap.objects.get(beatmap_id=latest_score.beatmap_id)
+        beatmapset = BeatmapSet.objects.get(beatmapset_id=beatmap.beatmapset.beatmapset_id)
+    except BeatmapSet.DoesNotExist or Beatmap.DoesNotExist:
+        beatmap = get_beatmap_by_id(latest_score.beatmap_id)
+        beatmapset = beatmap.beatmapset
+    except:
+        beatmap = None
+        beatmapset = None
+    user = get_user_by_id(latest_score.user_id)
+    latest_score = {
+        'score': latest_score,
+        'user': user,
+        'beatmap': beatmap,
+        'beatmapset': beatmapset,
+        'score_json': latest_score.statistics
+    }
     if request.user.is_authenticated:
-        return render(request, 'homepage.html', {'colour_settings': ColourSettings.objects.get(user=request.user)})
+        return render(request, 'homepage.html', {
+            'colour_settings': ColourSettings.objects.get(user=request.user),
+            'latest_score': latest_score
+        })
     else:
-        return render(request, 'homepage.html')
+        return render(request, 'homepage.html', {
+            'latest_score': latest_score
+        })
 
 
 def beatmapset_list(request):

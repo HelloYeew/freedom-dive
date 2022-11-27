@@ -119,7 +119,7 @@ def import_beatmaps_from_osu_public(request):
                     description='Import beatmaps successfully'
                 )
                 messages.success(request, f'Imported {BeatmapSet.objects.get(beatmapset_id=form.cleaned_data["beatmapset_id"]).title} successfully!')
-                return redirect('beatmapset')
+                return redirect('beatmapset_detail', form.cleaned_data['beatmapset_id'])
             except Exception as e:
                 messages.error(request, 'Something went wrong while importing beatmapset :( We have been notified of this issue!')
                 if settings.DEBUG:
