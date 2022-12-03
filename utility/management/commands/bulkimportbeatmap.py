@@ -19,7 +19,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('start', type=int)
         parser.add_argument('end', type=int)
-        parser.add_argument('--sleep', type=int, default=1.5)
+        parser.add_argument('--sleep', type=float, default=1.5)
 
     def handle(self, *args, **options):
         start = options['start']
