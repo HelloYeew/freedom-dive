@@ -105,7 +105,7 @@ def import_beatmaps_from_osu_public(request):
                     success=True,
                     description=f'Beatmapset {beatmaps.title} is already in the database'
                 )
-                return redirect('beatmapset')
+                return redirect('beatmapset_detail', form.cleaned_data['beatmapset_id'])
             try:
                 import_beatmapset_from_api(form.cleaned_data['beatmapset_id'])
                 import_beatmapset_to_mirror(get_beatmapset_by_id(form.cleaned_data['beatmapset_id']))
