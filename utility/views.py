@@ -116,7 +116,7 @@ def import_beatmaps_from_osu_public(request):
                 ImportBeatmapsetUsageLog.objects.create(
                     beatmapset_id=form.cleaned_data['beatmapset_id'],
                     success=True,
-                    description='Import beatmaps successfully'
+                    description=f'Import beatmapset {beatmaps.title} successfully'
                 )
                 messages.success(request, f'Imported {BeatmapSet.objects.get(beatmapset_id=form.cleaned_data["beatmapset_id"]).title} successfully!')
                 return redirect('beatmapset_detail', form.cleaned_data['beatmapset_id'])
