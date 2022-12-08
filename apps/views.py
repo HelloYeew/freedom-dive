@@ -123,7 +123,7 @@ def score_detail(request, score_id):
         return render(request, 'apps/scores/scores_detail.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'score': score,
-            'user': user,
+            'score_user': user,
             'beatmap': beatmap,
             'beatmapset': beatmapset,
             'score_json': score_json
@@ -131,7 +131,7 @@ def score_detail(request, score_id):
     else:
         return render(request, 'apps/scores/scores_detail.html', {
             'score': score,
-            'user': user,
+            'score_user': user,
             'beatmap': beatmap,
             'beatmapset': beatmapset,
             'score_json': score_json
