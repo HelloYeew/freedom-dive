@@ -85,6 +85,7 @@ class ImportBeatmapsetRequest(APIView):
                         import_beatmapset_to_mirror(get_beatmapset_by_id(beatmapset_id))
                         beatmapset = get_beatmap_by_beatmapset(beatmapset_id)
                         download_beatmap_pic_to_s3(beatmapset_id)
+                        beatmaps = get_beatmapset_by_id(beatmapset_id)
                         for beatmap in beatmapset:
                             import_beatmap_to_mirror(beatmap)
                         ImportBeatmapsetUsageLog.objects.create(
