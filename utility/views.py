@@ -110,6 +110,7 @@ def import_beatmaps_from_osu_public(request):
                 import_beatmapset_from_api(form.cleaned_data['beatmapset_id'])
                 import_beatmapset_to_mirror(get_beatmapset_by_id(form.cleaned_data['beatmapset_id']))
                 beatmapset = get_beatmap_by_beatmapset(form.cleaned_data['beatmapset_id'])
+                download_beatmap_pic_to_s3(form.cleaned_data['beatmapset_id'])
                 beatmaps = get_beatmapset_by_id(form.cleaned_data['beatmapset_id'])
                 for beatmap in beatmapset:
                     import_beatmap_to_mirror(beatmap)
