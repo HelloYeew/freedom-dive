@@ -79,7 +79,7 @@ class ImportBeatmapsetRequest(APIView):
                             success=True,
                             description=f'Beatmapset {beatmaps.title} is already in the database'
                         )
-                        return Response(status=status.HTTP_202_ACCEPTED, data={'message': f'Beatmapset {beatmaps.title} is already in the database!'})
+                        return Response(status=status.HTTP_202_ACCEPTED, data={'message': f'Beatmapset {beatmaps.title} has already been imported!'})
                     try:
                         import_beatmapset_from_api(beatmapset_id)
                         import_beatmapset_to_mirror(get_beatmapset_by_id(beatmapset_id))
@@ -93,7 +93,7 @@ class ImportBeatmapsetRequest(APIView):
                             success=True,
                             description=f'Import beatmapset {beatmaps.title} successfully'
                         )
-                        return Response(status=status.HTTP_200_OK, data={'message': f'Imported {BeatmapSet.objects.get(beatmapset_id=beatmapset_id).title} successfully!'})
+                        return Response(status=status.HTTP_200_OK, data={'message': f'Imported {BeatmapSet.objects.get(beatmapset_id=beatmapset_id).title} successfully! Now you can play it!'})
                     except Exception as e:
                         if settings.DEBUG:
                             traceback.print_exc()
