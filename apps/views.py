@@ -60,7 +60,14 @@ def beatmapset_list(request):
 
 
 def beatmapset_detail(request, beatmapset_id):
-    beatmapset = BeatmapSet.objects.get(beatmapset_id=beatmapset_id)
+    try:
+        beatmapset = BeatmapSet.objects.get(beatmapset_id=beatmapset_id)
+    except BeatmapSet.DoesNotExist:
+        # try to get beatmapset from main database
+        beatmapset = get_beatmapset_by_id(beatmapset_id)
+        if beatmapset is None:
+            # return 404
+            return render(request, '404.html', status=404)
     beatmaps = Beatmap.objects.filter(beatmapset=beatmapset).order_by('difficulty_rating')
     if request.user.is_authenticated:
         return render(request, 'apps/beatmaps/beatmaps_detail.html', {
