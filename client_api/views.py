@@ -10,9 +10,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.models import ScoreStore
+from client_api.models import BeatmapsetImportAPIUsageLog
 from mirror.models import BeatmapSet
 from mirror.utils import import_beatmapset_to_mirror, import_beatmap_to_mirror
-from utility.models import ImportBeatmapsetUsageLog
 from utility.osu_database import get_beatmapset_by_id, import_beatmapset_from_api, get_beatmap_by_beatmapset
 from utility.utils import download_beatmap_pic_to_s3
 
@@ -74,7 +74,7 @@ class ImportBeatmapsetRequest(APIView):
                     beatmaps = get_beatmapset_by_id(beatmapset_id)
                     if beatmaps:
                         download_beatmap_pic_to_s3(beatmapset_id)
-                        ImportBeatmapsetUsageLog.objects.create(
+                        BeatmapsetImportAPIUsageLog.objects.create(
                             beatmapset_id=beatmapset_id,
                             success=True,
                             description=f'Beatmapset {beatmaps.title} is already in the database'
@@ -88,7 +88,7 @@ class ImportBeatmapsetRequest(APIView):
                         beatmaps = get_beatmapset_by_id(beatmapset_id)
                         for beatmap in beatmapset:
                             import_beatmap_to_mirror(beatmap)
-                        ImportBeatmapsetUsageLog.objects.create(
+                        BeatmapsetImportAPIUsageLog.objects.create(
                             beatmapset_id=beatmapset_id,
                             success=True,
                             description=f'Import beatmapset {beatmaps.title} successfully'
@@ -97,7 +97,7 @@ class ImportBeatmapsetRequest(APIView):
                     except Exception as e:
                         if settings.DEBUG:
                             traceback.print_exc()
-                        ImportBeatmapsetUsageLog.objects.create(
+                        BeatmapsetImportAPIUsageLog.objects.create(
                             beatmapset_id=beatmapset_id,
                             success=False,
                             description=f'Importing beatmapset failed: ({e.__class__.__name__}) {e}'
