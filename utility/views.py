@@ -43,7 +43,8 @@ def import_beatmapset_usage_log(request):
     if request.user.is_superuser:
         return render(request, 'utility/import_beatmapset_usage_log.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
-            'import_beatmapset_usage_log': ImportBeatmapsetUsageLog.objects.all().order_by('-time')
+            'import_beatmapset_usage_log': ImportBeatmapsetUsageLog.objects.all().order_by('-time'),
+            'failed_count': ImportBeatmapsetUsageLog.objects.filter(success=False).count(),
         })
     else:
         return render(request, '403.html', status=403)
@@ -54,7 +55,8 @@ def import_beatmapset_api_usage_log(request):
     if request.user.is_superuser:
         return render(request, 'utility/import_beatmapset_api_usage_log.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
-            'import_beatmapset_usage_log': BeatmapsetImportAPIUsageLog.objects.all().order_by('-time')
+            'import_beatmapset_usage_log': BeatmapsetImportAPIUsageLog.objects.all().order_by('-time'),
+            'failed_count': BeatmapsetImportAPIUsageLog.objects.filter(success=False).count(),
         })
     else:
         return render(request, '403.html', status=403)
