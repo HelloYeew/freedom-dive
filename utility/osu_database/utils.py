@@ -129,7 +129,7 @@ def update_beatmapset_from_api(beatmapset_id: int):
         update_beatmap_object_in_database(beatmap)
 
 
-def count_beatmapset():
+def count_beatmapset() -> int:
     """Count the number of beatmapset in osu! database"""
     connection = get_connection()
     cursor = connection.cursor()
@@ -141,7 +141,7 @@ def count_beatmapset():
     return count
 
 
-def count_beatmap():
+def count_beatmap() -> int:
     """Count the number of beatmap in osu! database"""
     connection = get_connection()
     cursor = connection.cursor()
