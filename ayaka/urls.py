@@ -21,11 +21,7 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from users import views as users_views
 
-def trigger_error(request):
-    division_by_zero = 1 / 0
-
 urlpatterns = [
-    path('sentry-debug/', trigger_error),
     path('admin/', admin.site.urls),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     # Disable signup since we allow only to register via client
