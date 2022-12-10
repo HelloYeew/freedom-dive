@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from client_api.models import BeatmapsetImportAPIUsageLog
 from mirror.models import BeatmapSet
 from mirror.utils import import_beatmapset_to_mirror, import_beatmap_to_mirror
 from users.models import ColourSettings
@@ -43,6 +44,17 @@ def import_beatmapset_usage_log(request):
         return render(request, 'utility/import_beatmapset_usage_log.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'import_beatmapset_usage_log': ImportBeatmapsetUsageLog.objects.all().order_by('-time')
+        })
+    else:
+        return render(request, '403.html', status=403)
+
+
+@login_required
+def import_beatmapset_api_usage_log(request):
+    if request.user.is_superuser:
+        return render(request, 'utility/import_beatmapset_api_usage_log.html', {
+            'colour_settings': ColourSettings.objects.get(user=request.user),
+            'import_beatmapset_usage_log': BeatmapsetImportAPIUsageLog.objects.all().order_by('-time')
         })
     else:
         return render(request, '403.html', status=403)
