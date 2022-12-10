@@ -19,6 +19,7 @@ from utility.utils import download_beatmap_pic_to_s3
 CLIENT_ID = int(config('CLIENT_ID', default='10'))
 CLIENT_SECRET = config('CLIENT_SECRET', default='')
 
+
 class SubmitSoloScoreView(APIView):
     permissions_classes = [permissions.AllowAny]
 
@@ -68,7 +69,7 @@ class ImportBeatmapsetRequest(APIView):
 
     def post(self, request):
         if int(request.data['client_id']) == CLIENT_ID and request.data['client_secret'] == CLIENT_SECRET:
-            if request.data['beatmapset_id']:
+            if request.data['beatmapset_id'] and request.data['beatmapset_id'] > 0:
                 try:
                     beatmapset_id = int(request.data['beatmapset_id'])
                     beatmaps = get_beatmapset_by_id(beatmapset_id)
@@ -108,6 +109,9 @@ class ImportBeatmapsetRequest(APIView):
                         traceback.print_exc()
                     return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={'message': 'Something went wrong while importing beatmapset :( We have been notified of this issue!'})
             else:
-                return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY, data={'message': 'missing parameters'})
+                if request.data['beatmapset_id'] <= 0:
+                    return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY, data={'message': 'Invalid beatmapset ID'})
+                else:
+                    return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY, data={'message': 'missing parameters'})
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED, data={'message': 'client unauthorized'})
