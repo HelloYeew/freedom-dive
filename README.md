@@ -1,20 +1,33 @@
-# ayaka
- My Django template that power my Django project include all essential function and custom styling support
+# Freedom Dive
+An osu!lazer community server that support custom rulesets score submission.
 
-## What's include in this template?
+## Info
 
-- Full login and register system
-- Full color customization settings for each user
-- Initial styling and template to make you don't need to worry about website's styling
-- Full admin theme customization
-- Full project configuration to make your project development easier and easy to deploy
-- Postgresql configuration for production
+This is a support server for freedom dive, the osu!lazer community server to make custom ruleset score submission possible.
 
-## Demo
+Note : This is not a stand-alone server, this is just a support server for other element to make it possible.
 
-![Homepage Demo](demo-homepage.png)
-![Settings Demo](demo-settings.png)
+## Status
 
-## Project that use this template
+The server is currently in development, but we encourage you to try it out. All server element will be available open-source soon.
 
-- [meaqua](https://github.com/HelloYeew/meaqua) - Startpage for your browser with built-in editors, full customization and built-in style sharing system
+## Supported Rulesets
+
+| Ruleset                                              | Score Submission | Multiplayer | Playlists |
+|------------------------------------------------------|------------------|-------------|-----------|
+| osu!                                                 | 🟢               | 🟢          | 🟢        |
+| osu!taiko                                            | 🟢               | 🟢          | 🟢        |
+| osu!catch                                            | 🟢               | 🟢          | 🟢        |
+| osu!mania                                            | 🟢               | 🟢          | 🟢        |
+| [tau](https://github.com/taulazer/tau/)              | 🟢               | 🟢          | 🟢        |
+| [Sentakki](https://github.com/LumpBloom7/sentakki)   | 🟢               | 🟢          | 🟢        |
+| [Rush!](https://github.com/Beamographic/rush)        | 🟢               | 🟡          | 🟢        |
+| [hishigata](https://github.com/LumpBloom7/hishigata) | 🟢               | 🟡          | 🟢        |
+
+*🟡 = Can be play now but not fully supported on some functions.
+
+Other rulesets will be added soon.
+
+## Start playing on Freedom Dive
+
+Currently, we are only publish our client in `ruleset-wiki` channel at our [Discord server](https://discord.gg/MdCuTCx4At). After we think that the server is stable enough, we will publish the client publicly soon.
