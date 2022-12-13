@@ -26,6 +26,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     # Disable signup since we allow only to register via client
     # path('signup/', users_views.signup, name='signup'),
+    path('signup/', users_views.sign_up_from_request, name='sign_up_from_request'),
     path('logout/', users_views.LogoutAndRedirect.as_view(), name='logout'),
     path('settings/', users_views.settings, name='settings'),
     path('api/', include('client_api.urls')),

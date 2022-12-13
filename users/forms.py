@@ -12,6 +12,13 @@ class UserCreationForms(UserCreationForm):
         fields = ['username', 'password1', 'password2']
 
 
+class UserCreationFromRequestForms(UserCreationForm):
+    """Form for creating a new user from request."""
+    class Meta:
+        model = User
+        fields = ['password1', 'password2']
+
+
 class UserSettingsForm(forms.ModelForm):
     """User's styling settings for the homepage"""
     color_primary = forms.CharField(label="Primary color", widget=forms.TextInput(
