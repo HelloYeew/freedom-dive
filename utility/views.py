@@ -160,30 +160,32 @@ def import_beatmaps_from_osu_public(request):
 
 @login_required()
 def create_sign_up_request(request):
-    colour_settings = ColourSettings.objects.filter(user=request.user).first()
-    if request.method == 'POST':
-        form = CreateSignUpRequestForm(request.POST)
-        if form.is_valid():
-            form.save()
-            # get the object that was just created
-            sign_up_request = SignUpRequest.objects.filter(username=form.cleaned_data['username']).first()
-            # create random character and number for authentication key
-            random_string = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(15))
-            sign_up_request.authentication_key = random_string
-            sign_up_request.save()
-            UtilityLog.objects.create(
-                user=request.user,
-                field='create_sign_up_request',
-                status=2,
-                description=f'Created sign up request for {form.cleaned_data["username"]}'
-            )
-            # Get url of the website without path, just the domain
-            url = request.build_absolute_uri('/')[:-1]
-            messages.success(request, f'Sign up request created successfully! The request URL is {url}/signup?id={sign_up_request.id}&auth_key={sign_up_request.authentication_key}')
-            return redirect('utility')
+    if request.user.is_superuser or request.user.is_staff:
+        colour_settings = ColourSettings.objects.filter(user=request.user).first()
+        if request.method == 'POST':
+            form = CreateSignUpRequestForm(request.POST)
+            if form.is_valid():
+                form.save()
+                # get the object that was just created
+                sign_up_request = SignUpRequest.objects.filter(username=form.cleaned_data['username']).first()
+                # create random character and number for authentication key
+                random_string = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(15))
+                sign_up_request.authentication_key = random_string
+                sign_up_request.save()
+                UtilityLog.objects.create(
+                    user=request.user,
+                    field='create_sign_up_request',
+                    status=2,
+                    description=f'Created sign up request for {form.cleaned_data["username"]}'
+                )
+                url = request.build_absolute_uri('/')[:-1]
+                messages.success(request, f'Sign up request created successfully! The request URL is {url}/signup?id={sign_up_request.id}&auth_key={sign_up_request.authentication_key}')
+                return redirect('utility')
+        else:
+            form = CreateSignUpRequestForm()
+        return render(request, 'utility/create_sign_up_request.html', {
+            'colour_settings': colour_settings,
+            'form': form
+        })
     else:
-        form = CreateSignUpRequestForm()
-    return render(request, 'utility/create_sign_up_request.html', {
-        'colour_settings': colour_settings,
-        'form': form
-    })
+        return render(request, '403.html', status=403)
