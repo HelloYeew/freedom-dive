@@ -1,5 +1,6 @@
 import json
 
+from decouple import config
 from django.core.paginator import Paginator
 from django.shortcuts import render
 
@@ -8,6 +9,8 @@ from mirror.models import BeatmapSet, Beatmap
 from users.models import ColourSettings
 from utility.osu_database import get_beatmapset_by_id, get_user_by_id, get_beatmap_by_id
 from utility.utils import get_osu_beatmap_statistics
+
+S3_URL = config('S3_URL', default='')
 
 
 def homepage(request):
@@ -32,11 +35,13 @@ def homepage(request):
     if request.user.is_authenticated:
         return render(request, 'homepage.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
-            'latest_score': latest_score
+            'latest_score': latest_score,
+            's3_url': S3_URL
         })
     else:
         return render(request, 'homepage.html', {
-            'latest_score': latest_score
+            'latest_score': latest_score,
+            's3_url': S3_URL
         })
 
 
@@ -50,12 +55,14 @@ def beatmapset_list(request):
         return render(request, 'apps/beatmaps/beatmaps.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'statistics_osu': get_osu_beatmap_statistics(),
-            'beatmapsets': beatmaps_pagination
+            'beatmapsets': beatmaps_pagination,
+            's3_url': S3_URL
         })
     else:
         return render(request, 'apps/beatmaps/beatmaps.html', {
             'statistics_osu': get_osu_beatmap_statistics(),
-            'beatmapsets': beatmaps_pagination
+            'beatmapsets': beatmaps_pagination,
+            's3_url': S3_URL
         })
 
 
@@ -73,12 +80,14 @@ def beatmapset_detail(request, beatmapset_id):
         return render(request, 'apps/beatmaps/beatmaps_detail.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'beatmapset': beatmapset,
-            'beatmaps': beatmaps
+            'beatmaps': beatmaps,
+            's3_url': S3_URL
         })
     else:
         return render(request, 'apps/beatmaps/beatmaps_detail.html', {
             'beatmapset': beatmapset,
-            'beatmaps': beatmaps
+            'beatmaps': beatmaps,
+            's3_url': S3_URL
         })
 
 
@@ -133,7 +142,8 @@ def score_detail(request, score_id):
             'score_user': user,
             'beatmap': beatmap,
             'beatmapset': beatmapset,
-            'score_json': score_json
+            'score_json': score_json,
+            's3_url': S3_URL
         })
     else:
         return render(request, 'apps/scores/scores_detail.html', {
@@ -141,5 +151,6 @@ def score_detail(request, score_id):
             'score_user': user,
             'beatmap': beatmap,
             'beatmapset': beatmapset,
-            'score_json': score_json
+            'score_json': score_json,
+            's3_url': S3_URL
         })

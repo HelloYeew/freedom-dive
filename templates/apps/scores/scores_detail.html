@@ -9,7 +9,7 @@
     <p></p>
     <div style="overflow:hidden">
         <h2>Beatmaps</h2>
-        <img src="https://freedom-dive-assets.nyc3.digitaloceanspaces.com/cover/{{ beatmapset.beatmapset_id }}.jpg" alt="Cover" style="width: 100%; height: 300px; object-fit: cover; border-radius: 10px;">
+        <img src="{{ s3_url }}/cover/{{ beatmapset.beatmapset_id }}.jpg" alt="Cover" style="width: 100%; height: 300px; object-fit: cover; border-radius: 10px;">
         <p></p>
         <p>{{ beatmapset.title }} [{{ beatmap.version }}] ({{ beatmap.difficulty_rating }}★)</p>
         <p>{{ beatmapset.artist }}</p>

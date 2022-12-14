@@ -45,9 +45,9 @@
                     <a class="card mb-3" style="max-width: 540px; border-color: var(--color-accent); border-radius: 4px;" href="{% url 'beatmapset_detail' beatmapset.beatmapset_id %}">
                         <div class="row g-0">
                             <div class="col-lg-3 card-background">
-                                <div class="card-background" style="background: url('https://freedom-dive-assets.nyc3.digitaloceanspaces.com/list/{{ beatmapset.beatmapset_id }}.jpg'), url('{% static "img/default_beatmaps.png" %}'); width: 100%; height: 100%;"></div>
+                                <div class="card-background" style="background: url('{{ s3_url }}/list/{{ beatmapset.beatmapset_id }}.jpg'), url('{% static "img/default_beatmaps.png" %}'); width: 100%; height: 100%;"></div>
                             </div>
-                            <div class="col-lg-9 rounded-start" style="background-image: url('https://freedom-dive-assets.nyc3.digitaloceanspaces.com/card/{{ beatmapset.beatmapset_id }}.jpg'), url('{% static "img/default_beatmaps.png" %}'); background-size: cover; background-repeat: no-repeat; background-position: center;">
+                            <div class="col-lg-9 rounded-start" style="background-image: url('{{ s3_url }}/card/{{ beatmapset.beatmapset_id }}.jpg'), url('{% static "img/default_beatmaps.png" %}'); background-size: cover; background-repeat: no-repeat; background-position: center;">
                                 <div class="card-body rounded-start rounded-3" style="background-color: rgba(30, 30, 30, 0.9);">
                                     {% if beatmapset.title != "" %}
                                     <p class="card-text beatmap-title">{{ beatmapset.title }}</p>

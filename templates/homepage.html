@@ -12,7 +12,7 @@
     <p></p>
     <div style="overflow:hidden; color:var(--color-primary)">
         <h2>Latest submitted score</h2>
-        <div class="card" style="background-image: url('https://freedom-dive-assets.nyc3.digitaloceanspaces.com/cover/{{ latest_score.beatmapset.beatmapset_id }}.jpg'), url('{% static "img/default_beatmaps.png" %}'); background-size: cover; background-repeat: no-repeat; background-position: center; height: 300px; width: 100%; border-color: var(--color-accent)">
+        <div class="card" style="background-image: url('{{ s3_url }}/cover/{{ latest_score.beatmapset.beatmapset_id }}.jpg'), url('{% static "img/default_beatmaps.png" %}'); background-size: cover; background-repeat: no-repeat; background-position: center; height: 300px; width: 100%; border-color: var(--color-accent)">
             <div class="card-img" style="background-color: var(--color-background); opacity: 80%; width: 100%; height: 100%;"></div>
             <div class="card-img-overlay">
                 {% if latest_score.beatmapset.title != "" %}
