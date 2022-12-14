@@ -1,3 +1,4 @@
+from django.db import connection as db_connection
 from django.core.management import BaseCommand
 
 from mirror.models import Beatmap
@@ -10,7 +11,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # Fix in mirror
         # Use raw SQL because memory usage is too high
-        Beatmap.objects.raw("UPDATE mirror_beatmap SET version = REPLACE(version, '''''', '''')")
+        db_connection.cursor().execute("UPDATE mirror_beatmap SET version = REPLACE(version, '''''', '''')")
         self.stdout.write(self.style.SUCCESS(f'Fixed in mirror!'))
         # Fix in osu! database
         connection = get_connection()
