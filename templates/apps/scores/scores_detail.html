@@ -11,7 +11,7 @@
         <h2>Beatmaps</h2>
         <img src="{{ s3_url }}/cover/{{ beatmapset.beatmapset_id }}.jpg" alt="Cover" style="width: 100%; height: 300px; object-fit: cover; border-radius: 10px;">
         <p></p>
-        <p>{{ beatmapset.title }} [{{ beatmap.version }}] ({{ beatmap.difficulty_rating }}★)</p>
+        <p>{{ beatmapset.title }} [{{ beatmap.version }}] ({{ beatmap.difficulty_rating|floatformat:2 }}★)</p>
         <p>{{ beatmapset.artist }}</p>
         <p>by {{ beatmapset.creator }}</p>
         <p>Tags: {{ beatmapset.tags }}</p>

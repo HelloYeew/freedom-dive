@@ -69,7 +69,7 @@
                         {% elif beatmap.play_mode == 7 %}
                         <i class="mdi mdi-chevron-up" aria-hidden="true" style="font-size: 15px;"></i>
                         {% endif %}
-                        {{ beatmap.difficulty_rating }}
+                        {{ beatmap.difficulty_rating|floatformat:2 }}
                     </span>
                     {{ beatmap.version }}
                 </p>
