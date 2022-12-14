@@ -9,15 +9,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Fix in mirror
-        for beatmap in Beatmap.objects.all():
-            beatmap.version = beatmap.version.replace("''", "'")
-            beatmap.save()
-            self.stdout.write(
-                self.style.SUCCESS(f'Fixed {beatmap.version} in beatmapset {beatmap.beatmapset_id}'))
+        # Use raw SQL because memory usage is too high
+        Beatmap.objects.raw("UPDATE mirror_beatmap SET version = REPLACE(version, '''''', '''')")
+        self.stdout.write(self.style.SUCCESS(f'Fixed in mirror!'))
         # Fix in osu! database
         connection = get_connection()
         cursor = connection.cursor()
         cursor.execute('USE osu')
         cursor.execute("UPDATE osu_beatmaps SET version = REPLACE(version, '''''', '''')")
-        self.style.SUCCESS('Fixed in osu! database')
-        self.style.SUCCESS('Fixed successfully!')
+        self.stdout.write(self.style.SUCCESS('Fixed in osu! database'))
+        self.stdout.write(self.style.SUCCESS('Fixed successfully!'))
