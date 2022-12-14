@@ -301,7 +301,7 @@ def insert_beatmap_object_to_database(beatmap: Beatmap):
             {beatmap.user_id},
             {"'" + beatmap.filename + "'"},
             {"'" + beatmap.checksum + "'"},
-            {'"' + beatmap.version + '"'},
+            {"'" + beatmap.version + "'"},
             {beatmap.total_length},
             {beatmap.hit_length},
             {beatmap.count_total},
