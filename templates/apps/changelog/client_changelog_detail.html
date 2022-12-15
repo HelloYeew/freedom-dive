@@ -6,10 +6,21 @@
 {% block content %}
     <div class="container" style="padding: 5rem;">
         <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{{ changelog.version }}</h1>
+        <a href="{% url 'client_changelog' %}" class="btn btn-ayaka"><i class="mdi mdi-format-list-bulleted" aria-hidden="true" style="font-size: 20px"></i> Go to changelog list</a>
         <p></p>
         <div style="overflow:hidden">
             <small>Released at {{ changelog.date }}</small>
             <p>{{ changelog.content | convert_markdown | safe }}</p>
+            <h3>Download</h3>
+            {% if changelog.download_url_windows %}
+            <a href="{{ changelog.download_url_windows }}" class="btn btn-ayaka btn-sm"><i class="mdi mdi-microsoft-windows" aria-hidden="true" style="font-size: 20px"></i> Windows</a>
+            {% endif %}
+            {% if changelog.download_url_macos %}
+            <a href="{{ changelog.download_url_macos }}" class="btn btn-ayaka btn-sm"><i class="mdi mdi-apple" aria-hidden="true" style="font-size: 20px"></i> MacOS</a>
+            {% endif %}
+            {% if changelog.download_url_linux %}
+            <a href="{{ changelog.download_url_linux }}" class="btn btn-ayaka btn-sm"><i class="mdi mdi-linux" aria-hidden="true" style="font-size: 20px"></i> Linux</a>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

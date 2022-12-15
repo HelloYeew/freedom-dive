@@ -20,6 +20,9 @@ class ClientChangelog(models.Model):
     date = models.DateTimeField()
     public = models.BooleanField(default=False)
     content = MDTextField(null=True, blank=True)
+    download_url_windows = models.URLField(max_length=300, null=True, blank=True)
+    download_url_macos = models.URLField(max_length=300, null=True, blank=True)
+    download_url_linux = models.URLField(max_length=300, null=True, blank=True)
 
     def __str__(self):
         return self.version + ' - ' + self.date.strftime('%Y-%m-%d %H:%M:%S') + ' client changelog'

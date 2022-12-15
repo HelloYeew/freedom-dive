@@ -168,6 +168,7 @@ def client_changelog_list(request):
             'changelog': changelog
         })
 
+
 def client_changelog_detail(request, version):
     try:
         changelog = ClientChangelog.objects.get(version=version)
