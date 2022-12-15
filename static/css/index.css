@@ -26,6 +26,10 @@ small {
     filter: brightness(0.85);
 }
 
+li {
+    color: var(--color-primary);
+}
+
 .main-padding {
     padding: 4rem !important;
     z-index: 10;
