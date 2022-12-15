@@ -18,6 +18,7 @@ class ScoreStore(models.Model):
 class ClientChangelog(models.Model):
     version = models.CharField(max_length=100)
     date = models.DateTimeField()
+    public = models.BooleanField(default=False)
     content = MDTextField(null=True, blank=True)
 
     def __str__(self):

@@ -157,7 +157,7 @@ def score_detail(request, score_id):
 
 
 def client_changelog_list(request):
-    changelog = ClientChangelog.objects.all().order_by('-date')
+    changelog = ClientChangelog.objects.filter(public=True).order_by('-date')
     if request.user.is_authenticated:
         return render(request, 'apps/changelog/client_changelog_list.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
@@ -172,6 +172,8 @@ def client_changelog_detail(request, version):
     try:
         changelog = ClientChangelog.objects.get(version=version)
     except ClientChangelog.DoesNotExist:
+        return render(request, '404.html', status=404)
+    if changelog.public is False and request.user.is_authenticated is False:
         return render(request, '404.html', status=404)
     if request.user.is_authenticated:
         return render(request, 'apps/changelog/client_changelog_detail.html', {
