@@ -21,6 +21,11 @@ a:hover {
     color: var(--color-primary);
 }
 
+small {
+    color: var(--color-primary);
+    filter: brightness(0.85);
+}
+
 .main-padding {
     padding: 4rem !important;
     z-index: 10;

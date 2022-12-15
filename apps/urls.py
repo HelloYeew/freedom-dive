@@ -7,4 +7,6 @@ urlpatterns = [
     path('beatmapsets/<int:beatmapset_id>', views.beatmapset_detail, name='beatmapset_detail'),
     path('scores', views.scores_list, name='scores'),
     path('scores/<int:score_id>', views.score_detail, name='score_detail'),
+    path('changelog/client', views.client_changelog_list, name='client_changelog'),
+    path('changelog/client/<str:version>', views.client_changelog_detail, name='client_changelog_detail'),
 ]

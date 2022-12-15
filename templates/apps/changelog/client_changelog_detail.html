@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load markdown_converter %}
+
+{% block title %}{{ changelog.version }} Changelog{% endblock %}
+
+{% block content %}
+    <div class="container" style="padding: 5rem;">
+        <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{{ changelog.version }}</h1>
+        <p></p>
+        <div style="overflow:hidden">
+            <small>Released at {{ changelog.date }}</small>
+            <p>{{ changelog.content | convert_markdown | safe }}</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

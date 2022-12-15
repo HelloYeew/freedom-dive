@@ -4,7 +4,7 @@ from decouple import config
 from django.core.paginator import Paginator
 from django.shortcuts import render
 
-from apps.models import ScoreStore
+from apps.models import ScoreStore, ClientChangelog
 from mirror.models import BeatmapSet, Beatmap
 from users.models import ColourSettings
 from utility.osu_database import get_beatmapset_by_id, get_user_by_id, get_beatmap_by_id
@@ -153,4 +153,32 @@ def score_detail(request, score_id):
             'beatmapset': beatmapset,
             'score_json': score_json,
             's3_url': S3_URL
+        })
+
+
+def client_changelog_list(request):
+    changelog = ClientChangelog.objects.all().order_by('-date')
+    if request.user.is_authenticated:
+        return render(request, 'apps/changelog/client_changelog_list.html', {
+            'colour_settings': ColourSettings.objects.get(user=request.user),
+            'changelog': changelog
+        })
+    else:
+        return render(request, 'apps/changelog/client_changelog_list.html', {
+            'changelog': changelog
+        })
+
+def client_changelog_detail(request, version):
+    try:
+        changelog = ClientChangelog.objects.get(version=version)
+    except ClientChangelog.DoesNotExist:
+        return render(request, '404.html', status=404)
+    if request.user.is_authenticated:
+        return render(request, 'apps/changelog/client_changelog_detail.html', {
+            'colour_settings': ColourSettings.objects.get(user=request.user),
+            'changelog': changelog
+        })
+    else:
+        return render(request, 'apps/changelog/client_changelog_detail.html', {
+            'changelog': changelog
         })

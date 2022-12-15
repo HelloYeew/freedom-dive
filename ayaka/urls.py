@@ -23,6 +23,7 @@ from users import views as users_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('mdeditor/', include('mdeditor.urls')),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     # Disable signup since we allow only to register via client
     # path('signup/', users_views.signup, name='signup'),
