@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-from client_api.models import BeatmapsetImportAPIUsageLog
+from client_api.models import BeatmapsetImportAPIUsageLog, BeatmapConvertedStatisticsImportAPIUsageLog
 from mirror.models import BeatmapSet
 from mirror.utils import import_beatmapset_to_mirror, import_beatmap_to_mirror
 from users.models import ColourSettings, SignUpRequest
@@ -158,6 +158,7 @@ def import_beatmaps_from_osu_public(request):
             'form': form
         })
 
+
 @login_required()
 def create_sign_up_request(request):
     if request.user.is_superuser or request.user.is_staff:
@@ -186,6 +187,18 @@ def create_sign_up_request(request):
         return render(request, 'utility/create_sign_up_request.html', {
             'colour_settings': colour_settings,
             'form': form
+        })
+    else:
+        return render(request, '403.html', status=403)
+
+
+@login_required
+def import_beatmap_converted_statistics_usage_log(request):
+    if request.user.is_superuser:
+        return render(request, 'utility/import_beatmap_converted_statistics_usage_log.html', {
+            'colour_settings': ColourSettings.objects.get(user=request.user),
+            'import_usage_log': BeatmapConvertedStatisticsImportAPIUsageLog.objects.all().order_by('-time'),
+            'failed_count': BeatmapConvertedStatisticsImportAPIUsageLog.objects.filter(success=False).count(),
         })
     else:
         return render(request, '403.html', status=403)

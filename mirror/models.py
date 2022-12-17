@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from utility.ruleset.utils import get_ruleset_short_name
+
 
 class BeatmapSet(models.Model):
     beatmapset_id = models.IntegerField(primary_key=True)
@@ -74,3 +76,12 @@ class Score(models.Model):
 
     def __str__(self):
         return str(self.score_id) + ' by ' + str(self.user_id)
+
+
+class ConvertedBeatmapInfo(models.Model):
+    beatmap_id = models.IntegerField()
+    ruleset_id = models.IntegerField()
+    statistics = models.JSONField()
+
+    def __str__(self):
+        return str(self.beatmap_id) + ' in ' + str(get_ruleset_short_name(self.ruleset_id))

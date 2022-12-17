@@ -12,13 +12,13 @@
             <small>Released at {{ changelog.date }}</small>
             <p>{{ changelog.content | convert_markdown | safe }}</p>
             <h3>Download</h3>
-            {% if changelog.download_url_windows != "" or changelog.download_url_windows != None %}
+            {% if changelog.download_url_windows %}
             <a href="{{ changelog.download_url_windows }}" class="btn btn-ayaka btn-sm"><i class="mdi mdi-microsoft-windows" aria-hidden="true" style="font-size: 20px"></i> Windows</a>
             {% endif %}
-            {% if changelog.download_url_macos != "" or changelog.download_url_macos != None %}
+            {% if changelog.download_url_macose %}
             <a href="{{ changelog.download_url_macos }}" class="btn btn-ayaka btn-sm"><i class="mdi mdi-apple" aria-hidden="true" style="font-size: 20px"></i> MacOS</a>
             {% endif %}
-            {% if changelog.download_url_linux != "" or changelog.download_url_linux != None %}
+            {% if changelog.download_url_linux %}
             <a href="{{ changelog.download_url_linux }}" class="btn btn-ayaka btn-sm"><i class="mdi mdi-linux" aria-hidden="true" style="font-size: 20px"></i> Linux</a>
             {% endif %}
         </div>
