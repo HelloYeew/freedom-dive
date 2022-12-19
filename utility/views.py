@@ -197,7 +197,8 @@ def import_beatmap_converted_statistics_usage_log(request):
     if request.user.is_superuser:
         return render(request, 'utility/import_beatmap_converted_statistics_usage_log.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
-            'import_usage_log': BeatmapConvertedStatisticsImportAPIUsageLog.objects.all().order_by('-time'),
+            'import_usage_log': BeatmapConvertedStatisticsImportAPIUsageLog.objects.all().order_by('-time')[:200],
+            'failed_log': BeatmapConvertedStatisticsImportAPIUsageLog.objects.filter(success=False).order_by('-time')[:200],
             'failed_count': BeatmapConvertedStatisticsImportAPIUsageLog.objects.filter(success=False).count(),
         })
     else:
