@@ -52,23 +52,7 @@
                 {% with star_color=beatmap.difficulty_rating|get_star_color %}
                 <p>
                     <span class="badge rounded-pill" style="background-color: {{ star_color.background_color }}; color: {{ star_color.color }};">
-                        {% if beatmap.play_mode == 0 %}
-                        <i class="mdi mdi-circle-slice-8" aria-hidden="true" style="font-size: 15px;"></i>
-                        {% elif beatmap.play_mode == 1 %}
-                        <i class="mdi mdi-food-drumstick" aria-hidden="true" style="font-size: 15px;"></i>
-                        {% elif beatmap.play_mode == 2 %}
-                        <i class="mdi mdi-fruit-cherries" aria-hidden="true" style="font-size: 15px;"></i>
-                        {% elif beatmap.play_mode == 3 %}
-                        <i class="mdi mdi-piano" aria-hidden="true" style="font-size: 15px;"></i>
-                        {% elif beatmap.play_mode == 4 %}
-                        <i class="mdi mdi-cross" aria-hidden="true" style="font-size: 15px;"></i>
-                        {% elif beatmap.play_mode == 5 %}
-                        <i class="mdi mdi-washing-machine" aria-hidden="true" style="font-size: 15px;"></i>
-                        {% elif beatmap.play_mode == 6 %}
-                        <i class="mdi mdi-run" aria-hidden="true" style="font-size: 15px;"></i>
-                        {% elif beatmap.play_mode == 7 %}
-                        <i class="mdi mdi-chevron-up" aria-hidden="true" style="font-size: 15px;"></i>
-                        {% endif %}
+                        {% include "snippets/beatmaps/rulesets-symbol.html" %}
                         {{ beatmap.difficulty_rating|floatformat:2 }}
                     </span>
                     {{ beatmap.version }}

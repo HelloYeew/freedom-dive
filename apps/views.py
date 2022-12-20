@@ -8,6 +8,7 @@ from apps.models import ScoreStore, ClientChangelog
 from mirror.models import BeatmapSet, Beatmap
 from users.models import ColourSettings
 from utility.osu_database import get_beatmapset_by_id, get_user_by_id, get_beatmap_by_id
+from utility.ruleset.score_processor.utils import get_readable_score
 from utility.utils import get_osu_beatmap_statistics
 
 S3_URL = config('S3_URL', default='')
@@ -123,37 +124,62 @@ def scores_list(request):
 
 
 def score_detail(request, score_id):
-    score = ScoreStore.objects.get(id=score_id)
+    score_object = ScoreStore.objects.get(id=score_id)
     try:
-        beatmap = Beatmap.objects.get(beatmap_id=score.beatmap_id)
+        beatmap = Beatmap.objects.get(beatmap_id=score_object.beatmap_id)
         beatmapset = BeatmapSet.objects.get(beatmapset_id=beatmap.beatmapset.beatmapset_id)
     except BeatmapSet.DoesNotExist or Beatmap.DoesNotExist:
-        beatmap = get_beatmap_by_id(score.beatmap_id)
+        beatmap = get_beatmap_by_id(score_object.beatmap_id)
         beatmapset = beatmap.beatmapset
     except:
         beatmap = None
         beatmapset = None
-    user = get_user_by_id(score.user_id)
-    score_json = json.dumps(score.statistics, indent=4)
-    if request.user.is_authenticated:
-        return render(request, 'apps/scores/scores_detail.html', {
-            'colour_settings': ColourSettings.objects.get(user=request.user),
-            'score': score,
-            'score_user': user,
-            'beatmap': beatmap,
-            'beatmapset': beatmapset,
-            'score_json': score_json,
-            's3_url': S3_URL
-        })
+    user = get_user_by_id(score_object.user_id)
+    score_json = json.dumps(score_object.statistics, indent=4)
+    rich_render = True
+    try:
+        score = get_readable_score(score_object)
+    except Exception:
+        score = None
+        rich_render = False
+    if rich_render:
+        if score['ruleset_id'] == 0:
+            return render(request, 'apps/scores/scores_detail_osu.html', {
+                'colour_settings': ColourSettings.objects.get(user=request.user) if request.user.is_authenticated else None,
+                'score': score,
+                'score_json': score_json,
+                'score_user': user,
+                'beatmap': beatmap,
+                'beatmapset': beatmapset,
+                's3_url': S3_URL
+            })
+        else:
+            # This should not be reached but just put it as a fallback page
+            return render(request, 'apps/scores/scores_detail_legacy.html', {
+                'score_json': score_json,
+                'score_user': user,
+                'beatmap': beatmap,
+                'beatmapset': beatmapset,
+                's3_url': S3_URL
+            })
     else:
-        return render(request, 'apps/scores/scores_detail.html', {
-            'score': score,
-            'score_user': user,
-            'beatmap': beatmap,
-            'beatmapset': beatmapset,
-            'score_json': score_json,
-            's3_url': S3_URL
-        })
+        if request.user.is_authenticated:
+            return render(request, 'apps/scores/scores_detail_legacy.html', {
+                'colour_settings': ColourSettings.objects.get(user=request.user),
+                'score_json': score_json,
+                'score_user': user,
+                'beatmap': beatmap,
+                'beatmapset': beatmapset,
+                's3_url': S3_URL
+            })
+        else:
+            return render(request, 'apps/scores/scores_detail_legacy.html', {
+                'score_json': score_json,
+                'score_user': user,
+                'beatmap': beatmap,
+                'beatmapset': beatmapset,
+                's3_url': S3_URL
+            })
 
 
 def client_changelog_list(request):

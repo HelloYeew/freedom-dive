@@ -1,10 +1,19 @@
 {% extends "base.html" %}
+{% load static %}
+{% load get_star_color %}
 
 {% block title %}{{ score.id }} Scores Info{% endblock %}
 
 {% block content %}
+<style>
+    #background {
+        background: url("{{ s3_url }}/cover/{{ beatmapset.beatmapset_id }}.jpg") top!important;
+        background-size: cover!important;
+    }
+</style>
+
 <div class="container" style="padding: 5rem;">
-    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} {{ score.id }} Scores Info</h1>
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Scores Info</h1>
     <a href="{% url 'beatmapset_detail' beatmapset.beatmapset_id %}" class="btn btn-ayaka"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 20px"></i> View beatmap</a>
     <p></p>
     <div style="overflow:hidden">
@@ -23,8 +32,4 @@
         <p>Submitted at: {{ score.date }}</p>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-
 {% endblock %}

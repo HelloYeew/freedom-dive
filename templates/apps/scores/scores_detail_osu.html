@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% load static %}
+{% load get_star_color %}
+{% load humanize %}
+
+{% block title %}{{ score.id }} Scores Info{% endblock %}
+
+{% block content %}
+<style>
+    #background {
+        background: url("{{ s3_url }}/cover/{{ beatmapset.beatmapset_id }}.jpg") top!important;
+        background-size: cover!important;
+    }
+</style>
+
+<div class="container" style="padding: 5rem;">
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Scores Info</h1>
+    <a href="{% url 'beatmapset_detail' beatmapset.beatmapset_id %}" class="btn btn-ayaka"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 20px"></i> View beatmap</a>
+    <p></p>
+    <div style="overflow:hidden">
+        <h2 style="font-weight:800">{{ beatmapset.title }}</h2>
+        <h4>{{ beatmap.beatmapset.artist }}</h4>
+        <p>
+            {% with star_color=beatmap.difficulty_rating|get_star_color %}
+            <span class="badge rounded-pill" style="background-color: {{ star_color.background_color }}; color: {{ star_color.color }};">
+                {% include "snippets/beatmaps/rulesets-symbol.html" %}
+                {{ beatmap.difficulty_rating|floatformat:2 }}
+            </span>
+            {{ beatmap.version }}
+            {% endwith %}
+        </p>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <canvas id="statisticChart" width="400" height="400"></canvas>
+                </div>
+                <div class="col">
+                    <h3 style="font-size: 30px">{{ score.total_score|intcomma }}</h3>
+                    <div class="row">
+                        <div class="col">
+                            <h3 style="text-transform: uppercase">Accuracy</h3>
+                        </div>
+                        <div class="col">
+                            <h3 style="text-transform: uppercase">Max Combo</h3>
+                        </div>
+                        <div class="col">
+                            <h3 style="text-transform: uppercase">PP</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h4>{{ score.accuracy|floatformat:2 }}%</h4>
+                        </div>
+                        <div class="col">
+                            <h4>{{ score.max_combo }} <small>/ {{ score.max_combo_of }}</small></h4>
+                        </div>
+                        <div class="col">
+                            <h4>0</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h3 style="text-transform: uppercase">Great</h3>
+                        </div>
+                        <div class="col">
+                            <h3 style="text-transform: uppercase">OK</h3>
+                        </div>
+                        <div class="col">
+                            <h3 style="text-transform: uppercase">Meh</h3>
+                        </div>
+                        <div class="col">
+                            <h3 style="text-transform: uppercase">Miss</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h4>{{ score.great }}</h4>
+                        </div>
+                        <div class="col">
+                            <h4>{{ score.ok }}</h4>
+                        </div>
+                        <div class="col">
+                            <h4>{{ score.meh }}</h4>
+                        </div>
+                        <div class="col">
+                            <h4>{{ score.miss }}</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h3 style="text-transform: uppercase">Slider Tick</h3>
+                        </div>
+                        <div class="col">
+                            <h3 style="text-transform: uppercase">Slider End</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h4>{{ score.slider_tick }} <small>/ {{ score.slider_tick_of }}</small></h4>
+                        </div>
+                        <div class="col">
+                            <h4>{{ score.slider_end }} <small>/ {{ score.slider_end_of }}</small></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const data = {
+        labels: [
+            'Great',
+            'OK',
+            'Meh',
+            'Miss',
+        ],
+        datasets: [{
+            label: 'Score',
+            data: [{{ score.great }}, {{ score.ok }}, {{ score.meh }}, {{ score.miss }}],
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+            ],
+            hoverOffset: 4
+        }]
+    };
+
+    const config = {
+        type: 'doughnut',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'white'
+                    }
+                }
+            }
+        }
+    };
+
+    let myChart = new Chart(
+        document.getElementById('statisticChart'),
+        config
+    );
+</script>
+{% endblock %}
