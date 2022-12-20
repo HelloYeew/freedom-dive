@@ -1,10 +1,13 @@
 import json
+import traceback
 
+import sentry_sdk
 from decouple import config
 from django.core.paginator import Paginator
 from django.shortcuts import render
 
 from apps.models import ScoreStore, ClientChangelog
+from ayaka import settings
 from mirror.models import BeatmapSet, Beatmap
 from users.models import ColourSettings
 from utility.osu_database import get_beatmapset_by_id, get_user_by_id, get_beatmap_by_id
@@ -139,7 +142,9 @@ def score_detail(request, score_id):
     rich_render = True
     try:
         score = get_readable_score(score_object)
-    except Exception:
+    except Exception as e:
+        if settings.DEBUG:
+            traceback.print_exc()
         score = None
         rich_render = False
     if rich_render:

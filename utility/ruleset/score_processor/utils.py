@@ -6,10 +6,14 @@ def get_readable_score(score: ScoreStore.objects) -> dict:
     score = score.statistics
     statistics = score['statistics']
     maximum_statistics = score['maximum_statistics']
+    try:
+        mods = score['mods']
+    except KeyError:
+        mods = None
     if score['ruleset_id'] == 0:
         return {
             "ruleset_id": score['ruleset_id'],
-            "mods": score['mods'],
+            "mods": mods,
             "rank": score['rank'],
             "total_score": score['total_score'],
             "passed": score['passed'],
