@@ -11,6 +11,13 @@
         background: url("{{ s3_url }}/cover/{{ beatmapset.beatmapset_id }}.jpg") top!important;
         background-size: cover!important;
     }
+
+    .blur-container {
+        color: var(--color-primary);
+        backdrop-filter: blur(5px);
+        border-radius: 2rem;
+        background-color: rgba(34, 34, 34, 0.6);
+    }
 </style>
 
 <div class="container" style="padding: 5rem;">
@@ -35,15 +42,15 @@
                     <canvas id="statisticChart" width="400" height="400"></canvas>
                 </div>
                 <div class="col">
-                    <h3 style="font-size: 30px">{{ score.total_score|intcomma }}</h3>
+                    <h3 style="font-size: 45px">{{ score.total_score|intcomma }}</h3>
                     <div class="row">
-                        <div class="col">
+                        <div class="col blur-container">
                             <h3 style="text-transform: uppercase">Accuracy</h3>
                         </div>
-                        <div class="col">
+                        <div class="col blur-container">
                             <h3 style="text-transform: uppercase">Max Combo</h3>
                         </div>
-                        <div class="col">
+                        <div class="col blur-container">
                             <h3 style="text-transform: uppercase">PP</h3>
                         </div>
                     </div>
@@ -59,17 +66,17 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col">
-                            <h3 style="text-transform: uppercase">Great</h3>
+                        <div class="col blur-container">
+                            <h3 style="text-transform: uppercase; color: #61c0f0;">Great</h3>
                         </div>
-                        <div class="col">
-                            <h3 style="text-transform: uppercase">OK</h3>
+                        <div class="col blur-container">
+                            <h3 style="text-transform: uppercase; color: #9fd002;">OK</h3>
                         </div>
-                        <div class="col">
-                            <h3 style="text-transform: uppercase">Meh</h3>
+                        <div class="col blur-container">
+                            <h3 style="text-transform: uppercase; color: #eabc22;">Meh</h3>
                         </div>
-                        <div class="col">
-                            <h3 style="text-transform: uppercase">Miss</h3>
+                        <div class="col blur-container">
+                            <h3 style="text-transform: uppercase; color: #df1221;">Miss</h3>
                         </div>
                     </div>
                     <div class="row">
@@ -87,11 +94,11 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col">
-                            <h3 style="text-transform: uppercase">Slider Tick</h3>
+                        <div class="col blur-container">
+                            <h3 style="text-transform: uppercase; color: #3aaeea;">Slider Tick</h3>
                         </div>
-                        <div class="col">
-                            <h3 style="text-transform: uppercase">Slider End</h3>
+                        <div class="col blur-container">
+                            <h3 style="text-transform: uppercase; color: #89c6f3;">Slider End</h3>
                         </div>
                     </div>
                     <div class="row">
