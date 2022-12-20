@@ -25,7 +25,7 @@
     <a href="{% url 'beatmapset_detail' beatmapset.beatmapset_id %}" class="btn btn-ayaka"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 20px"></i> View beatmap</a>
     <p></p>
     <div style="overflow:hidden">
-        <h2 style="font-weight:800">{{ beatmapset.title }}</h2>
+        <h2 style="font-weight:900">{{ beatmapset.title }}</h2>
         <h4>{{ beatmap.beatmapset.artist }}</h4>
         <p>
             {% with star_color=beatmap.difficulty_rating|get_star_color %}
@@ -133,10 +133,10 @@
             label: 'Score',
             data: [{{ score.great }}, {{ score.ok }}, {{ score.meh }}, {{ score.miss }}],
             backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)',
-                'rgb(75, 192, 192)',
+                '#61c0f0',
+                '#9fd002',
+                '#eabc22',
+                '#df1221',
             ],
             hoverOffset: 4
         }]
