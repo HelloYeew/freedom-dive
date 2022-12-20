@@ -19,5 +19,7 @@ def get_ruleset_short_name(ruleset_id: int) -> str:
         return 'rush'
     elif ruleset_id == 7:
         return 'hishigata'
+    elif ruleset_id == 8:
+        return "soyokaze"
     else:
         raise ValueError('Invalid ruleset_id')
