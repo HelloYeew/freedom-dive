@@ -10,6 +10,30 @@ def get_readable_score(score: ScoreStore.objects) -> dict:
         mods = score['mods']
     except KeyError:
         mods = None
+    try:
+        great = statistics['great']
+    except KeyError:
+        great = 0
+    try:
+        ok = statistics['ok']
+    except KeyError:
+        ok = 0
+    try:
+        meh = statistics['meh']
+    except KeyError:
+        meh = 0
+    try:
+        miss = statistics['miss']
+    except KeyError:
+        miss = 0
+    try:
+        large_tick_hit = statistics['large_tick_hit']
+    except KeyError:
+        large_tick_hit = 0
+    try:
+        small_tick_hit = statistics['small_tick_hit']
+    except KeyError:
+        small_tick_hit = 0
     if score['ruleset_id'] == 0:
         return {
             "ruleset_id": score['ruleset_id'],
@@ -20,13 +44,13 @@ def get_readable_score(score: ScoreStore.objects) -> dict:
             "accuracy": score['accuracy'] * 100,
             "max_combo": score['max_combo'],
             "max_combo_of": maximum_statistics['great'] + maximum_statistics['large_tick_hit'],
-            "great": statistics['great'],
-            "ok": statistics['ok'],
-            "meh": statistics['meh'],
-            "miss": statistics['miss'],
-            "slider_tick": statistics['large_tick_hit'],
+            "great": great,
+            "ok": ok,
+            "meh": meh,
+            "miss": miss,
+            "slider_tick": large_tick_hit,
             "slider_tick_of": maximum_statistics['large_tick_hit'],
-            "slider_end": statistics['small_tick_hit'],
+            "slider_end": small_tick_hit,
             "slider_end_of": maximum_statistics['small_tick_hit'],
         }
     else:
