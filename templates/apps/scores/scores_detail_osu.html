@@ -116,6 +116,29 @@
                             <h4>{{ score.slider_end }} <small>/ {{ score.slider_end_of }}</small></h4>
                         </div>
                     </div>
+                    <p></p>
+                    <div class="row">
+                        <div class="col">
+                            <p>Submitted on</p>
+                        </div>
+                        <div class="col">
+                            <p>{{ score_object.date }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p>Played by</p>
+                        </div>
+                        {% if osu_user.avatar == "" %}
+                        <div class="col">
+                            <p><img src="{{ s3_url }}/avatar/pfp.png" class="rounded-circle" width="40px" height="40px">{{ osu_user.username }}</p>
+                        </div>
+                        {% else %}
+                        <div class="col">
+                            <p><img src="{{ s3_url }}/avatar/{{ osu_user.avatar }}" class="rounded-circle" width="40px" height="40px">{{ osu_user.username }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -136,10 +159,6 @@
     blue_green_gradient.addColorStop(1, 'rgb(175,255,168)');
 
     const data = {
-        labels: [
-            'Great',
-            'OK'
-        ],
         datasets: [{
             label: 'Score',
             data: [{{ score.total_score }}, 1000000 - {{ score.total_score }}],
@@ -154,7 +173,7 @@
             ],
             weight: 0.5,
             borderWidth: 0,
-            borderRadius: [20, 0],
+            borderRadius: [50, 0],
             cutout: '75%'
         }]
     };
@@ -172,7 +191,6 @@
                 tooltip: {
                     enabled: false
                 },
-
             },
             hover: {
                 mode: null

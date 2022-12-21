@@ -128,6 +128,7 @@ def scores_list(request):
 
 def score_detail(request, score_id):
     score_object = ScoreStore.objects.get(id=score_id)
+    osu_user = get_user_by_id(score_object.user_id)
     try:
         beatmap = Beatmap.objects.get(beatmap_id=score_object.beatmap_id)
         beatmapset = BeatmapSet.objects.get(beatmapset_id=beatmap.beatmapset.beatmapset_id)
@@ -151,6 +152,8 @@ def score_detail(request, score_id):
         if score['ruleset_id'] == 0:
             return render(request, 'apps/scores/scores_detail_osu.html', {
                 'colour_settings': ColourSettings.objects.get(user=request.user) if request.user.is_authenticated else None,
+                'osu_user': osu_user,
+                'score_object': score_object,
                 'score': score,
                 'score_json': score_json,
                 'score_user': user,
