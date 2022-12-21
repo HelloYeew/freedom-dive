@@ -38,10 +38,17 @@
         </p>
         <div class="container">
             <div class="row">
-                <div class="col">
-                    <canvas id="statisticChart" width="400" height="400"></canvas>
+                <div class="col-md-4">
+                    <div style="position:relative;">
+                        <canvas id="statisticChart" width="400" height="400"></canvas>
+                        <div class="text-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                            <span style="font-size:4rem; font-weight:900; color: var(--color-primary)">
+                                {{ score.rank }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <div class="col">
+                <div class="col-md-8">
                     <h3 style="font-size: 45px">{{ score.total_score|intcomma }}</h3>
                     <div class="row">
                         <div class="col blur-container">
@@ -122,23 +129,33 @@
 
 {% block scripts %}
 <script>
+    let chart_ctx = document.getElementById('statisticChart').getContext('2d');
+
+    let blue_green_gradient = chart_ctx.createLinearGradient(0, 0, 0, 600);
+    blue_green_gradient.addColorStop(0, 'rgb(113,248,249)');
+    blue_green_gradient.addColorStop(1, 'rgb(175,255,168)');
+
     const data = {
         labels: [
             'Great',
-            'OK',
-            'Meh',
-            'Miss',
+            'OK'
         ],
         datasets: [{
             label: 'Score',
-            data: [{{ score.great }}, {{ score.ok }}, {{ score.meh }}, {{ score.miss }}],
+            data: [{{ score.total_score }}, 1000000 - {{ score.total_score }}],
             backgroundColor: [
-                '#61c0f0',
-                '#9fd002',
-                '#eabc22',
-                '#df1221',
+                blue_green_gradient,
+                'rgba(159, 208, 2, 0)',
             ],
-            hoverOffset: 4
+            hoverOffset: 4,
+            borderColor: [
+                'rgba(159, 208, 2, 0)',
+                'rgba(159, 208, 2, 0)'
+            ],
+            weight: 0.5,
+            borderWidth: 0,
+            borderRadius: [20, 0],
+            cutout: '75%'
         }]
     };
 
@@ -146,13 +163,22 @@
         type: 'doughnut',
         data: data,
         options: {
-            responsive: true,
+            aspectRatio: 1,
+            cutoutPercentage: 90,
             plugins: {
                 legend: {
-                    labels: {
-                        color: 'white'
-                    }
-                }
+                    display: false
+                },
+                tooltip: {
+                    enabled: false
+                },
+
+            },
+            hover: {
+                mode: null
+            },
+            animation: {
+                easing: 'easeInOutQuad',
             }
         }
     };
