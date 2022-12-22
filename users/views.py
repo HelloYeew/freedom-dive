@@ -13,6 +13,7 @@ from utility.osu_database import get_user_by_id, get_user_by_username, update_us
 from utility.s3.utils import get_s3_client
 
 S3_BUCKET_NAME = config('S3_BUCKET_NAME', default='')
+S3_URL = config('S3_URL', default='')
 
 class LogoutAndRedirect(auth_views.LogoutView):
     # Redirect to / after logout
@@ -31,6 +32,7 @@ def signup(request):
     else:
         form = UserCreationForms()
     return render(request, 'users/signup.html', {'form': form})
+
 
 def sign_up_from_request(request):
     # get request id and authentication key from querystring
@@ -76,38 +78,46 @@ def sign_up_from_request(request):
         messages.error(request, 'Request invalid')
         return redirect('homepage')
 
+
 @login_required
 def settings(request):
     colour_settings = ColourSettings.objects.filter(user=request.user).first()
+    profile = request.user.profile
     if request.method == 'POST':
         colour_form = UserSettingsForm(request.POST, instance=colour_settings)
-        profile_settings = UserProfileForms(request.POST, request.FILES)
-        print(request.FILES['profile_picture'])
+        profile_settings = UserProfileForms(request.POST, request.FILES, instance=profile)
         if colour_form.is_valid() and profile_settings.is_valid():
             colour_form.save()
-            if profile_settings.cleaned_data.get('profile_picture') is not None:
-                s3_client = get_s3_client()
+            if 'avatar' in request.FILES:
                 osu_user = get_user_by_username(request.user.username)
-                extension = request.FILES['profile_picture'].name.split('.')[-1]
-                # TODO: Resize images
-                # FIXME: The image cannot open
-                s3_client.put_object(
-                    Bucket='freedom-dive-assets',
-                    Key=f'avatar/{osu_user.user_id}.{extension}',
-                    Body=request.FILES['profile_picture'],
-                    ContentType=request.FILES['profile_picture'].content_type,
-                    ACL='public-read',
-                    CacheControl='max-age=31536000'
+                extension = request.FILES['avatar'].name.split('.')[-1]
+                saved_settings = profile_settings.save(commit=False)
+                saved_settings.name = f'{osu_user.user_id}.{extension}'
+                saved_settings.save()
+                # upload to s3
+                s3_client = get_s3_client()
+                s3_client.upload_fileobj(
+                    # Get file from current profile instead since it's already resized
+                    request.user.profile.avatar,
+                    S3_BUCKET_NAME,
+                    "avatar/" + saved_settings.name,
+                    ExtraArgs={
+                        'ACL': 'public-read',
+                        'ContentType': request.FILES['avatar'].content_type
+                    }
                 )
-                request.user.profile.avatar = f'https://freedom-dive-assets.nyc3.digitaloceanspaces.com/avatar/{osu_user.user_id}.{extension}'
-                request.user.profile.save()
+                # Update S3 URL
+                profile = request.user.profile
+                profile.avatar_s3_url = f'{S3_URL}/avatar/{saved_settings.name}'
+                profile.save()
+                # Sync user info to osu! database
                 osu_user.avatar = f'{osu_user.user_id}.{extension}'
                 update_user_in_database(osu_user)
             messages.success(request, 'Settings saved successfully!')
             return redirect('settings')
     else:
         colour_form = UserSettingsForm(instance=colour_settings)
-        profile_settings = UserProfileForms()
+        profile_settings = UserProfileForms(instance=profile)
     return render(request, 'users/settings.html', {
         'colour_settings': colour_settings,
         'colour_form': colour_form,

@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from .models import ColourSettings
+from .models import ColourSettings, Profile
 
 
 class UserCreationForms(UserCreationForm):
@@ -19,13 +19,14 @@ class UserCreationFromRequestForms(UserCreationForm):
         fields = ['password1', 'password2']
 
 
-class UserProfileForms(forms.Form):
+class UserProfileForms(forms.ModelForm):
     """Form for updating user profile."""
-    profile_picture = forms.ImageField(label='Profile Picture', widget=forms.FileInput(attrs={'class': 'form-control'}),
+    avatar = forms.ImageField(label='Profile Picture', widget=forms.FileInput(attrs={'class': 'form-control'}),
                                        help_text='Upload a new profile picture.', required=False)
 
     class Meta:
-        fields = ['profile_picture']
+        model = Profile
+        fields = ['avatar']
 
 
 class UserSettingsForm(forms.ModelForm):

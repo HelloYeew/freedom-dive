@@ -1,9 +1,10 @@
+from PIL import Image
 from decouple import config
 from django.db import models
 from colorfield.fields import ColorField
 from django.contrib.auth.models import User
 
-S3_URL = config('S3_URL', default='https://freedom-dive-assets.nyc3.digitaloceanspaces.com')
+S3_URL = config('S3_URL', default='')
 
 
 class ColourSettings(models.Model):
@@ -19,10 +20,20 @@ class ColourSettings(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.URLField(default=S3_URL + '/pfp.png')
+    avatar = models.ImageField(upload_to='avatar', default='/avatar/default.png')
+    avatar_s3_url = models.URLField(default=S3_URL + '/avatar/pfp.png')
 
     def __str__(self):
         return self.user.username + '\'s profile'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.avatar:
+            img = Image.open(self.avatar.path)
+            if img.height > 256 or img.width > 256:
+                output_size = (256, 256)
+                img.thumbnail(output_size)
+                img.save(self.avatar.path)
 
 
 class SignUpRequest(models.Model):
