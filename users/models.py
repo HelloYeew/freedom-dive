@@ -20,7 +20,7 @@ class ColourSettings(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to='avatar', default='/avatar/default.png')
+    avatar = models.ImageField(upload_to='avatar', default='avatar/default.png')
     avatar_s3_url = models.URLField(default=S3_URL + '/avatar/pfp.png')
 
     def __str__(self):
