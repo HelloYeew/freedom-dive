@@ -128,6 +128,9 @@ def scores_list(request):
 
 def score_detail(request, score_id):
     score_object = ScoreStore.objects.get(id=score_id)
+    # We don't want to show the score if it's not passed
+    if not score_object.passed:
+        return render(request, '404.html', status=404)
     osu_user = get_user_by_id(score_object.user_id)
     try:
         beatmap = Beatmap.objects.get(beatmap_id=score_object.beatmap_id)
