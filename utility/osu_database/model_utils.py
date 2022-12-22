@@ -105,7 +105,7 @@ def update_user_in_database(user: OsuUser):
             osu_playstyle={user.playstyle},
             osu_playmode={user.playmode},
             osu_subscriber={'false' if not user.is_subscriber else 'true'},
-            osu_subscriptionexpiry={"'" + str(user.subscription_expires.date()) + "'" if user.subscription_expires else 'NULL'},
+            osu_subscriptionexpiry={"'" + user.subscription_expires.strftime('%Y-%m-%d') + "'" if user.subscription_expires else 'NULL'},
             user_permissions=''
         WHERE user_id={user.user_id}
         '''
