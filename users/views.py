@@ -1,14 +1,18 @@
+from decouple import config
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import views as auth_views
+from PIL import Image
 
-from users.forms import UserCreationForms, UserSettingsForm, UserCreationFromRequestForms
+from users.forms import UserCreationForms, UserSettingsForm, UserCreationFromRequestForms, UserProfileForms
 from users.models import ColourSettings, SignUpRequest
-from utility.osu_database import get_user_by_id
+from utility.osu_database import get_user_by_id, get_user_by_username, update_user_in_database
+from utility.s3.utils import get_s3_client
 
+S3_BUCKET_NAME = config('S3_BUCKET_NAME', default='')
 
 class LogoutAndRedirect(auth_views.LogoutView):
     # Redirect to / after logout
@@ -76,14 +80,36 @@ def sign_up_from_request(request):
 def settings(request):
     colour_settings = ColourSettings.objects.filter(user=request.user).first()
     if request.method == 'POST':
-        form = UserSettingsForm(request.POST, instance=colour_settings)
-        if form.is_valid():
-            form.save()
+        colour_form = UserSettingsForm(request.POST, instance=colour_settings)
+        profile_settings = UserProfileForms(request.POST, request.FILES)
+        print(request.FILES['profile_picture'])
+        if colour_form.is_valid() and profile_settings.is_valid():
+            colour_form.save()
+            if profile_settings.cleaned_data.get('profile_picture') is not None:
+                s3_client = get_s3_client()
+                osu_user = get_user_by_username(request.user.username)
+                extension = request.FILES['profile_picture'].name.split('.')[-1]
+                # TODO: Resize images
+                # FIXME: The image cannot open
+                s3_client.put_object(
+                    Bucket='freedom-dive-assets',
+                    Key=f'avatar/{osu_user.user_id}.{extension}',
+                    Body=request.FILES['profile_picture'],
+                    ContentType=request.FILES['profile_picture'].content_type,
+                    ACL='public-read',
+                    CacheControl='max-age=31536000'
+                )
+                request.user.profile.avatar = f'https://freedom-dive-assets.nyc3.digitaloceanspaces.com/avatar/{osu_user.user_id}.{extension}'
+                request.user.profile.save()
+                osu_user.avatar = f'{osu_user.user_id}.{extension}'
+                update_user_in_database(osu_user)
             messages.success(request, 'Settings saved successfully!')
             return redirect('settings')
     else:
-        form = UserSettingsForm(instance=colour_settings)
+        colour_form = UserSettingsForm(instance=colour_settings)
+        profile_settings = UserProfileForms()
     return render(request, 'users/settings.html', {
         'colour_settings': colour_settings,
-        'form': form
+        'colour_form': colour_form,
+        'profile_settings': profile_settings
     })

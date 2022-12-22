@@ -1,6 +1,9 @@
+from decouple import config
 from django.db import models
 from colorfield.fields import ColorField
 from django.contrib.auth.models import User
+
+S3_URL = config('S3_URL', default='https://freedom-dive-assets.nyc3.digitaloceanspaces.com')
 
 
 class ColourSettings(models.Model):
@@ -12,6 +15,14 @@ class ColourSettings(models.Model):
 
     def __str__(self):
         return self.user.username + '\'s colour settings'
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    avatar = models.URLField(default=S3_URL + '/pfp.png')
+
+    def __str__(self):
+        return self.user.username + '\'s profile'
 
 
 class SignUpRequest(models.Model):

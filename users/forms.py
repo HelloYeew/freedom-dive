@@ -19,6 +19,15 @@ class UserCreationFromRequestForms(UserCreationForm):
         fields = ['password1', 'password2']
 
 
+class UserProfileForms(forms.Form):
+    """Form for updating user profile."""
+    profile_picture = forms.ImageField(label='Profile Picture', widget=forms.FileInput(attrs={'class': 'form-control'}),
+                                       help_text='Upload a new profile picture.', required=False)
+
+    class Meta:
+        fields = ['profile_picture']
+
+
 class UserSettingsForm(forms.ModelForm):
     """User's styling settings for the homepage"""
     color_primary = forms.CharField(label="Primary color", widget=forms.TextInput(

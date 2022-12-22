@@ -11,21 +11,22 @@ def create_user_from_database_row(db_row: tuple) -> OsuUser:
         email=db_row[11],
         last_visit=datetime.fromtimestamp(db_row[13]),
         avatar=db_row[52],
-        signature=db_row[56],
-        come_from=db_row[59],
+        signature=db_row[56].decode('utf-8') if type(db_row[56]) is bytes else db_row[56],
+        come_from=db_row[59].decode('utf-8') if type(db_row[59]) is bytes else db_row[59],
         country_acronym=db_row[77],
         twitter=db_row[62],
         website=db_row[65],
-        occupation=db_row[66],
-        interest=db_row[67],
+        occupation=db_row[66].decode('utf-8') if type(db_row[66]) is bytes else db_row[66],
+        interest=db_row[67].decode('utf-8') if type(db_row[67]) is bytes else db_row[67],
         playstyle=int(db_row[81]),
         playmode=int(db_row[82]),
         is_subscriber=bool(db_row[72]),
-        subscription_expires=db_row[73]
+        subscription_expires=datetime.strptime(db_row[73], '%Y-%m-%d') if db_row[73] else None
     )
 
 
 def insert_user_to_database(user: OsuUser):
+    """Insert an OsuUser to the database"""
     # Import the database connection locally to avoid circular imports
     from utility.osu_database.utils import get_connection
     connection = get_connection()
@@ -68,9 +69,45 @@ def insert_user_to_database(user: OsuUser):
             {user.playstyle},
             {user.playmode},
             {'false' if not user.is_subscriber else 'true'},
-            {"'" + str(user.subscription_expires.date()) + "'"},
+            {"'" + user.subscription_expires.strftime('%Y-%m-%d') + "'"},
             'bot'
         )
+        '''
+    cursor.execute(command)
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+
+def update_user_in_database(user: OsuUser):
+    """Update an OsuUser in the database"""
+    # Import the database connection locally to avoid circular imports
+    from utility.osu_database.utils import get_connection
+    print(user.__dict__)
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('USE osu')
+    command = f'''
+        UPDATE phpbb_users SET
+            user_regdate={int(user.register_date.timestamp())},
+            username={"'" + user.username + "'"},
+            username_clean={"'" + user.username_clean + "'"},
+            user_email={"'" + user.email + "'"},
+            user_lastvisit={int(user.last_visit.timestamp())},
+            user_avatar={"'" + user.avatar + "'"},
+            user_sig={"'" + user.signature + "'"},
+            user_from={"'" + user.come_from + "'"},
+            country_acronym={"'" + user.country_acronym + "'"},
+            user_twitter={"'" + user.twitter + "'"},
+            user_website={"'" + user.website + "'"},
+            user_occ={"'" + user.occupation + "'"},
+            user_interests={"'" + user.interest + "'"},
+            osu_playstyle={user.playstyle},
+            osu_playmode={user.playmode},
+            osu_subscriber={'false' if not user.is_subscriber else 'true'},
+            osu_subscriptionexpiry={"'" + str(user.subscription_expires.date()) + "'" if user.subscription_expires else 'NULL'},
+            user_permissions=''
+        WHERE user_id={user.user_id}
         '''
     cursor.execute(command)
     connection.commit()

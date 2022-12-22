@@ -6,9 +6,12 @@
 {% block content %}
 <div class="container" style="padding: 5rem;">
     <h1 style="padding-top: 1rem; padding-bottom: 1rem;">Settings</h1>
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form | crispy }}
+        <h2>Account</h2>
+        {{ profile_settings | crispy }}
+        <h2>Site Settings</h2>
+        {{ colour_form | crispy }}
         <button class="btn btn-ayaka" type="submit">Submit</button>
     </form>
 </div>

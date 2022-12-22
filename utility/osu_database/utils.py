@@ -49,6 +49,20 @@ def get_user_by_id(user_id: int) -> OsuUser | None:
     return create_user_from_database_row(row)
 
 
+def get_user_by_username(username: str) -> OsuUser | None:
+    """Get an osu! user by its username from osu! database"""
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('USE osu')
+    cursor.execute('SELECT * FROM phpbb_users WHERE username = %s', (username,))
+    row = cursor.fetchone()
+    if not row:
+        return None
+    cursor.close()
+    connection.close()
+    return create_user_from_database_row(row)
+
+
 def get_score_by_id(score_id: int) -> Score | None:
     """Get a score by its id from osu! database"""
     connection = get_connection()

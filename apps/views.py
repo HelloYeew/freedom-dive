@@ -14,7 +14,7 @@ from utility.osu_database import get_beatmapset_by_id, get_user_by_id, get_beatm
 from utility.ruleset.score_processor.utils import get_readable_score
 from utility.utils import get_osu_beatmap_statistics
 
-S3_URL = config('S3_URL', default='')
+S3_URL = config('S3_URL', default='https://freedom-dive-assets.nyc3.digitaloceanspaces.com')
 
 
 def homepage(request):
