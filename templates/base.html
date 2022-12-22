@@ -69,8 +69,12 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{% url 'scores' %}">Scores</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'client_changelog' %}">Changelog</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link active" aria-current="page" href="#" data-bs-toggle="dropdown" aria-expanded="false">Changelog</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'client_changelog' %}">Client</a></li>
+                            <li><a class="dropdown-item" href="{% url 'web_changelog' %}">Web</a></li>
+                        </ul>
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">

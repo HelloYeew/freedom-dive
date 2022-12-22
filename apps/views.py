@@ -6,7 +6,7 @@ from decouple import config
 from django.core.paginator import Paginator
 from django.shortcuts import render
 
-from apps.models import ScoreStore, ClientChangelog
+from apps.models import ScoreStore, ClientChangelog, WebChangelog
 from ayaka import settings
 from mirror.models import BeatmapSet, Beatmap
 from users.models import ColourSettings
@@ -219,6 +219,19 @@ def client_changelog_list(request):
         })
 
 
+def web_changelog_list(request):
+    changelog = WebChangelog.objects.filter(public=True).order_by('-date')
+    if request.user.is_authenticated:
+        return render(request, 'apps/changelog/web_changelog_list.html', {
+            'colour_settings': ColourSettings.objects.get(user=request.user),
+            'changelog': changelog
+        })
+    else:
+        return render(request, 'apps/changelog/web_changelog_list.html', {
+            'changelog': changelog
+        })
+
+
 def client_changelog_detail(request, version):
     try:
         changelog = ClientChangelog.objects.get(version=version)
@@ -233,5 +246,23 @@ def client_changelog_detail(request, version):
         })
     else:
         return render(request, 'apps/changelog/client_changelog_detail.html', {
+            'changelog': changelog
+        })
+
+
+def web_changelog_detail(request, version):
+    try:
+        changelog = WebChangelog.objects.get(version=version)
+    except WebChangelog.DoesNotExist:
+        return render(request, '404.html', status=404)
+    if changelog.public is False and request.user.is_authenticated is False:
+        return render(request, '404.html', status=404)
+    if request.user.is_authenticated:
+        return render(request, 'apps/changelog/web_changelog_detail.html', {
+            'colour_settings': ColourSettings.objects.get(user=request.user),
+            'changelog': changelog
+        })
+    else:
+        return render(request, 'apps/changelog/web_changelog_detail.html', {
             'changelog': changelog
         })

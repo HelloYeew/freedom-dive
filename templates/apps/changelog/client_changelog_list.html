@@ -10,7 +10,7 @@
         <div style="overflow:hidden">
             {% for log in changelog %}
             <div>
-                <h2>{{ log.version }}</h2>
+                <a href="{% url 'client_changelog_detail' log.version %}"><h2 style="color: var(--color-accent)">{{ log.version }}</h2></a>
                 <small>Released at {{ log.date }}</small>
                 <p>{{ log.content | convert_markdown | safe }}</p>
             </div>

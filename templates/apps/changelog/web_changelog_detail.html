@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load markdown_converter %}
+
+{% block title %}{{ changelog.version }} Web Changelog{% endblock %}
+
+{% block content %}
+    <div class="container" style="padding: 5rem;">
+        <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Web {{ changelog.version }} Changelog</h1>
+        <a href="{% url 'web_changelog' %}" class="btn btn-ayaka"><i class="mdi mdi-format-list-bulleted" aria-hidden="true" style="font-size: 20px"></i> Go to changelog list</a>
+        <p></p>
+        <div style="overflow:hidden">
+            <small>Released at {{ changelog.date }}</small>
+            <p>{{ changelog.content | convert_markdown | safe }}</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

@@ -26,3 +26,13 @@ class ClientChangelog(models.Model):
 
     def __str__(self):
         return self.version + ' - ' + self.date.strftime('%Y-%m-%d %H:%M:%S') + ' client changelog'
+
+
+class WebChangelog(models.Model):
+    version = models.CharField(max_length=100)
+    date = models.DateTimeField()
+    public = models.BooleanField(default=False)
+    content = MDTextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.version + ' - ' + self.date.strftime('%Y-%m-%d %H:%M:%S') + ' web changelog'

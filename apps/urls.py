@@ -9,4 +9,6 @@ urlpatterns = [
     path('scores/<int:score_id>', views.score_detail, name='score_detail'),
     path('changelog/client', views.client_changelog_list, name='client_changelog'),
     path('changelog/client/<str:version>', views.client_changelog_detail, name='client_changelog_detail'),
+    path('changelog/web', views.web_changelog_list, name='web_changelog'),
+    path('changelog/web/<str:version>', views.web_changelog_detail, name='web_changelog_detail'),
 ]
