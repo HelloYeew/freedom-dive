@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% load static %}
+{% load get_star_color %}
+{% load humanize %}
+
+{% block title %}{{ score.id }} Scores Info{% endblock %}
+
+{% block content %}
+    <style>
+        #background {
+            background: url("{{ s3_url }}/cover/{{ beatmapset.beatmapset_id }}.jpg") no-repeat center center!important;
+            background-size: cover!important;
+        }
+
+        .blur-container {
+            color: var(--color-primary);
+            backdrop-filter: blur(5px);
+            border-radius: 2rem;
+            background-color: rgba(34, 34, 34, 0.6);
+        }
+    </style>
+
+    <div class="container" style="padding: 5rem;">
+        <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Scores Info</h1>
+        <a href="{% url 'beatmapset_detail' beatmapset.beatmapset_id %}" class="btn btn-ayaka"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 20px"></i> View beatmap</a>
+        <p></p>
+        <div style="overflow:hidden">
+            <h2 style="font-weight:900">{{ beatmapset.title }}</h2>
+            <h4>{{ beatmap.beatmapset.artist }}</h4>
+            <p>
+                {% with star_color=beatmap.difficulty_rating|get_star_color %}
+                    {% include "snippets/beatmaps/rulesets-symbol.html" %}
+                    <span class="badge rounded-pill" style="background-color: {{ star_color.background_color }}; color: {{ star_color.color }}; font-size: 15px;">
+                ★
+                {{ beatmap.difficulty_rating|floatformat:2 }}
+            </span>
+                    {{ beatmap.version }}
+                {% endwith %}
+            </p>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div style="position:relative;">
+                            <canvas id="statisticChart" width="400" height="400"></canvas>
+                            <div class="text-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                            <span style="font-size:4rem; font-weight:900; color: var(--color-primary)">
+                                {{ score.rank }}
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 gap-3">
+                        <h3 style="font-size: 45px">{{ score.total_score|intcomma }}</h3>
+                        <div class="row">
+                            <div class="col blur-container">
+                                <h3 style="text-transform: uppercase; text-align: center;">Accuracy</h3>
+                            </div>
+                            <div class="col blur-container">
+                                <h3 style="text-transform: uppercase; text-align: center;">Max Combo</h3>
+                            </div>
+                            <div class="col blur-container">
+                                <h3 style="text-transform: uppercase; text-align: center;">PP</h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <h4 style="text-align: center;">{{ score.accuracy|floatformat:2 }}%</h4>
+                            </div>
+                            <div class="col">
+                                <h4 style="text-align: center;">{{ score.max_combo }} <small>/ {{ score.max_combo_of }}</small></h4>
+                            </div>
+                            <div class="col">
+                                <h4 style="text-align: center;">0</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col blur-container">
+                                <h3 style="text-transform: uppercase; color: #61c0f0; text-align: center;">Perfect</h3>
+                            </div>
+                            <div class="col blur-container">
+                                <h3 style="text-transform: uppercase; color: #afd544; text-align: center;">Great</h3>
+                            </div>
+                            <div class="col blur-container">
+                                <h3 style="text-transform: uppercase; color: #769b05; text-align: center;">Good</h3>
+                            </div>
+                            <div class="col blur-container">
+                                <h3 style="text-transform: uppercase; color: #df1221; text-align: center;">Miss</h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <h4 style="text-align: center;">{{ score.perfect }}</h4>
+                            </div>
+                            <div class="col">
+                                <h4 style="text-align: center;">{{ score.great }}</h4>
+                            </div>
+                            <div class="col">
+                                <h4 style="text-align: center;">{{ score.good }}</h4>
+                            </div>
+                            <div class="col">
+                                <h4 style="text-align: center;">{{ score.miss }}</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col blur-container">
+                                <h3 style="text-transform: uppercase; color: #91e1f0; text-align: center;">Critical Break Bonus</h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <h4 style="text-align: center;">{{ score.critical_break_bonus }}</h4>
+                            </div>
+                        </div>
+                        <p></p>
+                        <div class="row">
+                            <div class="col">
+                                <p>Submitted on</p>
+                            </div>
+                            <div class="col">
+                                <p>{{ score_object.date }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <p>Played by</p>
+                            </div>
+                            {% if osu_user.avatar == "" %}
+                                <div class="col">
+                                    <p><img src="{{ s3_url }}/avatar/pfp.png" alt="{{ osu_user.username }}" class="rounded-circle" width="40px" height="40px"> {{ osu_user.username }}</p>
+                                </div>
+                            {% else %}
+                                <div class="col">
+                                    <p><img src="{{ s3_url }}/avatar/{{ osu_user.avatar }}" alt="{{ osu_user.username }}" class="rounded-circle" width="40px" height="40px"> {{ osu_user.username }}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        let chart_ctx = document.getElementById('statisticChart').getContext('2d');
+
+        let blue_green_gradient = chart_ctx.createLinearGradient(0, 0, 0, 600);
+        blue_green_gradient.addColorStop(0, 'rgb(113,248,249)');
+        blue_green_gradient.addColorStop(1, 'rgb(175,255,168)');
+
+        const data = {
+            datasets: [{
+                label: 'Score',
+                data: [{{ score.total_score }}, 1000000 - {{ score.total_score }}],
+                backgroundColor: [
+                    blue_green_gradient,
+                    'rgba(159, 208, 2, 0)',
+                ],
+                hoverOffset: 4,
+                borderColor: [
+                    'rgba(159, 208, 2, 0)',
+                    'rgba(159, 208, 2, 0)'
+                ],
+                weight: 0.5,
+                borderWidth: 0,
+                borderRadius: [50, 0],
+                cutout: '75%'
+            }]
+        };
+
+        const config = {
+            type: 'doughnut',
+            data: data,
+            options: {
+                responsive: true,
+                aspectRatio: 1,
+                cutoutPercentage: 90,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    },
+                },
+                hover: {
+                    mode: null
+                },
+                animation: {
+                    easing: 'easeInOutQuad',
+                }
+            }
+        };
+
+        let myChart = new Chart(
+            document.getElementById('statisticChart'),
+            config
+        );
+    </script>
+{% endblock %}

@@ -98,3 +98,52 @@ def get_readable_tau_score(score: ScoreStore.objects) -> dict:
         "ticks": small_tick_hit,
         "ticks_of": maximum_statistics['small_tick_hit'],
     }
+
+
+def get_readable_sentakki_score(score: ScoreStore.objects) -> dict:
+    """Return a readable sentakki score for rendering on the website."""
+    score = score.statistics
+    if score['ruleset_id'] != 5:
+        raise Exception("This is not a Sentakki ruleset score")
+    statistics = score['statistics']
+    maximum_statistics = score['maximum_statistics']
+    try:
+        mods = score['mods']
+    except KeyError:
+        mods = None
+    try:
+        perfect = statistics['great']
+    except KeyError:
+        perfect = 0
+    try:
+        great = statistics['good']
+    except KeyError:
+        great = 0
+    try:
+        good = statistics['ok']
+    except KeyError:
+        good = 0
+    try:
+        miss = statistics['miss']
+    except KeyError:
+        miss = 0
+    try:
+        critical_break_bonus = statistics['large_bonus']
+    except KeyError:
+        critical_break_bonus = 0
+    return {
+        "ruleset_id": score['ruleset_id'],
+        "mods": mods,
+        "rank": score['rank'],
+        "total_score": score['total_score'],
+        "passed": score['passed'],
+        "accuracy": score['accuracy'] * 100,
+        "max_combo": score['max_combo'],
+        "max_combo_of": maximum_statistics['great'],
+        "perfect": perfect,
+        "great": great,
+        "good": good,
+        "miss": miss,
+        "critical_break_bonus": critical_break_bonus,
+        "critical_break_bonus_of": maximum_statistics['large_bonus']
+    }

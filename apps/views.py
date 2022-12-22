@@ -177,6 +177,19 @@ def score_detail(request, score_id):
                 'beatmapset': beatmapset,
                 's3_url': S3_URL
             })
+        elif score['ruleset_id'] == 5:
+            beatmap.play_mode = 5
+            return render(request, 'apps/scores/scores_detail_sentakki.html', {
+                'colour_settings': ColourSettings.objects.get(user=request.user) if request.user.is_authenticated else None,
+                'osu_user': osu_user,
+                'score_object': score_object,
+                'score': score,
+                'score_json': score_json,
+                'score_user': user,
+                'beatmap': beatmap,
+                'beatmapset': beatmapset,
+                's3_url': S3_URL
+            })
         else:
             # This should not be reached but just put it as a fallback page
             return render(request, 'apps/scores/scores_detail_legacy.html', {
