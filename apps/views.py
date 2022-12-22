@@ -96,7 +96,7 @@ def beatmapset_detail(request, beatmapset_id):
 
 
 def scores_list(request):
-    score = ScoreStore.objects.filter(passed=False).order_by('-id')
+    score = ScoreStore.objects.filter(passed=True).order_by('-id')
     score_list = []
     for i in score:
         try:
