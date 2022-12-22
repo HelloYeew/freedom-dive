@@ -21,7 +21,7 @@ def create_user_from_database_row(db_row: tuple) -> OsuUser:
         playstyle=int(db_row[81]),
         playmode=int(db_row[82]),
         is_subscriber=bool(db_row[72]),
-        subscription_expires=datetime.strptime(db_row[73], '%Y-%m-%d') if db_row[73] else None
+        subscription_expires=db_row[73]
     )
 
 
