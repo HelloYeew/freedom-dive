@@ -3,7 +3,7 @@
 {% block title %}Utility{% endblock %}
 
 {% block content %}
-<div class="container" style="padding: 5rem;">
+<div class="container" style="padding-top: 6rem; padding-left: 5rem; padding-right: 5rem; ">
     <h1 style="padding-top: 1rem; padding-bottom: 1rem;">Utility</h1>
     {% if user.is_superuser %}
     <a href="{% url 'utility_log' %}" class="btn btn-ayaka"><i class="mdi mdi-history" aria-hidden="true" style="font-size: 20px"></i> Log</a>
