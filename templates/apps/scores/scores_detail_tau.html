@@ -150,7 +150,7 @@
     const data = {
         datasets: [{
             label: 'Score',
-            data: [{{ score.total_score }}, 1000000 - {{ score.total_score }}],
+            data: [{{ score.accuracy }}, 100 - {{ score.accuracy }}],
             backgroundColor: [
                 blue_green_gradient,
                 'rgba(159, 208, 2, 0)',
