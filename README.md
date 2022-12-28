@@ -21,8 +21,10 @@ The server is currently in development, but we encourage you to try it out. All 
 | osu!mania                                            | 🟢               | 🟢          | 🟢        |
 | [tau](https://github.com/taulazer/tau/)              | 🟢               | 🟢          | 🟢        |
 | [Sentakki](https://github.com/LumpBloom7/sentakki)   | 🟢               | 🟢          | 🟢        |
-| [Rush!](https://github.com/Beamographic/rush)        | 🟢               | 🟡          | 🟢        |
-| [hishigata](https://github.com/LumpBloom7/hishigata) | 🟢               | 🟡          | 🟢        |
+| [Rush!](https://github.com/Beamographic/rush)        | 🟢               | 🟢          | 🟢        |
+| [hishigata](https://github.com/LumpBloom7/hishigata) | 🟢               | 🟢          | 🟢        |
+| [hishigata](https://github.com/LumpBloom7/hishigata) | 🟢               | 🟢          | 🟢        |
+| [soyokaze!](https://github.com/goodtrailer/soyokaze) | 🟢               | 🟢          | 🟢        |
 
 *🟡 = Can be play now but not fully supported on some functions.
 
@@ -30,4 +32,6 @@ Other rulesets will be added soon.
 
 ## Start playing on Freedom Dive
 
-Currently, we are only publish our client in `ruleset-wiki` channel at our [Discord server](https://discord.gg/MdCuTCx4At). After we think that the server is stable enough, we will publish the client publicly soon.
+We publish the client publicly in the [game's website](https://game.rulesets.info) or the link in [release](https://github.com/HelloYeew/freedom-dive/releases/) page!
+
+[//]: # (TODO: how to contact and contribution, contact server maintainer etc. logo)
