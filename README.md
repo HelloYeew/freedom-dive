@@ -23,7 +23,6 @@ The server is currently in development, but we encourage you to try it out. All 
 | [Sentakki](https://github.com/LumpBloom7/sentakki)   | 🟢               | 🟢          | 🟢        |
 | [Rush!](https://github.com/Beamographic/rush)        | 🟢               | 🟢          | 🟢        |
 | [hishigata](https://github.com/LumpBloom7/hishigata) | 🟢               | 🟢          | 🟢        |
-| [hishigata](https://github.com/LumpBloom7/hishigata) | 🟢               | 🟢          | 🟢        |
 | [soyokaze!](https://github.com/goodtrailer/soyokaze) | 🟢               | 🟢          | 🟢        |
 
 *🟡 = Can be play now but not fully supported on some functions.
