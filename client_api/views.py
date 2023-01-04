@@ -10,7 +10,7 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.models import ScoreStore
+from apps.models import ScoreStore, PerformanceStore
 from client_api.models import BeatmapsetImportAPIUsageLog, BeatmapConvertedStatisticsImportAPIUsageLog
 from mirror.models import BeatmapSet, ConvertedBeatmapInfo
 from mirror.utils import import_beatmapset_to_mirror, import_beatmap_to_mirror
@@ -48,7 +48,8 @@ class SubmitSoloScoreView(APIView):
                     ruleset_short_name=request.data['ruleset_short_name'],
                     passed=request.data['passed'],
                     # convert statistics from string to dict
-                    statistics=json.loads(request.data['statistics'])
+                    statistics=json.loads(request.data['statistics']),
+                    score_id=request.data['score_id']
                 )
             except Exception as e:
                 sentry_sdk.set_context("payload", request.data)
@@ -195,5 +196,29 @@ class ImportBeatmapConvertedStatistics(APIView):
                     return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY, data={'message': 'Invalid ruleset ID'})
                 else:
                     return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY, data={'message': 'missing parameters'})
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED, data={'message': 'client unauthorized'})
+
+
+class PerformanceSubmission(APIView):
+    permissions_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        if int(request.data['client_id']) == CLIENT_ID and request.data['client_secret'] == CLIENT_SECRET:
+            # convert request.data['pp'] to
+            try:
+                PerformanceStore.objects.create(
+                    user_id=request.data['user_id'],
+                    score_id=request.data['score_id'],
+                    performance=request.data['pp']
+                )
+                return Response(status=status.HTTP_200_OK, data={'message': 'success'})
+            except Exception as e:
+                if settings.DEBUG:
+                    traceback.print_exc()
+                sentry_sdk.set_context("payload", request.data)
+                sentry_sdk.capture_exception(e)
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={
+                    'message': 'Something went wrong while importing performance :( We have been notified of this issue!'})
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED, data={'message': 'client unauthorized'})

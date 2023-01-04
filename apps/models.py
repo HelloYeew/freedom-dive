@@ -9,10 +9,20 @@ class ScoreStore(models.Model):
     beatmap_id = models.IntegerField()
     ruleset_short_name = models.CharField(max_length=100)
     passed = models.BooleanField(default=False)
+    score_id = models.CharField(max_length=100)
     statistics = models.JSONField(default=dict)
 
     def __str__(self):
         return str(self.user_id) + ' - ' + self.date.strftime('%Y-%m-%d %H:%M:%S') + ' - ' + self.ruleset_short_name
+
+
+class PerformanceStore(models.Model):
+    user_id = models.IntegerField()
+    score_id = models.CharField(max_length=100)
+    performance = models.JSONField(default=dict)
+
+    def __str__(self):
+        return str(self.user_id) + ' - ' + self.score_id
 
 
 class ClientChangelog(models.Model):
