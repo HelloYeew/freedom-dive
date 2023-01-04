@@ -11,3 +11,4 @@ updates:
       interval: "weekly"
     reviewers:
       - "HelloYeew"
+    open-pull-requests-limit: 10
