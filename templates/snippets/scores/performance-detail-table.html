@@ -15,9 +15,13 @@
         </tr>
         {% endif %}
         {% endfor %}
-        <tr class="table-success">
-            <td>pp</td>
-            <td>{{ performance_detail.pp }}</td>
-        </tr>
+        {% for attribute in performance_detail %}
+            {% if attribute.key == "pp" %}
+                <tr class="table-success">
+                    <td>{{ attribute.key }}</td>
+                    <td>{{ attribute.value }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
     </tbody>
 </table>
