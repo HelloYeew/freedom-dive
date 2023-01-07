@@ -70,7 +70,7 @@
                             <h4 style="text-align: center;">{{ score.max_combo }} <small>/ {{ score.max_combo_of }}</small></h4>
                         </div>
                         <div class="col">
-                            <h4 style="text-align: center;">0</h4>
+                            <h4 style="text-align: center;">{{ pp }}</h4>
                         </div>
                     </div>
                     <div class="row">
@@ -130,8 +130,8 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-
+            <div class="row" style="padding-top: 20px">
+                {% include "snippets/scores/performance-detail-table.html" %}
             </div>
         </div>
     </div>
