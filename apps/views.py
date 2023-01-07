@@ -6,7 +6,7 @@ from decouple import config
 from django.core.paginator import Paginator
 from django.shortcuts import render
 
-from apps.models import ScoreStore, ClientChangelog, WebChangelog
+from apps.models import ScoreStore, ClientChangelog, WebChangelog, PerformanceStore
 from ayaka import settings
 from mirror.models import BeatmapSet, Beatmap
 from users.models import ColourSettings
@@ -143,6 +143,7 @@ def score_detail(request, score_id):
         beatmapset = None
     user = get_user_by_id(score_object.user_id)
     score_json = json.dumps(score_object.statistics, indent=4)
+    # Check that this score can use a new score page or not
     rich_render = True
     try:
         score = get_readable_score(score_object)
@@ -151,6 +152,31 @@ def score_detail(request, score_id):
             traceback.print_exc()
         score = None
         rich_render = False
+    # Extract PP from performance database
+    if PerformanceStore.objects.filter(score_id=score_object.score_id, user_id=score_object.user_id).exists():
+        try:
+            performance = PerformanceStore.objects.get(score_id=score_object.score_id, user_id=score_object.user_id).performance
+            pp = int(performance['pp'])
+            # Calculate rich details of performance
+            # Get all key of performance detail
+            performance_detail_keys = list(performance.keys())
+            performance_detail = []
+            for key in performance_detail_keys:
+                performance_detail.append({
+                    'key': key,
+                    'value': performance[key],
+                    'percent': performance[key] / pp * 100
+                })
+        except:
+            if settings.DEBUG:
+                traceback.print_exc()
+            pp = 0
+            performance = None
+            performance_detail = None
+    else:
+        pp = 0
+        performance = None
+        performance_detail = None
     if rich_render:
         if score['ruleset_id'] == 0:
             return render(request, 'apps/scores/scores_detail_osu.html', {
@@ -162,6 +188,9 @@ def score_detail(request, score_id):
                 'score_user': user,
                 'beatmap': beatmap,
                 'beatmapset': beatmapset,
+                'pp': pp,
+                'performance': performance,
+                'performance_detail': performance_detail,
                 's3_url': S3_URL
             })
         elif score['ruleset_id'] == 4:
@@ -175,6 +204,9 @@ def score_detail(request, score_id):
                 'score_user': user,
                 'beatmap': beatmap,
                 'beatmapset': beatmapset,
+                'pp': pp,
+                'performance': performance,
+                'performance_detail': performance_detail,
                 's3_url': S3_URL
             })
         elif score['ruleset_id'] == 5:
@@ -188,6 +220,9 @@ def score_detail(request, score_id):
                 'score_user': user,
                 'beatmap': beatmap,
                 'beatmapset': beatmapset,
+                'pp': pp,
+                'performance': performance,
+                'performance_detail': performance_detail,
                 's3_url': S3_URL
             })
         else:
