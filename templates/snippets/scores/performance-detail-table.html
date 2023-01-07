@@ -8,14 +8,16 @@
     </thead>
     <tbody>
         {% for attribute in performance_detail %}
-            {% if attribute.key == "pp" %}
-            <tr class="table-success">
-            {% else %}
-            <tr>
-            {% endif %}
-        <td>{{ attribute.key }}</td>
-        <td>{{ attribute.value }}</td>
+        {% if attribute.key != "pp" %}
+        <tr>
+            <td>{{ attribute.key }}</td>
+            <td>{{ attribute.value }}</td>
         </tr>
+        {% endif %}
         {% endfor %}
+        <tr class="table-success">
+            <td>pp</td>
+            <td>{{ performance_detail.pp }}</td>
+        </tr>
     </tbody>
 </table>
