@@ -130,9 +130,11 @@
                     </div>
                 </div>
             </div>
+            {% if performance_detail %}
             <div class="row" style="padding-top: 20px">
                 {% include "snippets/scores/performance-detail-table.html" %}
             </div>
+            {% endif %}
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
