@@ -16,12 +16,12 @@
         {% endif %}
         {% endfor %}
         {% for attribute in performance_detail %}
-            {% if attribute.key == "pp" %}
-                <tr class="table-success">
-                    <td>{{ attribute.key }}</td>
-                    <td>{{ attribute.value }}</td>
-                </tr>
-            {% endif %}
+        {% if attribute.key == "pp" %}
+            <tr class="table-success">
+                <td>{{ attribute.key }}</td>
+                <td>{{ attribute.value }}</td>
+            </tr>
+        {% endif %}
         {% endfor %}
     </tbody>
 </table>
