@@ -14,7 +14,8 @@ from apps.models import ScoreStore, PerformanceStore, PerformanceByGraphStore
 from client_api.models import BeatmapsetImportAPIUsageLog, BeatmapConvertedStatisticsImportAPIUsageLog
 from mirror.models import BeatmapSet, ConvertedBeatmapInfo
 from mirror.utils import import_beatmapset_to_mirror, import_beatmap_to_mirror
-from utility.osu_database import get_beatmapset_by_id, import_beatmapset_from_api, get_beatmap_by_beatmapset
+from utility.osu_database import get_beatmapset_by_id, import_beatmapset_from_api, get_beatmap_by_beatmapset, \
+    update_beatmapset_from_api
 from utility.ruleset.utils import get_ruleset_short_name
 from utility.utils import download_beatmap_pic_to_s3
 
@@ -91,14 +92,19 @@ class ImportBeatmapsetRequest(APIView):
                     beatmapset_id = int(request.data['beatmapset_id'])
                     beatmaps = get_beatmapset_by_id(beatmapset_id)
                     if beatmaps:
+                        update_beatmapset_from_api(beatmapset_id)
+                        beatmapset = get_beatmap_by_beatmapset(beatmapset_id)
+                        for beatmap in beatmapset:
+                            import_beatmap_to_mirror(beatmap)
                         download_beatmap_pic_to_s3(beatmapset_id)
                         BeatmapsetImportAPIUsageLog.objects.create(
                             beatmapset_id=beatmapset_id,
                             success=True,
-                            description=f'Beatmapset {beatmaps.title} is already in the database'
+                            description=f'Beatmapset {beatmaps.title} is already in the database and updated.'
                         )
                         return Response(status=status.HTTP_202_ACCEPTED,
-                                        data={'message': f'Beatmapset {beatmaps.title} has already been imported!'})
+                                        data={'message': f'Beatmapset {beatmaps.title} has already been imported, '
+                                                         f'and has been updated!'})
                     try:
                         import_beatmapset_from_api(beatmapset_id)
                         import_beatmapset_to_mirror(get_beatmapset_by_id(beatmapset_id))
