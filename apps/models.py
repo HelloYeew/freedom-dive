@@ -25,6 +25,15 @@ class PerformanceStore(models.Model):
         return str(self.user_id) + ' - ' + self.score_id
 
 
+class PerformanceByGraphStore(models.Model):
+    user_id = models.IntegerField()
+    score_id = models.CharField(max_length=100)
+    performance = models.JSONField(default=dict)
+
+    def __str__(self):
+        return str(self.user_id) + ' - ' + self.score_id
+
+
 class ClientChangelog(models.Model):
     version = models.CharField(max_length=100)
     date = models.DateTimeField()

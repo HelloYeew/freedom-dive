@@ -18,4 +18,4 @@ class BeatmapConvertedStatisticsImportAPIUsageLog(models.Model):
     description = models.TextField(default='')
 
     def __str__(self):
-        return f'{self.beatmapset_id} - {self.time} - {self.success}'
+        return f'{self.beatmap_id} - {self.time} - {self.success}'

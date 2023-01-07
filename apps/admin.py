@@ -18,5 +18,6 @@ class WebChangelogAdmin (admin.ModelAdmin):
 
 admin.site.register(ScoreStore)
 admin.site.register(PerformanceStore)
+admin.site.register(PerformanceByGraphStore)
 admin.site.register(ClientChangelog, ClientChangelogAdmin)
 admin.site.register(WebChangelog, WebChangelogAdmin)

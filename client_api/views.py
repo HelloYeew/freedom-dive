@@ -10,7 +10,7 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.models import ScoreStore, PerformanceStore
+from apps.models import ScoreStore, PerformanceStore, PerformanceByGraphStore
 from client_api.models import BeatmapsetImportAPIUsageLog, BeatmapConvertedStatisticsImportAPIUsageLog
 from mirror.models import BeatmapSet, ConvertedBeatmapInfo
 from mirror.utils import import_beatmapset_to_mirror, import_beatmap_to_mirror
@@ -205,9 +205,31 @@ class PerformanceSubmission(APIView):
 
     def post(self, request):
         if int(request.data['client_id']) == CLIENT_ID and request.data['client_secret'] == CLIENT_SECRET:
-            # convert request.data['pp'] to
             try:
                 PerformanceStore.objects.create(
+                    user_id=request.data['user_id'],
+                    score_id=request.data['score_id'],
+                    performance=request.data['pp']
+                )
+                return Response(status=status.HTTP_200_OK, data={'message': 'success'})
+            except Exception as e:
+                if settings.DEBUG:
+                    traceback.print_exc()
+                sentry_sdk.set_context("payload", request.data)
+                sentry_sdk.capture_exception(e)
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={
+                    'message': 'Something went wrong while importing performance :( We have been notified of this issue!'})
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED, data={'message': 'client unauthorized'})
+
+
+class PerformanceSubmissionByGraph(APIView):
+    permissions_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        if int(request.data['client_id']) == CLIENT_ID and request.data['client_secret'] == CLIENT_SECRET:
+            try:
+                PerformanceByGraphStore.objects.create(
                     user_id=request.data['user_id'],
                     score_id=request.data['score_id'],
                     performance=request.data['pp']
