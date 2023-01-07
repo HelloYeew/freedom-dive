@@ -165,7 +165,7 @@ def score_detail(request, score_id):
                 performance_detail.append({
                     'key': key,
                     'value': performance[key],
-                    'percent': performance[key] / pp * 100
+                    'percent': performance[key] / performance["pp"] * 100
                 })
         except:
             if settings.DEBUG:

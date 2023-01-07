@@ -1,0 +1,21 @@
+<h3>Performance Detail</h3>
+<table class="table table-dark table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Attributes name</th>
+            <th scope="col">Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for attribute in performance_detail %}
+            {% if attribute.key == "pp" %}
+            <tr class="table-success">
+            {% else %}
+            <tr>
+            {% endif %}
+        <td>{{ attribute.key }}</td>
+        <td>{{ attribute.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
