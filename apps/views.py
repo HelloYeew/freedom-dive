@@ -18,7 +18,7 @@ S3_URL = config('S3_URL', default='https://freedom-dive-assets.nyc3.digitalocean
 
 
 def homepage(request):
-    latest_score = ScoreStore.objects.latest('id')
+    latest_score = ScoreStore.objects.filter(passed=True).order_by('-id').first()
     try:
         beatmap = Beatmap.objects.get(beatmap_id=latest_score.beatmap_id)
         beatmapset = BeatmapSet.objects.get(beatmapset_id=beatmap.beatmapset.beatmapset_id)
