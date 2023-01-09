@@ -11,6 +11,8 @@ Note : This is not a stand-alone server, this is just a support server for other
 
 The server is currently in development, but we encourage you to try it out. All server element will be available open-source soon.
 
+We also release the feature roadmap in the [projects board](https://github.com/users/HelloYeew/projects/3)
+
 ## Supported Rulesets
 
 | Ruleset                                              | Score Submission | Multiplayer | Playlists |
