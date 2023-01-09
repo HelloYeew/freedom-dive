@@ -377,9 +377,9 @@ def update_beatmap_object_in_database(beatmap: Beatmap):
         SET
             beatmapset_id = {beatmap.beatmapset_id},
             user_id = {beatmap.user_id},
-            filename = {"'" + beatmap.filename + "'"},
+            {'' if not beatmap.filename else "filename = '" + beatmap.filename + "',"}
             checksum = {"'" + beatmap.checksum + "'"},
-            version = {'"' + beatmap.version + '"'},
+            {'' if not beatmap.version else "version = '" + beatmap.version + "',"}
             total_length = {beatmap.total_length},
             hit_length = {beatmap.hit_length},
             countTotal = {beatmap.count_total},
