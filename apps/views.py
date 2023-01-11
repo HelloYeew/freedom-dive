@@ -40,7 +40,8 @@ def homepage(request):
         return render(request, 'homepage.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'latest_score': latest_score,
-            's3_url': S3_URL
+            's3_url': S3_URL,
+            'site_settings': SiteSettings.objects.get(user=request.user)
         })
     else:
         return render(request, 'homepage.html', {
@@ -60,7 +61,8 @@ def beatmapset_list(request):
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'statistics_osu': get_osu_beatmap_statistics(),
             'beatmapsets': beatmaps_pagination,
-            's3_url': S3_URL
+            's3_url': S3_URL,
+            'site_settings': SiteSettings.objects.get(user=request.user)
         })
     else:
         return render(request, 'apps/beatmaps/beatmaps.html', {

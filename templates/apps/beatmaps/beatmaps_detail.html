@@ -16,16 +16,16 @@
             <div class="card-img" style="background-color: var(--color-background); opacity: 80%; width: 100%; height: 100%;"></div>
             <div class="card-img-overlay">
                 {% if site_settings and site_settings.use_traditional_metadata %}
-                    {% if beatmapset.title_unicode != "" %}
+                    {% if beatmapset.title_unicode != "" and beatmapset.title_unicode != None %}
                         <h3 style="font-weight: 800; color: var(--color-accent);">{{ beatmapset.title_unicode }}</h3>
-                    {% elif beatmapset.title_unicode == "" and beatmapset.title != "" %}
+                    {% elif beatmapset.title_unicode == "" or beatmapset.title_unicode == None and beatmapset.title != "" %}
                         <h3 style="font-weight: 800; color: var(--color-accent);">{{ beatmapset.title }}</h3>
                     {% else %}
                         <h3> </h3>
                     {% endif %}
-                    {% if beatmapset.artist_unicode != "" %}
+                    {% if beatmapset.artist_unicode != "" and beatmapset.artist_unicode != None %}
                         <h5>{{ beatmapset.artist_unicode }}</h5>
-                    {% elif beatmapset.artist_unicode == "" and beatmapset.artist != "" %}
+                    {% elif beatmapset.artist_unicode == "" or beatmapset.artist_unicode == None and beatmapset.artist != "" %}
                         <h5>{{ beatmapset.artist }}</h5>
                     {% else %}
                         <h5> </h5>
