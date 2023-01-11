@@ -10,7 +10,7 @@ S3_URL = config('S3_URL', default='')
 class ColourSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     color_primary = ColorField(default='#DFD9D6')
-    color_accent = ColorField(default='#DBC2D1')
+    color_accent = ColorField(default='#F9F7B4')
     color_background = ColorField(default='#0A0A0A')
     mask_opacity = models.FloatField(default=0.7, max_length=1)
 
