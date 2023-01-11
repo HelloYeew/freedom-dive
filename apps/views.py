@@ -9,7 +9,7 @@ from django.shortcuts import render
 from apps.models import ScoreStore, ClientChangelog, WebChangelog, PerformanceStore
 from ayaka import settings
 from mirror.models import BeatmapSet, Beatmap
-from users.models import ColourSettings
+from users.models import ColourSettings, SiteSettings
 from utility.osu_database import get_beatmapset_by_id, get_user_by_id, get_beatmap_by_id
 from utility.ruleset.score_processor.utils import get_readable_score
 from utility.utils import get_osu_beatmap_statistics
@@ -74,7 +74,7 @@ def beatmapset_detail(request, beatmapset_id):
     try:
         beatmapset = BeatmapSet.objects.get(beatmapset_id=beatmapset_id)
     except BeatmapSet.DoesNotExist:
-        # try to get beatmapset from main database
+        # try to get beatmapset from the main database
         beatmapset = get_beatmapset_by_id(beatmapset_id)
         if beatmapset is None:
             # return 404
@@ -85,7 +85,8 @@ def beatmapset_detail(request, beatmapset_id):
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'beatmapset': beatmapset,
             'beatmaps': beatmaps,
-            's3_url': S3_URL
+            's3_url': S3_URL,
+            'site_settings': SiteSettings.objects.get(user=request.user)
         })
     else:
         return render(request, 'apps/beatmaps/beatmaps_detail.html', {

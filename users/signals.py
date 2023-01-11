@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from users.models import ColourSettings, Profile
+from users.models import ColourSettings, Profile, SiteSettings
 
 
 @receiver(post_save, sender=User)
@@ -10,3 +10,4 @@ def create_profile(sender, instance, created, **kwargs):
     if created:
         ColourSettings.objects.create(user=instance)
         Profile.objects.create(user=instance)
+        SiteSettings.objects.create(user=instance)

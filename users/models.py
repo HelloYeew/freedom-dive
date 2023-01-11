@@ -18,6 +18,14 @@ class ColourSettings(models.Model):
         return self.user.username + '\'s colour settings'
 
 
+class SiteSettings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    use_traditional_metadata = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username + '\'s site settings'
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='avatar', default='avatar/default.png')

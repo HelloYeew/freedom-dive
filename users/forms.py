@@ -29,7 +29,7 @@ class UserProfileForms(forms.ModelForm):
         fields = ['avatar']
 
 
-class UserSettingsForm(forms.ModelForm):
+class ColourSettingsForm(forms.ModelForm):
     """User's styling settings for the homepage"""
     color_primary = forms.CharField(label="Primary color", widget=forms.TextInput(
         attrs={'type': 'color', 'class': 'form-control form-control-color'}),
@@ -56,3 +56,14 @@ class UserSettingsForm(forms.ModelForm):
     class Meta:
         model = ColourSettings
         fields = ['color_primary', 'color_accent', 'color_background', 'mask_opacity']
+
+
+class SiteSettingsForm(forms.ModelForm):
+    """User's site settings"""
+    use_traditional_metadata = forms.BooleanField(label="Use Traditional Metadata",
+                                                  help_text="Use traditional metadata if available.",
+                                                  required=False)
+
+    class Meta:
+        model = ColourSettings
+        fields = ['use_traditional_metadata']

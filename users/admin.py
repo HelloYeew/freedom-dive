@@ -5,3 +5,4 @@ from .models import *
 admin.site.register(ColourSettings)
 admin.site.register(SignUpRequest)
 admin.site.register(Profile)
+admin.site.register(SiteSettings)

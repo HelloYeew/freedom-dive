@@ -10,7 +10,9 @@
         {% csrf_token %}
         <h2>Account</h2>
         {{ profile_settings | crispy }}
-        <h2>Site Settings</h2>
+        <h2>General</h2>
+        {{ site_settings | crispy }}
+        <h2>Theme</h2>
         {{ colour_form | crispy }}
         <button class="btn btn-ayaka" type="submit">Submit</button>
     </form>
