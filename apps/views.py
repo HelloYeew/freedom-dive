@@ -121,7 +121,8 @@ def scores_list(request):
     if request.user.is_authenticated:
         return render(request, 'apps/scores/scores.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
-            'scores': score_list
+            'scores': score_list,
+            'site_settings': SiteSettings.objects.get(user=request.user)
         })
     else:
         return render(request, 'apps/scores/scores.html', {
@@ -194,7 +195,8 @@ def score_detail(request, score_id):
                 'pp': pp,
                 'performance': performance,
                 'performance_detail': performance_detail,
-                's3_url': S3_URL
+                's3_url': S3_URL,
+                'site_settings': SiteSettings.objects.get(user=request.user) if request.user.is_authenticated else None
             })
         elif score['ruleset_id'] == 4:
             beatmap.play_mode = 4
@@ -210,7 +212,8 @@ def score_detail(request, score_id):
                 'pp': pp,
                 'performance': performance,
                 'performance_detail': performance_detail,
-                's3_url': S3_URL
+                's3_url': S3_URL,
+                'site_settings': SiteSettings.objects.get(user=request.user) if request.user.is_authenticated else None
             })
         elif score['ruleset_id'] == 5:
             beatmap.play_mode = 5
@@ -226,7 +229,8 @@ def score_detail(request, score_id):
                 'pp': pp,
                 'performance': performance,
                 'performance_detail': performance_detail,
-                's3_url': S3_URL
+                's3_url': S3_URL,
+                'site_settings': SiteSettings.objects.get(user=request.user) if request.user.is_authenticated else None
             })
         else:
             # This should not be reached but just put it as a fallback page
@@ -245,7 +249,8 @@ def score_detail(request, score_id):
                 'score_user': user,
                 'beatmap': beatmap,
                 'beatmapset': beatmapset,
-                's3_url': S3_URL
+                's3_url': S3_URL,
+                'site_settings': SiteSettings.objects.get(user=request.user)
             })
         else:
             return render(request, 'apps/scores/scores_detail_legacy.html', {
