@@ -27,7 +27,15 @@
                 <tr>
                     <th scope="row">{{ score.score.id }}</th>
                     <th>{{ score.user.username }}</th>
+                    {% if site_settings and site_settings.use_traditional_metadata %}
+                        {% if score.beatmapset.title_unicode != "" and score.beatmapset.title_unicode != None %}
+                            <th>{{ score.beatmapset.title_unicode }}</th>
+                        {% else %}
+                            <th>{{ score.beatmapset.title }}</th>
+                        {% endif %}
+                    {% else %}
                     <td>{{ score.beatmapset.title }}</td>
+                    {% endif %}
                     <td>{{ score.beatmap.version }}</td>
                     <td>{{ score.score.ruleset_short_name }}</td>
                     <td>{{ score.score.date }}</td>

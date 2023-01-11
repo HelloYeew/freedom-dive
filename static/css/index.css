@@ -169,3 +169,7 @@ small.text-muted {
     color: var(--color-primary)!important;
     filter: brightness(75%);
 }
+
+.form-check-label {
+    color: var(--color-primary)!important;
+}

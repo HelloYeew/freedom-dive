@@ -9,7 +9,7 @@ from django.shortcuts import render
 from apps.models import ScoreStore, ClientChangelog, WebChangelog, PerformanceStore
 from ayaka import settings
 from mirror.models import BeatmapSet, Beatmap
-from users.models import ColourSettings
+from users.models import ColourSettings, SiteSettings
 from utility.osu_database import get_beatmapset_by_id, get_user_by_id, get_beatmap_by_id
 from utility.ruleset.score_processor.utils import get_readable_score
 from utility.utils import get_osu_beatmap_statistics
@@ -40,7 +40,8 @@ def homepage(request):
         return render(request, 'homepage.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'latest_score': latest_score,
-            's3_url': S3_URL
+            's3_url': S3_URL,
+            'site_settings': SiteSettings.objects.get(user=request.user)
         })
     else:
         return render(request, 'homepage.html', {
@@ -60,7 +61,8 @@ def beatmapset_list(request):
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'statistics_osu': get_osu_beatmap_statistics(),
             'beatmapsets': beatmaps_pagination,
-            's3_url': S3_URL
+            's3_url': S3_URL,
+            'site_settings': SiteSettings.objects.get(user=request.user)
         })
     else:
         return render(request, 'apps/beatmaps/beatmaps.html', {
@@ -74,7 +76,7 @@ def beatmapset_detail(request, beatmapset_id):
     try:
         beatmapset = BeatmapSet.objects.get(beatmapset_id=beatmapset_id)
     except BeatmapSet.DoesNotExist:
-        # try to get beatmapset from main database
+        # try to get beatmapset from the main database
         beatmapset = get_beatmapset_by_id(beatmapset_id)
         if beatmapset is None:
             # return 404
@@ -85,7 +87,8 @@ def beatmapset_detail(request, beatmapset_id):
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'beatmapset': beatmapset,
             'beatmaps': beatmaps,
-            's3_url': S3_URL
+            's3_url': S3_URL,
+            'site_settings': SiteSettings.objects.get(user=request.user)
         })
     else:
         return render(request, 'apps/beatmaps/beatmaps_detail.html', {
@@ -118,7 +121,8 @@ def scores_list(request):
     if request.user.is_authenticated:
         return render(request, 'apps/scores/scores.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
-            'scores': score_list
+            'scores': score_list,
+            'site_settings': SiteSettings.objects.get(user=request.user)
         })
     else:
         return render(request, 'apps/scores/scores.html', {
@@ -191,7 +195,8 @@ def score_detail(request, score_id):
                 'pp': pp,
                 'performance': performance,
                 'performance_detail': performance_detail,
-                's3_url': S3_URL
+                's3_url': S3_URL,
+                'site_settings': SiteSettings.objects.get(user=request.user) if request.user.is_authenticated else None
             })
         elif score['ruleset_id'] == 4:
             beatmap.play_mode = 4
@@ -207,7 +212,8 @@ def score_detail(request, score_id):
                 'pp': pp,
                 'performance': performance,
                 'performance_detail': performance_detail,
-                's3_url': S3_URL
+                's3_url': S3_URL,
+                'site_settings': SiteSettings.objects.get(user=request.user) if request.user.is_authenticated else None
             })
         elif score['ruleset_id'] == 5:
             beatmap.play_mode = 5
@@ -223,7 +229,8 @@ def score_detail(request, score_id):
                 'pp': pp,
                 'performance': performance,
                 'performance_detail': performance_detail,
-                's3_url': S3_URL
+                's3_url': S3_URL,
+                'site_settings': SiteSettings.objects.get(user=request.user) if request.user.is_authenticated else None
             })
         else:
             # This should not be reached but just put it as a fallback page
@@ -242,7 +249,8 @@ def score_detail(request, score_id):
                 'score_user': user,
                 'beatmap': beatmap,
                 'beatmapset': beatmapset,
-                's3_url': S3_URL
+                's3_url': S3_URL,
+                'site_settings': SiteSettings.objects.get(user=request.user)
             })
         else:
             return render(request, 'apps/scores/scores_detail_legacy.html', {

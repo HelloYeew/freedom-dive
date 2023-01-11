@@ -7,8 +7,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import views as auth_views
 from PIL import Image
 
-from users.forms import UserCreationForms, UserSettingsForm, UserCreationFromRequestForms, UserProfileForms
-from users.models import ColourSettings, SignUpRequest
+from users.forms import UserCreationForms, ColourSettingsForm, UserCreationFromRequestForms, UserProfileForms, \
+    SiteSettingsForm
+from users.models import ColourSettings, SignUpRequest, SiteSettings
 from utility.osu_database import get_user_by_id, get_user_by_username, update_user_in_database
 from utility.s3.utils import get_s3_client
 
@@ -83,11 +84,14 @@ def sign_up_from_request(request):
 def settings(request):
     colour_settings = ColourSettings.objects.filter(user=request.user).first()
     profile = request.user.profile
+    site_settings = SiteSettings.objects.get(user=request.user)
     if request.method == 'POST':
-        colour_form = UserSettingsForm(request.POST, instance=colour_settings)
+        colour_form = ColourSettingsForm(request.POST, instance=colour_settings)
         profile_settings = UserProfileForms(request.POST, request.FILES, instance=profile)
-        if colour_form.is_valid() and profile_settings.is_valid():
+        site_settings = SiteSettingsForm(request.POST, instance=request.user.sitesettings)
+        if colour_form.is_valid() and profile_settings.is_valid() and site_settings.is_valid():
             colour_form.save()
+            site_settings.save()
             if 'avatar' in request.FILES:
                 osu_user = get_user_by_username(request.user.username)
                 extension = request.FILES['avatar'].name.split('.')[-1]
@@ -116,10 +120,12 @@ def settings(request):
             messages.success(request, 'Settings saved successfully!')
             return redirect('settings')
     else:
-        colour_form = UserSettingsForm(instance=colour_settings)
+        colour_form = ColourSettingsForm(instance=colour_settings)
         profile_settings = UserProfileForms(instance=profile)
+        site_settings = SiteSettingsForm(instance=site_settings)
     return render(request, 'users/settings.html', {
         'colour_settings': colour_settings,
         'colour_form': colour_form,
-        'profile_settings': profile_settings
+        'profile_settings': profile_settings,
+        'site_settings': site_settings
     })

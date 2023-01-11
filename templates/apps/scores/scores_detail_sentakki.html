@@ -25,8 +25,21 @@
         <a href="{% url 'beatmapset_detail' beatmapset.beatmapset_id %}" class="btn btn-ayaka"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 20px"></i> View beatmap</a>
         <p></p>
         <div style="overflow:hidden">
-            <h2 style="font-weight:900">{{ beatmapset.title }}</h2>
-            <h4>{{ beatmap.beatmapset.artist }}</h4>
+            {% if site_settings and site_settings.use_traditional_metadata %}
+                {% if beatmapset.title_unicode %}
+                    <h2 style="font-weight:900">{{ beatmapset.title_unicode }}</h2>
+                {% else %}
+                    <h2 style="font-weight:900">{{ beatmapset.title }}</h2>
+                {% endif %}
+                {% if beatmapset.artist_unicode %}
+                    <h4>{{ beatmap.beatmapset.artist_unicode }}</h4>
+                {% else %}
+                    <h4>{{ beatmap.beatmapset.artist }}</h4>
+                {% endif %}
+            {% else %}
+                <h2 style="font-weight:900">{{ beatmapset.title }}</h2>
+                <h4>{{ beatmap.beatmapset.artist }}</h4>
+            {% endif %}
             <p>
                 {% with star_color=beatmap.difficulty_rating|get_star_color %}
                     {% include "snippets/beatmaps/rulesets-symbol.html" %}
