@@ -24,6 +24,9 @@ CLIENT_SECRET = config('CLIENT_SECRET', default='')
 
 
 class DummyJsonView(APIView):
+    """
+    This view is for testing purposes. It just print the request data get from request and return success.
+    """
     permissions_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -35,6 +38,10 @@ class DummyJsonView(APIView):
 
 
 class SubmitSoloScoreView(APIView):
+    """
+    API path for sending the score to server.
+    This path require the client ID and secret authentication.
+    """
     permissions_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -62,6 +69,11 @@ class SubmitSoloScoreView(APIView):
 
 
 class ClientUserRegistration(APIView):
+    """
+    API path for sending username and password for registration on this database.
+    This path will use when user register the account on the client to make it sync on both side.
+    This path require the client ID and secret authentication.
+    """
     permissions_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -83,6 +95,10 @@ class ClientUserRegistration(APIView):
 
 
 class ImportBeatmapsetRequest(APIView):
+    """
+    API path for request for importing the beatmap to the database.
+    To make this path not be used on outside the client this path require the client ID and secret authentication.
+    """
     permissions_classes = [permissions.AllowAny]
 
     def post(self, request):
