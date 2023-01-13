@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from utility.osu_database import get_beatmapset_by_id
+
 
 class OsuUser:
     """A model that represents an osu! user (phpbb_users table in osu! database)"""

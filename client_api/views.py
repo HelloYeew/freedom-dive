@@ -166,6 +166,10 @@ class ImportBeatmapsetRequest(APIView):
 
 
 class ImportBeatmapConvertedStatistics(APIView):
+    """
+    API path for importing the converted beatmap statistics to the database.
+    This path require the client ID and secret authentication.
+    """
     permissions_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -225,6 +229,10 @@ class ImportBeatmapConvertedStatistics(APIView):
 
 
 class PerformanceSubmission(APIView):
+    """
+    API path for submitting performance data to the database.
+    This path require the client ID and secret authentication.
+    """
     permissions_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -248,6 +256,10 @@ class PerformanceSubmission(APIView):
 
 
 class PerformanceSubmissionByGraph(APIView):
+    """
+    API path for submitting performance data to the database via graph component from client.
+    This path require the client ID and secret authentication.
+    """
     permissions_classes = [permissions.AllowAny]
 
     def post(self, request):
