@@ -38,6 +38,7 @@
         </p>
         <div style="overflow:hidden">
             <h2>Converted beatmap detail</h2>
+            {% if converted_beatmap_info %}
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 {% for converted_info in converted_beatmap_info %}
                 <li class="nav-item" role="presentation">
@@ -67,6 +68,9 @@
                 </div>
                 {% endfor %}
             </div>
+            {% else %}
+                <p>No converted beatmap info available :(</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

@@ -179,3 +179,11 @@ small.text-muted {
 .form-check-label {
     color: var(--color-primary)!important;
 }
+
+.breadcrumb-item {
+    --bs-breadcrumb-divider-color: var(--color-primary);
+}
+
+.breadcrumb-item.active {
+    color: var(--color-primary)!important;
+}
