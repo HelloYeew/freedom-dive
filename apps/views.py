@@ -4,11 +4,11 @@ import traceback
 import sentry_sdk
 from decouple import config
 from django.core.paginator import Paginator
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from apps.models import ScoreStore, ClientChangelog, WebChangelog, PerformanceStore
 from ayaka import settings
-from mirror.models import BeatmapSet, Beatmap
+from mirror.models import BeatmapSet, Beatmap, ConvertedBeatmapInfo
 from users.models import ColourSettings, SiteSettings
 from utility.osu_database import get_beatmapset_by_id, get_user_by_id, get_beatmap_by_id
 from utility.ruleset.score_processor.utils import get_readable_score
@@ -83,7 +83,7 @@ def beatmapset_detail(request, beatmapset_id):
             return render(request, '404.html', status=404)
     beatmaps = Beatmap.objects.filter(beatmapset=beatmapset).order_by('difficulty_rating')
     if request.user.is_authenticated:
-        return render(request, 'apps/beatmaps/beatmaps_detail.html', {
+        return render(request, 'apps/beatmaps/beatmapset_detail.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'beatmapset': beatmapset,
             'beatmaps': beatmaps,
@@ -91,9 +91,43 @@ def beatmapset_detail(request, beatmapset_id):
             'site_settings': SiteSettings.objects.get(user=request.user)
         })
     else:
-        return render(request, 'apps/beatmaps/beatmaps_detail.html', {
+        return render(request, 'apps/beatmaps/beatmapset_detail.html', {
             'beatmapset': beatmapset,
             'beatmaps': beatmaps,
+            's3_url': S3_URL
+        })
+
+
+def beatmap_detail(request, beatmapset_id, beatmap_id):
+    try:
+        beatmap = Beatmap.objects.get(beatmap_id=beatmap_id)
+        beatmapset = BeatmapSet.objects.get(beatmapset_id=beatmapset_id)
+    except BeatmapSet.DoesNotExist:
+        # Return 404
+        return render(request, '404.html', status=404)
+    except Beatmap.DoesNotExist:
+        # Redirect to beatmapset detail
+        return redirect('beatmapset_detail', beatmapset_id=beatmapset_id)
+    # Check if the beatmap is in the beatmapset
+    if beatmap.beatmapset != beatmapset:
+        # redirect to beatmapset detail page
+        return redirect('beatmapset_detail', beatmapset_id=beatmapset_id)
+    # Remove converted info that has ruleset ID equal to beatmap's ruleset ID
+    # Also exclude if ruleset_id is -1 for safety
+    converted_beatmap_info = ConvertedBeatmapInfo.objects.filter(beatmap_id=beatmap_id).exclude(ruleset_id=beatmap.play_mode).exclude(ruleset_id=-1).order_by('ruleset_id')
+    if request.user.is_authenticated:
+        return render(request, 'apps/beatmaps/beatmaps_detail.html', {
+            'colour_settings': ColourSettings.objects.get(user=request.user),
+            'beatmapset': beatmapset,
+            'beatmap': beatmap,
+            's3_url': S3_URL,
+            'converted_beatmap_info': converted_beatmap_info,
+            'site_settings': SiteSettings.objects.get(user=request.user)
+        })
+    else:
+        return render(request, 'apps/beatmaps/beatmaps_detail.html', {
+            'beatmapset': beatmapset,
+            'beatmap': beatmap,
             's3_url': S3_URL
         })
 

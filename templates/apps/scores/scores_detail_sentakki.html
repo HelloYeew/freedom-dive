@@ -45,11 +45,8 @@
             {% endif %}
             <p>
                 {% with star_color=beatmap.difficulty_rating|get_star_color %}
-                    {% include "snippets/beatmaps/rulesets-symbol.html" %}
-                    <span class="badge rounded-pill" style="background-color: {{ star_color.background_color }}; color: {{ star_color.color }}; font-size: 15px;">
-                ★
-                {{ beatmap.difficulty_rating|floatformat:2 }}
-            </span>
+                {% include "snippets/beatmaps/rulesets-symbol.html" %}
+                {% include "snippets/beatmaps/star-rating-badge.html" %}
                     {{ beatmap.version }}
                 {% endwith %}
             </p>
