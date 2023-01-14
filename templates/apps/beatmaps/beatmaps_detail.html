@@ -24,6 +24,10 @@
                 <li class="breadcrumb-item active" aria-current="page">{{ beatmap.version }}</li>
             </ol>
         </nav>
+        {#    TODO:Change icon on button#}
+        <button type="button" class="btn btn-ayaka" data-bs-toggle="modal" data-bs-target="#converted-info-modal">
+            <i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 20px"></i> Converted beatmap detail
+        </button>
         <p></p>
         <p>
             {% include "snippets/beatmaps/rulesets-symbol.html" %}
@@ -39,40 +43,52 @@
         <div style="overflow:hidden">
             {% include "snippets/beatmaps/beatmapset-card.html" %}
             <p></p>
-            <h2>Converted beatmap detail</h2>
-            {% if converted_beatmap_info %}
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                {% for converted_info in converted_beatmap_info %}
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab" data-bs-toggle="tab" data-bs-target="#{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab-pane" type="button" role="tab" aria-controls="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab-pane" aria-selected="true">{{ converted_info.ruleset_id|get_ruleset_name }}</button>
-                </li>
-                {% endfor %}
-            </ul>
-            <div class="tab-content" id="myTabContent">
-                {% for converted_info in converted_beatmap_info %}
-                <div class="tab-pane fade" id="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab-pane" role="tabpanel" aria-labelledby="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab" tabindex="0">
-                    <table class="table table-dark table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Note Type</th>
-                                <th scope="col">Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for note in converted_info.statistics|convert_json %}
-                            <tr>
-                                <td>{{ note.key|format_note_type_name }}</td>
-                                <td>{{ note.value }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="converted-info-modal" tabindex="-1" aria-labelledby="converted-info-header" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background-color: var(--color-background)">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="settings-header" style="color: var(--color-accent)">Converted beatmap detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                {% endfor %}
+                <div class="modal-body">
+                    {% if converted_beatmap_info %}
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            {% for converted_info in converted_beatmap_info %}
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab" data-bs-toggle="tab" data-bs-target="#{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab-pane" type="button" role="tab" aria-controls="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab-pane" aria-selected="true">{{ converted_info.ruleset_id|get_ruleset_name }}</button>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            {% for converted_info in converted_beatmap_info %}
+                                <div class="tab-pane fade" id="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab-pane" role="tabpanel" aria-labelledby="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab" tabindex="0">
+                                    <table class="table table-dark table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">Note Type</th>
+                                            <th scope="col">Value</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for note in converted_info.statistics|convert_json %}
+                                            <tr>
+                                                <td>{{ note.key|format_note_type_name }}</td>
+                                                <td>{{ note.value }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No converted beatmap info available :(</p>
+                    {% endif %}
+                </div>
             </div>
-            {% else %}
-                <p>No converted beatmap info available :(</p>
-            {% endif %}
         </div>
     </div>
 {% endblock %}
