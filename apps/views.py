@@ -140,7 +140,8 @@ def beatmap_detail(request, beatmapset_id, beatmap_id):
         return render(request, 'apps/beatmaps/beatmaps_detail.html', {
             'beatmapset': beatmapset,
             'beatmap': beatmap,
-            's3_url': S3_URL
+            's3_url': S3_URL,
+            'converted_beatmap_info': converted_beatmap_info
         })
 
 
