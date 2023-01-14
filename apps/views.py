@@ -141,7 +141,9 @@ def beatmap_detail(request, beatmapset_id, beatmap_id):
             'beatmapset': beatmapset,
             'beatmap': beatmap,
             's3_url': S3_URL,
-            'converted_beatmap_info': converted_beatmap_info
+            'converted_beatmap_info': converted_beatmap_info,
+            'score_rulesets': list(ruleset_per_score.keys()),
+            'all_score': all_score
         })
 
 
