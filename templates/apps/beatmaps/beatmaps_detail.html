@@ -40,7 +40,7 @@
             <img src="{% static "img/beatmaps/bpm-circle.svg" %}" alt="BPM" height="20px" width="20px"> {{ beatmap.bpm|floatformat }}
             <img src="{% static "img/beatmaps/circle-count-circle.svg" %}" alt="Circle count" height="20px" width="20px"> {{ beatmap.count_normal|intcomma }}
             <img src="{% static "img/beatmaps/slider-count-circle.svg" %}" alt="Slider count" height="20px" width="20px"> {{ beatmap.count_slider|intcomma }}
-            {% if beatmap.mode == 0 or beatmap.mode == 1 %}
+            {% if beatmap.play_mode == 0 or beatmap.play_mode == 1 %}
                 <img src="{% static "img/beatmaps/spinner-count-circle.svg" %}" alt="Spinner Count" height="20px" width="20px"> {{ beatmap.count_spinner|intcomma }}
             {% endif %}
         </p>
