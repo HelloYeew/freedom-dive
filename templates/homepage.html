@@ -47,7 +47,7 @@
                     Submitted by {{ latest_score.user.username }} at {{ latest_score.score.date|date:"d/m/Y H:i" }}
                 </p>
                 <div style="position: absolute; bottom: 0; right: 0; margin: 0.5rem;">
-                    <a href="{% url 'beatmapset_detail' latest_score.beatmapset.beatmapset_id %}" class="btn btn-ayaka"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 20px"></i> View beatmap</a>
+                    <a href="{% url 'beatmap_detail' latest_score.beatmapset.beatmapset_id latest_score.beatmap.beatmap_id %}" class="btn btn-ayaka"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 20px"></i> View beatmap</a>
                     <a href="{% url 'score_detail' latest_score.score.id %}" class="btn btn-ayaka"><i class="mdi mdi-clipboard-list" aria-hidden="true" style="font-size: 20px"></i> View score</a>
                 </div>
                 <div style="position: absolute; bottom: 0; left: 0; margin: 1rem; font-size: 1.2rem;">

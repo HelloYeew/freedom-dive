@@ -22,7 +22,7 @@
 
 <div class="container" style="padding-top: 6rem; padding-left: 5rem; padding-right: 5rem; ">
     <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Scores Info</h1>
-    <a href="{% url 'beatmapset_detail' beatmapset.beatmapset_id %}" class="btn btn-ayaka"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 20px"></i> View beatmap</a>
+    <a href="{% url 'beatmap_detail' beatmapset.beatmapset_id beatmap.beatmap_id %}" class="btn btn-ayaka"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 20px"></i> View beatmap</a>
     {% if user.is_authenticated %}
         <a href="{% url 'admin:apps_scorestore_change' score_object.id %}" class="btn btn-ayaka"><i class="mdi mdi-pencil" aria-hidden="true" style="font-size: 20px"></i> Edit score</a>
     {% endif %}
