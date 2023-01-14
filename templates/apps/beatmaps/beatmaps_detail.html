@@ -6,6 +6,7 @@
 {% load get_cleaned_score %}
 {% load get_osu_user %}
 {% load get_score_performance %}
+{% load convert_ruleset_short_name %}
 {% load round_down %}
 {% load convert_json %}
 {% load format_note_type_name %}
@@ -51,7 +52,7 @@
             <ul class="nav nav-tabs" id="score" role="tablist">
                 {% for ruleset in score_rulesets %}
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="{{ ruleset }}-tab" data-bs-toggle="tab" data-bs-target="#{{ ruleset }}-score-tab-pane" type="button" role="tab" aria-controls="{{ ruleset }}-tab-pane" aria-selected="true">{{ ruleset }}</button>
+                        <button class="nav-link" id="{{ ruleset }}-tab" data-bs-toggle="tab" data-bs-target="#{{ ruleset }}-score-tab-pane" type="button" role="tab" aria-controls="{{ ruleset }}-tab-pane" aria-selected="true">{{ ruleset|convert_ruleset_short_name }}</button>
                     </li>
                 {% endfor %}
             </ul>

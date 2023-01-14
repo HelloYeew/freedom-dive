@@ -84,3 +84,9 @@ def get_ruleset_id(ruleset_name: str) -> int:
     raise ValueError('Invalid ruleset_name: {}'.format(ruleset_name))
 
 
+def convert_ruleset_short_name_to_full_name(ruleset_short_name: str) -> str:
+    """
+    Convert a ruleset short name to its full name.
+    :param ruleset_short_name: The short name of the ruleset.
+    """
+    return get_ruleset_name(get_ruleset_id(ruleset_short_name))
