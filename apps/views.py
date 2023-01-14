@@ -1,7 +1,6 @@
 import json
 import traceback
 
-import sentry_sdk
 from decouple import config
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
@@ -116,7 +115,8 @@ def beatmap_detail(request, beatmapset_id, beatmap_id):
     # Remove converted info that has ruleset ID equal to beatmap's ruleset ID
     # Also exclude if ruleset_id is -1 for safety
     converted_beatmap_info = ConvertedBeatmapInfo.objects.filter(beatmap_id=beatmap_id).exclude(ruleset_id=beatmap.play_mode).exclude(ruleset_id=-1).order_by('ruleset_id')
-    all_score = ScoreStore.objects.filter(beatmap_id=beatmap_id).order_by('-date')
+    # Get only passed scores
+    all_score = ScoreStore.objects.filter(beatmap_id=beatmap_id).order_by('-date').exclude(passed=False)
     # Create a new list that contain only unique ruleset_short_name in all_score
     ruleset_per_score = {}
     for score in all_score:
