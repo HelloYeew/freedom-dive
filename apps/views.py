@@ -124,7 +124,6 @@ def beatmap_detail(request, beatmapset_id, beatmap_id):
             ruleset_per_score[score.ruleset_short_name] = []
         # Append score to the list
         ruleset_per_score[score.ruleset_short_name].append(score)
-    print(ruleset_per_score)
     if request.user.is_authenticated:
         return render(request, 'apps/beatmaps/beatmaps_detail.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
@@ -134,7 +133,7 @@ def beatmap_detail(request, beatmapset_id, beatmap_id):
             'converted_beatmap_info': converted_beatmap_info,
             'site_settings': SiteSettings.objects.get(user=request.user),
             'score_rulesets': list(ruleset_per_score.keys()),
-            'all_score': all_score
+            'ruleset_per_score': ruleset_per_score
         })
     else:
         return render(request, 'apps/beatmaps/beatmaps_detail.html', {
@@ -143,7 +142,7 @@ def beatmap_detail(request, beatmapset_id, beatmap_id):
             's3_url': S3_URL,
             'converted_beatmap_info': converted_beatmap_info,
             'score_rulesets': list(ruleset_per_score.keys()),
-            'all_score': all_score
+            'ruleset_per_score': ruleset_per_score
         })
 
 
