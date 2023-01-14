@@ -12,6 +12,7 @@ from mirror.models import BeatmapSet, Beatmap, ConvertedBeatmapInfo
 from users.models import ColourSettings, SiteSettings
 from utility.osu_database import get_beatmapset_by_id, get_user_by_id, get_beatmap_by_id
 from utility.ruleset.score_processor.utils import get_readable_score
+from utility.ruleset.utils import get_ruleset_id
 from utility.utils import get_osu_beatmap_statistics
 
 S3_URL = config('S3_URL', default='https://freedom-dive-assets.nyc3.digitaloceanspaces.com')
@@ -124,6 +125,19 @@ def beatmap_detail(request, beatmapset_id, beatmap_id):
             ruleset_per_score[score.ruleset_short_name] = []
         # Append score to the list
         ruleset_per_score[score.ruleset_short_name].append(score)
+    ruleset_list = list(ruleset_per_score.keys())
+    # Sort ruleset_list by get ruleset ID using get_ruleset_id function and sort it
+    ruleset_id = []
+    for ruleset in ruleset_list:
+        ruleset_id.append({
+            "id": get_ruleset_id(ruleset),
+            "name": ruleset
+        })
+    ruleset_id = sorted(ruleset_id, key=lambda k: k['id'])
+    # Get only the name of ruleset back to ruleset_list for convenience
+    ruleset_list = []
+    for ruleset in ruleset_id:
+        ruleset_list.append(ruleset['name'])
     if request.user.is_authenticated:
         return render(request, 'apps/beatmaps/beatmaps_detail.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
@@ -132,7 +146,7 @@ def beatmap_detail(request, beatmapset_id, beatmap_id):
             's3_url': S3_URL,
             'converted_beatmap_info': converted_beatmap_info,
             'site_settings': SiteSettings.objects.get(user=request.user),
-            'score_rulesets': list(ruleset_per_score.keys()),
+            'score_rulesets': ruleset_list,
             'ruleset_per_score': ruleset_per_score
         })
     else:
@@ -141,7 +155,7 @@ def beatmap_detail(request, beatmapset_id, beatmap_id):
             'beatmap': beatmap,
             's3_url': S3_URL,
             'converted_beatmap_info': converted_beatmap_info,
-            'score_rulesets': list(ruleset_per_score.keys()),
+            'score_rulesets': ruleset_list,
             'ruleset_per_score': ruleset_per_score
         })
 
