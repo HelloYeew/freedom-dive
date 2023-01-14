@@ -144,6 +144,5 @@ def get_readable_sentakki_score(score: ScoreStore.objects) -> dict:
         "great": great,
         "good": good,
         "miss": miss,
-        "critical_break_bonus": critical_break_bonus,
-        "critical_break_bonus_of": maximum_statistics['large_bonus']
+        "critical_break_bonus": critical_break_bonus
     }
