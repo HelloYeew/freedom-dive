@@ -115,6 +115,16 @@ def beatmap_detail(request, beatmapset_id, beatmap_id):
     # Remove converted info that has ruleset ID equal to beatmap's ruleset ID
     # Also exclude if ruleset_id is -1 for safety
     converted_beatmap_info = ConvertedBeatmapInfo.objects.filter(beatmap_id=beatmap_id).exclude(ruleset_id=beatmap.play_mode).exclude(ruleset_id=-1).order_by('ruleset_id')
+    all_score = ScoreStore.objects.filter(beatmap_id=beatmap_id).order_by('-date')
+    # Create a new list that contain only unique ruleset_short_name in all_score
+    ruleset_per_score = {}
+    for score in all_score:
+        # Check that ruleset is in key of ruleset_per_score
+        if score.ruleset_short_name not in ruleset_per_score:
+            ruleset_per_score[score.ruleset_short_name] = []
+        # Append score to the list
+        ruleset_per_score[score.ruleset_short_name].append(score)
+    print(ruleset_per_score)
     if request.user.is_authenticated:
         return render(request, 'apps/beatmaps/beatmaps_detail.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
@@ -122,7 +132,9 @@ def beatmap_detail(request, beatmapset_id, beatmap_id):
             'beatmap': beatmap,
             's3_url': S3_URL,
             'converted_beatmap_info': converted_beatmap_info,
-            'site_settings': SiteSettings.objects.get(user=request.user)
+            'site_settings': SiteSettings.objects.get(user=request.user),
+            'score_rulesets': list(ruleset_per_score.keys()),
+            'all_score': all_score
         })
     else:
         return render(request, 'apps/beatmaps/beatmaps_detail.html', {
