@@ -3,6 +3,11 @@
 {% load length_format %}
 {% load get_ruleset_name %}
 {% load get_ruleset_short_name %}
+{% load get_cleaned_score %}
+{% load get_osu_user %}
+{% load get_score_performance %}
+{% load convert_ruleset_short_name %}
+{% load round_down %}
 {% load convert_json %}
 {% load format_note_type_name %}
 {% load humanize %}
@@ -24,6 +29,9 @@
                 <li class="breadcrumb-item active" aria-current="page">{{ beatmap.version }}</li>
             </ol>
         </nav>
+        <button type="button" class="btn btn-ayaka" data-bs-toggle="modal" data-bs-target="#converted-info-modal">
+            <i class="mdi mdi-file-arrow-up-down" aria-hidden="true" style="font-size: 20px"></i> Converted beatmap detail
+        </button>
         <p></p>
         <p>
             {% include "snippets/beatmaps/rulesets-symbol.html" %}
@@ -39,40 +47,154 @@
         <div style="overflow:hidden">
             {% include "snippets/beatmaps/beatmapset-card.html" %}
             <p></p>
-            <h2>Converted beatmap detail</h2>
-            {% if converted_beatmap_info %}
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                {% for converted_info in converted_beatmap_info %}
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab" data-bs-toggle="tab" data-bs-target="#{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab-pane" type="button" role="tab" aria-controls="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab-pane" aria-selected="true">{{ converted_info.ruleset_id|get_ruleset_name }}</button>
-                </li>
+            <h2>Score</h2>
+            {% if score_rulesets %}
+            <ul class="nav nav-tabs" id="score" role="tablist">
+                {% for ruleset in score_rulesets %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="{{ ruleset }}-tab" data-bs-toggle="tab" data-bs-target="#{{ ruleset }}-score-tab-pane" type="button" role="tab" aria-controls="{{ ruleset }}-tab-pane" aria-selected="true">{{ ruleset|convert_ruleset_short_name }}</button>
+                    </li>
                 {% endfor %}
             </ul>
-            <div class="tab-content" id="myTabContent">
-                {% for converted_info in converted_beatmap_info %}
-                <div class="tab-pane fade" id="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab-pane" role="tabpanel" aria-labelledby="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab" tabindex="0">
-                    <table class="table table-dark table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Note Type</th>
-                                <th scope="col">Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for note in converted_info.statistics|convert_json %}
-                            <tr>
-                                <td>{{ note.key|format_note_type_name }}</td>
-                                <td>{{ note.value }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+            <div class="tab-content" id="score-content">
+                {% for ruleset in score_rulesets %}
+                    <div class="tab-pane fade" id="{{ ruleset }}-score-tab-pane" role="tabpanel" aria-labelledby="{{ ruleset }}-tab" tabindex="0">
+                        <table class="table table-dark table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">User</th>
+                                    <th scope="col">Score</th>
+                                    <th scope="col">Accuracy</th>
+                                    <th scope="col">Max Combo</th>
+                                    {% if ruleset == "osu" %}
+                                        <th scope="col">Great</th>
+                                        <th scope="col">OK</th>
+                                        <th scope="col">Meh</th>
+                                        <th scope="col">Miss</th>
+                                    {% elif ruleset == "tau" %}
+                                        <th scope="col">Great</th>
+                                        <th scope="col">OK</th>
+                                        <th scope="col">Miss</th>
+                                    {% elif ruleset == "Sentakki" %}
+                                        <th scope="col">Perfect</th>
+                                        <th scope="col">Great</th>
+                                        <th scope="col">Good</th>
+                                        <th scope="col">Miss</th>
+                                    {% else %}
+                                        <th scope="col">Score</th>
+                                    {% endif %}
+                                    <th scope="col">PP</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Mods</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for score_list in ruleset_per_score|convert_json %}
+                                    {% if score_list.key == ruleset %}
+                                        {% for score in score_list.value %}
+                                        <tr>
+                                            <td>{{ score.id }}</td>
+                                            {% with score.user_id|get_osu_user as user %}
+                                                <td>{{ user.username }}</td>
+                                            {% endwith %}
+                                            {% with score|get_cleaned_score as cleaned_score %}
+                                                <td>{{ cleaned_score.total_score|intcomma }}</td>
+                                                {% if cleaned_score.accuracy == 100 %}
+                                                    <td style="color:greenyellow">{{ cleaned_score.accuracy|floatformat:2 }}%</td>
+                                                {% else %}
+                                                    <td>{{ cleaned_score.accuracy|floatformat:2 }}%</td>
+                                                {% endif %}
+                                                {% if cleaned_score.max_combo == cleaned_score.max_combo_of %}
+                                                    <td style="color:greenyellow">{{ cleaned_score.max_combo|intcomma }}x</td>
+                                                {% else %}
+                                                    <td>{{ cleaned_score.max_combo|intcomma }}x</td>
+                                                {% endif %}
+                                                {% if ruleset == "osu" %}
+                                                    <td>{{ cleaned_score.great }}</td>
+                                                    <td>{{ cleaned_score.ok }}</td>
+                                                    <td>{{ cleaned_score.meh }}</td>
+                                                    <td>{{ cleaned_score.miss }}</td>
+                                                {% elif ruleset == "tau" %}
+                                                    <td>{{ cleaned_score.great }}</td>
+                                                    <td>{{ cleaned_score.ok }}</td>
+                                                    <td>{{ cleaned_score.miss }}</td>
+                                                {% elif ruleset == "Sentakki" %}
+                                                    <td>{{ cleaned_score.perfect }}</td>
+                                                    <td>{{ cleaned_score.great }}</td>
+                                                    <td>{{ cleaned_score.good }}</td>
+                                                    <td>{{ cleaned_score.miss }}</td>
+                                                {% else %}
+                                                    <td>{{ score.statistics }}</td>
+                                                {% endif %}
+                                                {% with score|get_score_performance as performance %}
+                                                    {% if performance.performance %}
+                                                    <td>{{ performance.performance.pp|round_down }}</td>
+                                                    {% else %}
+                                                    <td><i class="mdi mdi-alert-circle" aria-hidden="true" style="font-size: 15px"></i></td>
+                                                    {% endif %}
+                                                {% endwith %}
+                                                <td>{{ score.date }}</td>
+                                                <td>{{ cleaned_score.mods }}</td>
+                                            {% endwith %}
+                                        </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 {% endfor %}
             </div>
             {% else %}
-                <p>No converted beatmap info available :(</p>
+                <p>No score found.</p>
             {% endif %}
+        </div>
+    </div>
+
+    <div class="modal fade" id="converted-info-modal" tabindex="-1" aria-labelledby="converted-info-header" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background-color: var(--color-background)">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="settings-header" style="color: var(--color-accent)">Converted beatmap detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% if converted_beatmap_info %}
+                        <ul class="nav nav-tabs" id="convert-info" role="tablist">
+                            {% for converted_info in converted_beatmap_info %}
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab" data-bs-toggle="tab" data-bs-target="#{{ converted_info.ruleset_id|get_ruleset_short_name }}-convert-info-tab-pane" type="button" role="tab" aria-controls="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab-pane" aria-selected="true">{{ converted_info.ruleset_id|get_ruleset_name }}</button>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="tab-content" id="convert-info-content">
+                            {% for converted_info in converted_beatmap_info %}
+                                <div class="tab-pane fade" id="{{ converted_info.ruleset_id|get_ruleset_short_name }}-convert-info-tab-pane" role="tabpanel" aria-labelledby="{{ converted_info.ruleset_id|get_ruleset_short_name }}-tab" tabindex="0">
+                                    <table class="table table-dark table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Note Type</th>
+                                                <th scope="col">Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for note in converted_info.statistics|convert_json %}
+                                            <tr>
+                                                <td>{{ note.key|format_note_type_name }}</td>
+                                                <td>{{ note.value }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No converted beatmap info available :(</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

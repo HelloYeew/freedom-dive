@@ -206,4 +206,5 @@ class Beatmap:
 
         :return: the beatmap set of this beatmap
         """
+        from utility.osu_database import get_beatmapset_by_id
         return get_beatmapset_by_id(self.beatmapset_id)

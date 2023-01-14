@@ -14,7 +14,7 @@
 
 <div class="container" style="padding-top: 6rem; padding-left: 5rem; padding-right: 5rem; ">
     <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Scores Info</h1>
-    <a href="{% url 'beatmapset_detail' beatmapset.beatmapset_id %}" class="btn btn-ayaka"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 20px"></i> View beatmap</a>
+    <a href="{% url 'beatmap_detail' beatmapset.beatmapset_id beatmap.beatmap_id %}" class="btn btn-ayaka"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 20px"></i> View beatmap</a>
     <p></p>
     <div style="overflow:hidden">
         <h2>Beatmaps</h2>
