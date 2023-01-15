@@ -1,0 +1,53 @@
+{% load static %}
+
+<div class="card" style="background-image: url('{{ s3_url }}/cover/{{ beatmapset.beatmapset_id }}.jpg'), url('{% static "img/default_beatmaps.png" %}'); background-size: cover; background-repeat: no-repeat; background-position: center; height: 300px; width: 100%; border-color: var(--color-accent)">
+    <div class="card-img" style="background-color: var(--color-background); opacity: 80%; width: 100%; height: 100%;"></div>
+    <div class="card-img-overlay">
+        {% if site_settings and site_settings.use_traditional_metadata %}
+            {% if beatmapset.title_unicode != "" and beatmapset.title_unicode != None %}
+                <h3 style="font-weight: 800; color: var(--color-accent);">{{ beatmapset.title_unicode }}</h3>
+            {% elif beatmapset.title_unicode == "" or beatmapset.title_unicode == None and beatmapset.title != "" %}
+                <h3 style="font-weight: 800; color: var(--color-accent);">{{ beatmapset.title }}</h3>
+            {% else %}
+                <h3> </h3>
+            {% endif %}
+            {% if beatmapset.artist_unicode != "" and beatmapset.artist_unicode != None %}
+                <h5>{{ beatmapset.artist_unicode }}</h5>
+            {% elif beatmapset.artist_unicode == "" or beatmapset.artist_unicode == None and beatmapset.artist != "" %}
+                <h5>{{ beatmapset.artist }}</h5>
+            {% else %}
+                <h5> </h5>
+            {% endif %}
+        {% else %}
+            {% if beatmapset.title != "" %}
+                <h3 style="font-weight: 800; color: var(--color-accent);">{{ beatmapset.title }}</h3>
+            {% else %}
+                <h3> </h3>
+            {% endif %}
+            {% if beatmapset.artist != "" %}
+                <h5>{{ beatmapset.artist }}</h5>
+            {% else %}
+                <h5> </h5>
+            {% endif %}
+        {% endif %}
+        <p class="card-text text-muted">{{ beatmapset.source }}</p>
+        <h3 style="position: absolute; top: 0; right: 0; margin: 0.5rem;">{% include "snippets/beatmaps/approve-status-badge.html" %}</h3>
+        <div style="position: absolute; bottom: 0; right: 0; margin: 0.5rem;">
+            <audio controls>
+                <source src="//b.ppy.sh/preview/{{ beatmapset.beatmapset_id }}.mp3" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        <div style="position: absolute; bottom: 0; left: 0; margin: 1rem;">
+            <p class="beatmap-infobox-date">mapped by {{ beatmapset.creator }}</p>
+            <p class="beatmap-infobox-date">submitted {{ beatmapset.submit_date | date:"j F Y H:i:s" }}</p>
+            {% if beatmap.approved == '1' %}
+                <p class="beatmap-infobox-date">ranked {{ beatmapset.approved_date | date:"j F Y H:i:s" }}</p>
+            {% elif beatmap.approved == '3' %}
+                <p class="beatmap-infobox-date">qualified {{ beatmapset.approved_date | date:"j F Y H:i:s" }}</p>
+            {% else %}
+                <p class="beatmap-infobox-date">last updated {{ beatmapset.last_update | date:"j F Y H:i:s" }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>

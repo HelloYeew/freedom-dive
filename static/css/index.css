@@ -1,10 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@300;400;500;600;700;800;900&display=swap');
+
 ::selection {
     color: var(--color-primary);
     background: var(--color-accent);
 }
 
 * {
-    font-family: 'Comfortaa', cursive;
+    font-family: 'Comfortaa', 'M PLUS Rounded 1c', 'Gothic A1', 'Noto Sans Thai', 'Noto Sans SC', sans-serif;
     font-size: 14px;
 }
 
@@ -171,5 +177,13 @@ small.text-muted {
 }
 
 .form-check-label {
+    color: var(--color-primary)!important;
+}
+
+.breadcrumb-item {
+    --bs-breadcrumb-divider-color: var(--color-primary);
+}
+
+.breadcrumb-item.active {
     color: var(--color-primary)!important;
 }

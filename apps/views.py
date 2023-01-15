@@ -3,14 +3,15 @@ import traceback
 
 from decouple import config
 from django.core.paginator import Paginator
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from apps.models import ScoreStore, ClientChangelog, WebChangelog, PerformanceStore
 from ayaka import settings
-from mirror.models import BeatmapSet, Beatmap
+from mirror.models import BeatmapSet, Beatmap, ConvertedBeatmapInfo
 from users.models import ColourSettings, SiteSettings
 from utility.osu_database import get_beatmapset_by_id, get_user_by_id, get_beatmap_by_id
 from utility.ruleset.score_processor.utils import get_readable_score
+from utility.ruleset.utils import get_ruleset_id
 from utility.utils import get_osu_beatmap_statistics
 
 S3_URL = config('S3_URL', default='https://freedom-dive-assets.nyc3.digitaloceanspaces.com')
@@ -92,7 +93,7 @@ def beatmapset_detail(request, beatmapset_id):
             return render(request, '404.html', status=404)
     beatmaps = Beatmap.objects.filter(beatmapset=beatmapset).order_by('difficulty_rating')
     if request.user.is_authenticated:
-        return render(request, 'apps/beatmaps/beatmaps_detail.html', {
+        return render(request, 'apps/beatmaps/beatmapset_detail.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'beatmapset': beatmapset,
             'beatmaps': beatmaps,
@@ -100,10 +101,72 @@ def beatmapset_detail(request, beatmapset_id):
             'site_settings': SiteSettings.objects.get(user=request.user)
         })
     else:
-        return render(request, 'apps/beatmaps/beatmaps_detail.html', {
+        return render(request, 'apps/beatmaps/beatmapset_detail.html', {
             'beatmapset': beatmapset,
             'beatmaps': beatmaps,
             's3_url': S3_URL
+        })
+
+
+def beatmap_detail(request, beatmapset_id, beatmap_id):
+    try:
+        beatmap = Beatmap.objects.get(beatmap_id=beatmap_id)
+        beatmapset = BeatmapSet.objects.get(beatmapset_id=beatmapset_id)
+    except BeatmapSet.DoesNotExist:
+        # Return 404
+        return render(request, '404.html', status=404)
+    except Beatmap.DoesNotExist:
+        # Redirect to beatmapset detail
+        return redirect('beatmapset_detail', beatmapset_id=beatmapset_id)
+    # Check if the beatmap is in the beatmapset
+    if beatmap.beatmapset != beatmapset:
+        # redirect to beatmapset detail page
+        return redirect('beatmapset_detail', beatmapset_id=beatmapset_id)
+    # Remove converted info that has ruleset ID equal to beatmap's ruleset ID
+    # Also exclude if ruleset_id is -1 for safety
+    converted_beatmap_info = ConvertedBeatmapInfo.objects.filter(beatmap_id=beatmap_id).exclude(ruleset_id=beatmap.play_mode).exclude(ruleset_id=-1).order_by('ruleset_id')
+    # Get only passed scores
+    all_score = ScoreStore.objects.filter(beatmap_id=beatmap_id).order_by('-date').exclude(passed=False)
+    # Create a new list that contain only unique ruleset_short_name in all_score
+    ruleset_per_score = {}
+    for score in all_score:
+        # Check that ruleset is in key of ruleset_per_score
+        if score.ruleset_short_name not in ruleset_per_score:
+            ruleset_per_score[score.ruleset_short_name] = []
+        # Append score to the list
+        ruleset_per_score[score.ruleset_short_name].append(score)
+    ruleset_list = list(ruleset_per_score.keys())
+    # Sort ruleset_list by get ruleset ID using get_ruleset_id function and sort it
+    ruleset_id = []
+    for ruleset in ruleset_list:
+        ruleset_id.append({
+            "id": get_ruleset_id(ruleset),
+            "name": ruleset
+        })
+    ruleset_id = sorted(ruleset_id, key=lambda k: k['id'])
+    # Get only the name of ruleset back to ruleset_list for convenience
+    ruleset_list = []
+    for ruleset in ruleset_id:
+        ruleset_list.append(ruleset['name'])
+    if request.user.is_authenticated:
+        return render(request, 'apps/beatmaps/beatmaps_detail.html', {
+            'colour_settings': ColourSettings.objects.get(user=request.user),
+            'beatmapset': beatmapset,
+            'beatmap': beatmap,
+            's3_url': S3_URL,
+            'converted_beatmap_info': converted_beatmap_info,
+            'site_settings': SiteSettings.objects.get(user=request.user),
+            'score_rulesets': ruleset_list,
+            'ruleset_per_score': ruleset_per_score
+        })
+    else:
+        return render(request, 'apps/beatmaps/beatmaps_detail.html', {
+            'beatmapset': beatmapset,
+            'beatmap': beatmap,
+            's3_url': S3_URL,
+            'converted_beatmap_info': converted_beatmap_info,
+            'score_rulesets': ruleset_list,
+            'ruleset_per_score': ruleset_per_score
         })
 
 

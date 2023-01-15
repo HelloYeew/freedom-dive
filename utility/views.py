@@ -106,59 +106,6 @@ def import_specific_beatmapset_from_osu_api(request):
         return render(request, '403.html', status=403)
 
 
-def import_beatmaps_from_osu_public(request):
-    if request.method == 'POST':
-        form = ImportSpecificBeatmapSetForm(request.POST)
-        if form.is_valid():
-            # Check that beatmaps are not already in database
-            beatmaps = get_beatmapset_by_id(form.cleaned_data['beatmapset_id'])
-            if beatmaps:
-                messages.error(request, f'Beatmapset {beatmaps.title} is already in the database!')
-                download_beatmap_pic_to_s3(form.cleaned_data['beatmapset_id'])
-                ImportBeatmapsetUsageLog.objects.create(
-                    beatmapset_id=form.cleaned_data['beatmapset_id'],
-                    success=True,
-                    description=f'Beatmapset {beatmaps.title} is already in the database'
-                )
-                return redirect('beatmapset_detail', form.cleaned_data['beatmapset_id'])
-            try:
-                import_beatmapset_from_api(form.cleaned_data['beatmapset_id'])
-                import_beatmapset_to_mirror(get_beatmapset_by_id(form.cleaned_data['beatmapset_id']))
-                beatmapset = get_beatmap_by_beatmapset(form.cleaned_data['beatmapset_id'])
-                download_beatmap_pic_to_s3(form.cleaned_data['beatmapset_id'])
-                beatmaps = get_beatmapset_by_id(form.cleaned_data['beatmapset_id'])
-                for beatmap in beatmapset:
-                    import_beatmap_to_mirror(beatmap)
-                ImportBeatmapsetUsageLog.objects.create(
-                    beatmapset_id=form.cleaned_data['beatmapset_id'],
-                    success=True,
-                    description=f'Import beatmapset {beatmaps.title} successfully'
-                )
-                messages.success(request, f'Imported {BeatmapSet.objects.get(beatmapset_id=form.cleaned_data["beatmapset_id"]).title} successfully!')
-                return redirect('beatmapset_detail', form.cleaned_data['beatmapset_id'])
-            except Exception as e:
-                messages.error(request, 'Something went wrong while importing beatmapset :( We have been notified of this issue!')
-                if settings.DEBUG:
-                    traceback.print_exc()
-                ImportBeatmapsetUsageLog.objects.create(
-                    beatmapset_id=form.cleaned_data['beatmapset_id'],
-                    success=False,
-                    description=f'Importing beatmapset failed: ({e.__class__.__name__}) {e}'
-                )
-                return redirect('beatmapset')
-    else:
-        form = ImportSpecificBeatmapSetForm()
-    if request.user.is_authenticated:
-        return render(request, 'apps/beatmaps/import_beatmaps_from_osu_api.html', {
-            'colour_settings': ColourSettings.objects.get(user=request.user),
-            'form': form
-        })
-    else:
-        return render(request, 'apps/beatmaps/import_beatmaps_from_osu_api.html', {
-            'form': form
-        })
-
-
 @login_required()
 def create_sign_up_request(request):
     if request.user.is_superuser or request.user.is_staff:

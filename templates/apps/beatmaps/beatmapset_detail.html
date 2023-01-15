@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+{% load get_star_color %}
+
+{% block title %}{{ beatmapset.title }} detail{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 6rem; padding-left: 5rem; padding-right: 5rem; ">
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Beatmapset info</h1>
+    {% if user.is_staff %}
+    <a href="#" class="btn btn-ayaka"><i class="mdi mdi-cog" aria-hidden="true" style="font-size: 20px"></i> Utility</a>
+    {% endif %}
+    <p></p>
+    <div style="overflow:hidden">
+        {% include "snippets/beatmaps/beatmapset-card.html" %}
+        <h2>Difficulty</h2>
+        <div>
+            {% for beatmap in beatmaps %}
+                {% with star_color=beatmap.difficulty_rating|get_star_color %}
+                <p>
+                    <span class="badge rounded-pill" style="background-color: {{ star_color.background_color }}; color: {{ star_color.color }};">
+                        {% include "snippets/beatmaps/rulesets-symbol.html" %}
+                        {{ beatmap.difficulty_rating|floatformat:2 }}
+                    </span>
+                    <a href="{% url 'beatmap_detail' beatmapset.beatmapset_id beatmap.beatmap_id %}">{{ beatmap.version }}</a>
+                </p>
+                {% endwith %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

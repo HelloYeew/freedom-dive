@@ -4,6 +4,7 @@ register = template.Library()
 
 
 def get_star_color(difficulty_rating: float) -> dict:
+    """Return a dict containing the background color and text color for a star rating badge."""
     if difficulty_rating <= 1.5:
         background_color = 'rgb(65, 184, 255)'
     elif 1.5 < difficulty_rating <= 2.0:

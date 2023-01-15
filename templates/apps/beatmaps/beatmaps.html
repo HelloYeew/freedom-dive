@@ -18,7 +18,7 @@
         color: var(--color-accent)!important;
         font-size: 1.25rem!important;
         line-height: 1.25rem!important;
-        font-weight: 900!important;
+        font-weight: 700!important;
     }
 
     .beatmap-artist {
@@ -34,7 +34,6 @@
 </style>
 <div class="container" style="padding-top: 6rem; padding-left: 5rem; padding-right: 5rem; ">
     <h1 style="padding-top: 1rem; padding-bottom: 1rem;"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 40px;"></i> Beatmaps List</h1>
-    <a href="{% url 'import_beatmaps_from_osu_public' %}" class="btn btn-ayaka"><i class="mdi mdi-plus" aria-hidden="true" style="font-size: 20px"></i> Import beatmaps from osu!</a>
     <p></p>
     <div style="overflow:hidden">
         {% include 'snippets/beatmap_statistics_osu.html' %}
@@ -49,7 +48,7 @@
                             </div>
                             <div class="col-lg-9 rounded-start" style="background-image: url('{{ s3_url }}/card/{{ beatmapset.beatmapset_id }}.jpg'), url('{% static "img/default_beatmaps.png" %}'); background-size: cover; background-repeat: no-repeat; background-position: center;">
                                 <div class="card-body rounded-start rounded-3" style="background-color: rgba(30, 30, 30, 0.9);">
-                                    {% if site_settings and site_settings.use_traditional_metadata %}
+                                    {% if user.is_authenticated and site_settings.use_traditional_metadata %}
                                         {% if beatmapset.title_unicode != "" and beatmapset.title_unicode != None %}
                                         <p class="card-text beatmap-title">{{ beatmapset.title_unicode }}</p>
                                         {% elif beatmapset.title_unicode == "" or beatmapset.title_unicode == None and beatmapset.title != "" %}
@@ -65,6 +64,16 @@
                                         <p class="card-text beatmap-artist">by  </p>
                                         {% endif %}
                                     {% else %}
+                                        {% if beatmapset.title != "" %}
+                                        <p class="card-text beatmap-title">{{ beatmapset.title }}</p>
+                                        {% else %}
+                                        <p class="card-text beatmap-title"> </p>
+                                        {% endif %}
+                                        {% if beatmapset.artist != "" %}
+                                        <p class="card-text beatmap-artist">by {{ beatmapset.artist }}</p>
+                                        {% else %}
+                                        <p class="card-text beatmap-artist">by  </p>
+                                        {% endif %}
                                     {% endif %}
                                     <p class="card-text beatmap-creator text-muted">mapped by {{ beatmapset.creator }}</p>
                                     {% include "snippets/beatmaps/approve-status-badge.html" %}
