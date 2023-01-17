@@ -12,6 +12,6 @@ drf-yasg~=1.21.4
 mysql-connector-python~=8.0.31
 boto3~=1.26.42
 requests~=2.28.1
-sentry-sdk~=1.12.1
+sentry-sdk~=1.13.0
 martor~=1.6.15
 django-mdeditor~=0.1.20
