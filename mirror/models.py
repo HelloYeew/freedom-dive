@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-from utility.ruleset.utils import get_ruleset_short_name
+from utility.ruleset.utils import get_ruleset_short_name, get_ruleset_name
 
 
 class BeatmapSet(models.Model):
@@ -85,3 +85,24 @@ class ConvertedBeatmapInfo(models.Model):
 
     def __str__(self):
         return str(self.beatmap_id) + ' in ' + str(get_ruleset_short_name(self.ruleset_id))
+
+
+class Country(models.Model):
+    acronym = models.CharField(max_length=2, primary_key=True)
+    name = models.CharField(max_length=255)
+    display = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+
+class CountryStatistics(models.Model):
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    ruleset_id = models.IntegerField()
+    ranked_score = models.BigIntegerField(default=0)
+    play_count = models.BigIntegerField(default=0)
+    user_count = models.BigIntegerField(default=0)
+    pp = models.BigIntegerField(default=0)
+
+    def __str__(self):
+        return str(self.country.acronym) + ' in ' + str(get_ruleset_name(self.ruleset_id))
