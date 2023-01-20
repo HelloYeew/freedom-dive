@@ -72,24 +72,6 @@ class Beatmap(models.Model):
     def __str__(self):
         return self.beatmapset.artist + ' - ' + self.beatmapset.title + ' [' + self.version + ']'
 
-
-class Score(models.Model):
-    """
-    Database table for storing the score sent from client.
-    """
-    score_id = models.IntegerField(primary_key=True)
-    user_id = models.IntegerField()
-    beatmap_id = models.IntegerField()
-    ruleset_id = models.IntegerField()
-    data = models.JSONField()
-    has_replay = models.BooleanField(default=False)
-    preserve = models.BooleanField(default=False)
-    created_at = models.DateTimeField(default=timezone.now, null=True)
-    updated_at = models.DateTimeField(default=timezone.now, null=True)
-
-    def __str__(self):
-        return str(self.score_id) + ' by ' + str(self.user_id)
-
 class ScoreStore(models.Model):
     """
     Database table for storing score sent from client

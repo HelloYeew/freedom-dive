@@ -1,11 +1,9 @@
 from django import template
 
-from utility.osu_database import OsuUser
-
 register = template.Library()
 
 
-def get_osu_user(user_id: int) -> OsuUser | None:
+def get_osu_user(user_id: int):
     """
     Get the detail of an osu! user by its ID from osu! database.
     :param user_id: The ID of the osu! user.

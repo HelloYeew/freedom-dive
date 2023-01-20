@@ -1,11 +1,10 @@
 import mysql.connector
 from decouple import config
 
-from mirror import models
 from utility.osu_api import get_beatmapset_object_from_api, get_beatmap_object_list_from_api
 from utility.osu_database.database_models import *
 from utility.osu_database.model_utils import create_user_from_database_row, create_score_from_database_row, \
-    create_beatmapset_from_database_row, create_beatmap_from_database_row, insert_beatmapset_object_to_database, \
+    create_beatmap_from_database_row, insert_beatmapset_object_to_database, \
     insert_beatmap_object_to_database, update_beatmapset_object_in_database, update_beatmap_object_in_database
 
 BEATMAP_CREATOR_DUMMY_ID = int(config('BEATMAP_CREATOR_ID', default='10'))
@@ -79,6 +78,7 @@ def get_score_by_id(score_id: int) -> Score | None:
 
 def get_beatmapset_by_id(beatmapset_id: int) -> BeatmapSet | None:
     """Get a beatmapset by its id from osu! database"""
+    from utility.osu_database.model_utils import create_beatmapset_from_database_row
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute('USE osu')
