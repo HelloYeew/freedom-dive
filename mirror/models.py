@@ -77,6 +77,52 @@ class Score(models.Model):
     def __str__(self):
         return str(self.score_id) + ' by ' + str(self.user_id)
 
+class ScoreStore(models.Model):
+    """
+    Database table for storing score sent from client
+    Migrated from old ScoreStore in apps/models.py
+    - 2023-01-20 : Change `statistics` field name to `data`
+    """
+    score_id = models.CharField(max_length=100)
+    user_id = models.IntegerField()
+    beatmap_id = models.IntegerField()
+    created_at = models.DateTimeField(default=timezone.now, null=True)
+    updated_at = models.DateTimeField(default=timezone.now, null=True)
+    ruleset_short_name = models.CharField(max_length=100)
+    passed = models.BooleanField(default=False)
+    data = models.JSONField(default=dict)
+
+    def __str__(self):
+        return str(self.user_id) + ' - ' + str(self.beatmap_id) + ' - ' + self.created_at.strftime('%Y-%m-%d %H:%M:%S') + ' - ' + self.ruleset_short_name
+
+
+class Performance(models.Model):
+    """
+    Database table for storing performance data
+    Migrated from old PerformanceStore in apps/models.py
+    """
+    user_id = models.IntegerField()
+    score_id = models.CharField(max_length=100)
+    created_at = models.DateTimeField(default=timezone.now, null=True)
+    performance = models.JSONField(default=dict)
+
+    def __str__(self):
+        return str(self.user_id) + ' - ' + self.score_id
+
+
+class PerformanceByGraph(models.Model):
+    """
+    Database table for storing performance data
+    Migrated from old PerformanceStore in apps/models.py
+    """
+    user_id = models.IntegerField()
+    score_id = models.CharField(max_length=100)
+    created_at = models.DateTimeField(default=timezone.now, null=True)
+    performance = models.JSONField(default=dict)
+
+    def __str__(self):
+        return str(self.user_id) + ' - ' + self.score_id
+
 
 class ConvertedBeatmapInfo(models.Model):
     beatmap_id = models.IntegerField()
