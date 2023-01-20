@@ -1,10 +1,15 @@
 from django.db import models
 from django.utils import timezone
 
-from utility.ruleset.utils import get_ruleset_short_name
+from utility.ruleset.utils import get_ruleset_short_name, get_ruleset_name
 
 
 class BeatmapSet(models.Model):
+    """
+    Database table to store the beatmapset detail. This database is for showing in website purpose.
+    For real beatmapset detail it lives in osu! MySQL database.
+    For more information see BeatmapSet object structure in utility/database_models.py
+    """
     beatmapset_id = models.IntegerField(primary_key=True)
     user_id = models.IntegerField()
     artist = models.CharField(max_length=255)
@@ -35,6 +40,11 @@ class BeatmapSet(models.Model):
 
 
 class Beatmap(models.Model):
+    """
+    Database table to store the beatmap detail. This database is for showing in website purpose.
+    For real beatmap detail it lives in osu! MySQL database.
+    For more information see Beatmap object structure in utility/database_models.py
+    """
     beatmap_id = models.IntegerField(primary_key=True)
     beatmapset = models.ForeignKey(BeatmapSet, on_delete=models.CASCADE)
     user_id = models.IntegerField()
@@ -64,6 +74,9 @@ class Beatmap(models.Model):
 
 
 class Score(models.Model):
+    """
+    Database table for storing the score sent from client.
+    """
     score_id = models.IntegerField(primary_key=True)
     user_id = models.IntegerField()
     beatmap_id = models.IntegerField()
@@ -131,3 +144,24 @@ class ConvertedBeatmapInfo(models.Model):
 
     def __str__(self):
         return str(self.beatmap_id) + ' in ' + str(get_ruleset_short_name(self.ruleset_id))
+
+
+class Country(models.Model):
+    acronym = models.CharField(max_length=2, primary_key=True)
+    name = models.CharField(max_length=255)
+    display = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+
+class CountryStatistics(models.Model):
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    ruleset_id = models.IntegerField()
+    ranked_score = models.BigIntegerField(default=0)
+    play_count = models.BigIntegerField(default=0)
+    user_count = models.BigIntegerField(default=0)
+    pp = models.BigIntegerField(default=0)
+
+    def __str__(self):
+        return str(self.country.acronym) + ' in ' + str(get_ruleset_name(self.ruleset_id))
