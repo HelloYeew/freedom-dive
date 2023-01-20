@@ -8,6 +8,10 @@ BEATMAP_CREATOR_DUMMY_ID = int(config('BEATMAP_CREATOR_ID', default='10'))
 
 
 def import_beatmapset_to_mirror(beatmapset: BeatmapSet):
+    """
+    Import BeatmapSet object from parameter to mirror database
+    For convenience if the beatmapset already exists, it will be updated
+    """
     beatmapset_mirror = models.BeatmapSet.objects.filter(beatmapset_id=beatmapset.beatmapset_id).exists()
     if not beatmapset_mirror:
         models.BeatmapSet.objects.create(
@@ -66,6 +70,10 @@ def import_beatmapset_to_mirror(beatmapset: BeatmapSet):
 
 
 def import_beatmap_to_mirror(beatmap: Beatmap):
+    """
+    Import Beatmap object from parameter to mirror database
+    For convenience if the beatmap already exists, it will be updated
+    """
     beatmap_mirror = models.Beatmap.objects.filter(beatmap_id=beatmap.beatmap_id).exists()
     if not beatmap_mirror:
         beatmapset_mirror = models.BeatmapSet.objects.get(beatmapset_id=beatmap.beatmapset_id)

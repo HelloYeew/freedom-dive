@@ -5,6 +5,11 @@ from utility.ruleset.utils import get_ruleset_short_name, get_ruleset_name
 
 
 class BeatmapSet(models.Model):
+    """
+    Database table to store the beatmapset detail. This database is for showing in website purpose.
+    For real beatmapset detail it lives in osu! MySQL database.
+    For more information see BeatmapSet object structure in utility/database_models.py
+    """
     beatmapset_id = models.IntegerField(primary_key=True)
     user_id = models.IntegerField()
     artist = models.CharField(max_length=255)
@@ -35,6 +40,11 @@ class BeatmapSet(models.Model):
 
 
 class Beatmap(models.Model):
+    """
+    Database table to store the beatmap detail. This database is for showing in website purpose.
+    For real beatmap detail it lives in osu! MySQL database.
+    For more information see Beatmap object structure in utility/database_models.py
+    """
     beatmap_id = models.IntegerField(primary_key=True)
     beatmapset = models.ForeignKey(BeatmapSet, on_delete=models.CASCADE)
     user_id = models.IntegerField()
@@ -64,6 +74,9 @@ class Beatmap(models.Model):
 
 
 class Score(models.Model):
+    """
+    Database table for storing the score sent from client.
+    """
     score_id = models.IntegerField(primary_key=True)
     user_id = models.IntegerField()
     beatmap_id = models.IntegerField()

@@ -18,6 +18,9 @@ S3_URL = config('S3_URL', default='https://freedom-dive-assets.nyc3.digitalocean
 
 
 def homepage(request):
+    """
+    View for site's homepage
+    """
     latest_score = ScoreStore.objects.filter(passed=True).order_by('-id').first()
     try:
         beatmap = Beatmap.objects.get(beatmap_id=latest_score.beatmap_id)
@@ -51,6 +54,9 @@ def homepage(request):
 
 
 def beatmapset_list(request):
+    """
+    View for beatmaps list page
+    """
     beatmaps = BeatmapSet.objects.all().order_by('-beatmapset_id')
     paginator = Paginator(beatmaps, 30)
     page_number = request.GET.get('page')
@@ -73,6 +79,10 @@ def beatmapset_list(request):
 
 
 def beatmapset_detail(request, beatmapset_id):
+    """
+    View for beatmapset detail.
+    TODO: Make it more support osu! path
+    """
     try:
         beatmapset = BeatmapSet.objects.get(beatmapset_id=beatmapset_id)
     except BeatmapSet.DoesNotExist:
@@ -161,6 +171,10 @@ def beatmap_detail(request, beatmapset_id, beatmap_id):
 
 
 def scores_list(request):
+    """
+    View for score list page. This page is temporary since we don't show any score on any page.
+    This page must be removed when we can show score on other place.
+    """
     score = ScoreStore.objects.filter(passed=True).order_by('-id')
     score_list = []
     for i in score:
@@ -193,6 +207,9 @@ def scores_list(request):
 
 
 def score_detail(request, score_id):
+    """
+    View for showing score detail get from score ID as parameter.
+    """
     score_object = ScoreStore.objects.get(id=score_id)
     # We don't want to show the score if it's not passed
     if not score_object.passed:
@@ -325,6 +342,9 @@ def score_detail(request, score_id):
 
 
 def client_changelog_list(request):
+    """
+    View for client changelog list
+    """
     changelog = ClientChangelog.objects.filter(public=True).order_by('-date')
     if request.user.is_authenticated:
         return render(request, 'apps/changelog/client_changelog_list.html', {
@@ -338,6 +358,9 @@ def client_changelog_list(request):
 
 
 def web_changelog_list(request):
+    """
+    View for web changelog list.
+    """
     changelog = WebChangelog.objects.filter(public=True).order_by('-date')
     if request.user.is_authenticated:
         return render(request, 'apps/changelog/web_changelog_list.html', {
@@ -351,6 +374,9 @@ def web_changelog_list(request):
 
 
 def client_changelog_detail(request, version):
+    """
+    View for client changelog detail from version in parameter.
+    """
     try:
         changelog = ClientChangelog.objects.get(version=version)
     except ClientChangelog.DoesNotExist:
@@ -369,6 +395,9 @@ def client_changelog_detail(request, version):
 
 
 def web_changelog_detail(request, version):
+    """
+    View for web changelog detail from version in parameter.
+    """
     try:
         changelog = WebChangelog.objects.get(version=version)
     except WebChangelog.DoesNotExist:
