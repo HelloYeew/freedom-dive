@@ -1,4 +1,5 @@
 import json
+import math
 import traceback
 
 from decouple import config
@@ -237,7 +238,7 @@ def score_detail(request, score_id):
     if PerformanceStore.objects.filter(score_id=score_object.score_id, user_id=score_object.user_id).exists():
         try:
             performance = PerformanceStore.objects.get(score_id=score_object.score_id, user_id=score_object.user_id).performance
-            pp = int(performance['pp'])
+            pp = math.ceil(performance['pp'])
             # Calculate rich details of performance
             # Get all key of performance detail
             performance_detail_keys = list(performance.keys())
