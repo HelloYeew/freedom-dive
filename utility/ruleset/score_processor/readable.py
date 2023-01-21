@@ -36,6 +36,14 @@ def get_readable_osu_score(score: ScoreStore.objects) -> dict:
         small_tick_hit = statistics['small_tick_hit']
     except KeyError:
         small_tick_hit = 0
+    try:
+        spinner_bonus = statistics['large_bonus']
+    except KeyError:
+        spinner_bonus = 0
+    try:
+        spinner_spin = statistics['small_bonus']
+    except KeyError:
+        spinner_spin = 0
     return {
         "ruleset_id": score['ruleset_id'],
         "mods": mods,
@@ -53,6 +61,8 @@ def get_readable_osu_score(score: ScoreStore.objects) -> dict:
         "slider_tick_of": maximum_statistics['large_tick_hit'],
         "slider_end": small_tick_hit,
         "slider_end_of": maximum_statistics['small_tick_hit'],
+        "spinner_bonus": spinner_bonus,
+        "spinner_spin": spinner_spin
     }
 
 
