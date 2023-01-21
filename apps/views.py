@@ -176,7 +176,7 @@ def scores_list(request):
     View for score list page. This page is temporary since we don't show any score on any page.
     This page must be removed when we can show score on other place.
     """
-    score = ScoreStore.objects.all().order_by('-id')
+    score = ScoreStore.objects.filter(passed=True).order_by('-id')
     score_list = []
     for i in score:
         try:
