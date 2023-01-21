@@ -28,6 +28,10 @@ SECRET_KEY = config('SECRET_KEY', default="awesome_secret_key_here")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
+INTERNAL_IPS = (
+    '127.0.0.1'
+)
+
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default='')
 
 LOGIN_URL = '/login'
