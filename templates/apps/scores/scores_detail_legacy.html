@@ -16,6 +16,10 @@
     <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Scores Info</h1>
     <a href="{% url 'beatmap_detail' beatmapset.beatmapset_id beatmap.beatmap_id %}" class="btn btn-ayaka"><i class="mdi mdi-playlist-music" aria-hidden="true" style="font-size: 20px"></i> View beatmap</a>
     <p></p>
+    {% if failed %}
+    {% include "snippets/scores/failed-score-alert.html"%}
+    {% endif %}
+    <p></p>
     <div style="overflow:hidden">
         <h2>Beatmaps</h2>
         <img src="{{ s3_url }}/cover/{{ beatmapset.beatmapset_id }}.jpg" alt="Cover" style="width: 100%; height: 300px; object-fit: cover; border-radius: 10px;">

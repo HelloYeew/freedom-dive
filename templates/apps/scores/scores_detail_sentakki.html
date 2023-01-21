@@ -27,6 +27,10 @@
             <a href="{% url 'admin:apps_scorestore_change' score_object.id %}" class="btn btn-ayaka"><i class="mdi mdi-pencil" aria-hidden="true" style="font-size: 20px"></i> Edit score</a>
         {% endif %}
         <p></p>
+        {% if failed %}
+            {% include "snippets/scores/failed-score-alert.html"%}
+        {% endif %}
+        <p></p>
         <div style="overflow:hidden">
             {% if site_settings and site_settings.use_traditional_metadata %}
                 {% if beatmapset.title_unicode %}

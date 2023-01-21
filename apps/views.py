@@ -175,7 +175,7 @@ def scores_list(request):
     View for score list page. This page is temporary since we don't show any score on any page.
     This page must be removed when we can show score on other place.
     """
-    score = ScoreStore.objects.filter(passed=True).order_by('-id')
+    score = ScoreStore.objects.all().order_by('-id')
     score_list = []
     for i in score:
         try:
@@ -211,9 +211,6 @@ def score_detail(request, score_id):
     View for showing score detail get from score ID as parameter.
     """
     score_object = ScoreStore.objects.get(id=score_id)
-    # We don't want to show the score if it's not passed
-    if not score_object.passed:
-        return render(request, '404.html', status=404)
     osu_user = get_user_by_id(score_object.user_id)
     try:
         beatmap = Beatmap.objects.get(beatmap_id=score_object.beatmap_id)
@@ -225,6 +222,7 @@ def score_detail(request, score_id):
         beatmap = None
         beatmapset = None
     user = get_user_by_id(score_object.user_id)
+    failed = not score_object.passed
     score_json = json.dumps(score_object.statistics, indent=4)
     # Check that this score can use a new score page or not
     rich_render = True
@@ -269,6 +267,7 @@ def score_detail(request, score_id):
                 'score': score,
                 'score_json': score_json,
                 'score_user': user,
+                'failed': failed,
                 'beatmap': beatmap,
                 'beatmapset': beatmapset,
                 'pp': pp,
@@ -286,6 +285,7 @@ def score_detail(request, score_id):
                 'score': score,
                 'score_json': score_json,
                 'score_user': user,
+                'failed': failed,
                 'beatmap': beatmap,
                 'beatmapset': beatmapset,
                 'pp': pp,
@@ -303,6 +303,7 @@ def score_detail(request, score_id):
                 'score': score,
                 'score_json': score_json,
                 'score_user': user,
+                'failed': failed,
                 'beatmap': beatmap,
                 'beatmapset': beatmapset,
                 'pp': pp,
@@ -314,8 +315,10 @@ def score_detail(request, score_id):
         else:
             # This should not be reached but just put it as a fallback page
             return render(request, 'apps/scores/scores_detail_legacy.html', {
+                'colour_settings': ColourSettings.objects.get(user=request.user) if request.user.is_authenticated else None,
                 'score_json': score_json,
                 'score_user': user,
+                'failed': failed,
                 'beatmap': beatmap,
                 'beatmapset': beatmapset,
                 's3_url': S3_URL
@@ -326,6 +329,7 @@ def score_detail(request, score_id):
                 'colour_settings': ColourSettings.objects.get(user=request.user),
                 'score_json': score_json,
                 'score_user': user,
+                'failed': failed,
                 'beatmap': beatmap,
                 'beatmapset': beatmapset,
                 's3_url': S3_URL,
@@ -335,6 +339,7 @@ def score_detail(request, score_id):
             return render(request, 'apps/scores/scores_detail_legacy.html', {
                 'score_json': score_json,
                 'score_user': user,
+                'failed': failed,
                 'beatmap': beatmap,
                 'beatmapset': beatmapset,
                 's3_url': S3_URL
