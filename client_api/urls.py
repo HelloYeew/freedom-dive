@@ -9,5 +9,6 @@ urlpatterns = [
     path('performance/graph', PerformanceSubmissionByGraph.as_view(), name='api_client_performance_submission_by_graph'),
     path('user/register', ClientUserRegistration.as_view(), name='api_client_user_registration'),
     path('beatmapset/import', ImportBeatmapsetRequest.as_view(), name='api_client_import_beatmapset_request'),
+    path('beatmapset/lookup', BeatmapsetLookupRequest.as_view(), name='api_client_beatmapset_lookup'),
     path('beatmaps/statistics', ImportBeatmapConvertedStatistics.as_view(), name='api_client_import_beatmapset_converted_statistics')
 ]

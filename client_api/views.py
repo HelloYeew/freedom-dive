@@ -11,7 +11,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.models import ScoreStore, PerformanceStore, PerformanceByGraphStore
-from client_api.models import BeatmapsetImportAPIUsageLog, BeatmapConvertedStatisticsImportAPIUsageLog
+from client_api.models import BeatmapsetImportAPIUsageLog, BeatmapConvertedStatisticsImportAPIUsageLog, \
+    BeatmapsetLookupAPIUsageLog
 from mirror.models import BeatmapSet, ConvertedBeatmapInfo
 from mirror.utils import import_beatmapset_to_mirror, import_beatmap_to_mirror
 from utility.osu_database import get_beatmapset_by_id, import_beatmapset_from_api, get_beatmap_by_beatmapset, \
@@ -148,6 +149,59 @@ class ImportBeatmapsetRequest(APIView):
                         )
                         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={
                             'message': 'Something went wrong while importing beatmapset :( We have been notified of this issue!'})
+                except Exception as e:
+                    if settings.DEBUG:
+                        traceback.print_exc()
+                    sentry_sdk.set_context("payload", request.data)
+                    sentry_sdk.capture_exception(e)
+                    return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={
+                        'message': 'Something went wrong while importing beatmapset :( We have been notified of this issue!'})
+            else:
+                if request.data['beatmapset_id'] <= 0:
+                    return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                                    data={'message': 'Invalid beatmapset ID'})
+                else:
+                    return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY, data={'message': 'missing parameters'})
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED, data={'message': 'client unauthorized'})
+
+
+class BeatmapsetLookupRequest(APIView):
+    """
+    API for using in client's GetBeatmapRequest (beatmaps/lookup) that don't need beatmap information update like ImpoerBeatmapsetRequest
+    To make this path not be used on outside the client this path require the client ID and secret authentication.
+    """
+    permissions_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        if int(request.data['client_id']) == CLIENT_ID and request.data['client_secret'] == CLIENT_SECRET:
+            if request.data['beatmapset_id'] and request.data['beatmapset_id'] > 0:
+                try:
+                    beatmapset_id = int(request.data['beatmapset_id'])
+                    beatmaps = get_beatmapset_by_id(beatmapset_id)
+                    if beatmaps:
+                        BeatmapsetLookupAPIUsageLog.objects.create(
+                            beatmapset_id=beatmapset_id,
+                            success=True,
+                            description=f'Beatmapset {beatmaps.title} is already in the database, skipping import.'
+                        )
+                        return Response(status=status.HTTP_202_ACCEPTED,
+                                        data={'message': f'Beatmapset {beatmaps.title} has already been imported!'})
+                    else:
+                        import_beatmapset_from_api(beatmapset_id)
+                        import_beatmapset_to_mirror(get_beatmapset_by_id(beatmapset_id))
+                        beatmapset = get_beatmap_by_beatmapset(beatmapset_id)
+                        download_beatmap_pic_to_s3(beatmapset_id)
+                        beatmaps = get_beatmapset_by_id(beatmapset_id)
+                        for beatmap in beatmapset:
+                            import_beatmap_to_mirror(beatmap)
+                        BeatmapsetLookupAPIUsageLog.objects.create(
+                            beatmapset_id=beatmapset_id,
+                            success=True,
+                            description=f'Import beatmapset {beatmaps.title} successfully'
+                        )
+                        return Response(status=status.HTTP_200_OK, data={
+                            'message': f'Imported {BeatmapSet.objects.get(beatmapset_id=beatmapset_id).title} successfully! Now you can play it!'})
                 except Exception as e:
                     if settings.DEBUG:
                         traceback.print_exc()
