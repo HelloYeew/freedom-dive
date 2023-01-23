@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="container" style="padding-top: 6rem; padding-left: 5rem; padding-right: 5rem; ">
-        <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Beatmaps lookup API usage log</h1>
+        <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{% include "snippets/back-button.html" %} Beatmapsets lookup API usage log</h1>
         <a href="#failed-log" class="btn btn-ayaka"><i class="mdi mdi-message-alert" aria-hidden="true" style="font-size: 20px"></i> See failed log</a>
         <p></p>
         <div style="overflow:hidden">
@@ -14,7 +14,8 @@
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Time</th>
-                    <th scope="col">Beatmapset ID</th>
+                    <th scope="col">Lookup Type</th>
+                    <th scope="col">ID</th>
                     <th scope="col">Success</th>
                     <th scope="col">Description</th>
                 </tr>
@@ -24,7 +25,8 @@
                     <tr>
                         <th scope="row">{{ log.id }}</th>
                         <td>{{ log.time }}</td>
-                        <td>{{ log.beatmapset_id }}</td>
+                        <td>{{ log.lookup_type }}</td>
+                        <td>{{ log.lookup_id }}</td>
                         <td>
                             {% if log.success %}
                                 <i class="mdi mdi-check" aria-hidden="true" style="font-size: 20px; color: #5cb85c"></i>
@@ -44,7 +46,8 @@
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Time</th>
-                    <th scope="col">Beatmapset ID</th>
+                    <th scope="col">Lookup Type</th>
+                    <th scope="col">ID</th>
                     <th scope="col">Success</th>
                     <th scope="col">Description</th>
                 </tr>
@@ -54,7 +57,8 @@
                     <tr>
                         <th scope="row">{{ log.id }}</th>
                         <td>{{ log.time }}</td>
-                        <td>{{ log.beatmapset_id }}</td>
+                        <td>{{ log.lookup_type }}</td>
+                        <td>{{ log.lookup_id }}</td>
                         <td>
                             {% if log.success %}
                                 <i class="mdi mdi-check" aria-hidden="true" style="font-size: 20px; color: #5cb85c"></i>

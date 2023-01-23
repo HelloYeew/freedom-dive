@@ -42,6 +42,18 @@ def get_beatmap_object_list_from_api(beatmapset_id: int) -> list[Beatmap]:
     return [create_beatmap_object_from_api(beatmap) for beatmap in raw_api_result]
 
 
+def get_beatmap_object_from_api(beatmap_id: int) -> Beatmap | None:
+    """Get a Beatmap object from osu! api"""
+    raw_api_result = get_raw_beatmap_info(beatmap_id)
+    if len(raw_api_result) == 0:
+        return None
+    beatmap = create_beatmap_object_from_api(raw_api_result)
+    if beatmap is None:
+        return None
+    else:
+        return beatmap
+
+
 def get_beatmapset_object_from_api(beatmapset_id: int) -> BeatmapSet | None:
     """Get a BeatmapSet object from osu! api"""
     raw_api_result = get_raw_beatmapset_info(beatmapset_id)

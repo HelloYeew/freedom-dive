@@ -12,11 +12,12 @@ from rest_framework.views import APIView
 
 from apps.models import ScoreStore, PerformanceStore, PerformanceByGraphStore
 from client_api.models import BeatmapsetImportAPIUsageLog, BeatmapConvertedStatisticsImportAPIUsageLog, \
-    BeatmapsetLookupAPIUsageLog
+    BeatmapsetLookupAPIUsageLog, BeatmapLookupAPIUsageLog
 from mirror.models import BeatmapSet, ConvertedBeatmapInfo
 from mirror.utils import import_beatmapset_to_mirror, import_beatmap_to_mirror
+from utility.osu_api import get_beatmap_object_from_api, get_beatmapset_object_from_api
 from utility.osu_database import get_beatmapset_by_id, import_beatmapset_from_api, get_beatmap_by_beatmapset, \
-    update_beatmapset_from_api
+    update_beatmapset_from_api, get_beatmap_by_id
 from utility.ruleset.utils import get_ruleset_short_name
 from utility.utils import download_beatmap_pic_to_s3
 
@@ -168,7 +169,7 @@ class ImportBeatmapsetRequest(APIView):
 
 class BeatmapsLookupRequest(APIView):
     """
-    API for using in client's GetBeatmapRequest (beatmaps/lookup) that don't need beatmap information update like ImpoerBeatmapsetRequest
+    API for using in client's GetBeatmapRequest (beatmaps/lookup) that don't need beatmap information update like ImportBeatmapsetRequest
     To make this path not be used on outside the client this path require the client ID and secret authentication.
     """
     permissions_classes = [permissions.AllowAny]
@@ -180,7 +181,7 @@ class BeatmapsLookupRequest(APIView):
                     beatmapset_id = int(request.data['beatmapset_id'])
                     beatmaps = get_beatmapset_by_id(beatmapset_id)
                     if beatmaps:
-                        BeatmapsetLookupAPIUsageLog.objects.create(
+                        BeatmapLookupAPIUsageLog.objects.create(
                             beatmapset_id=beatmapset_id,
                             success=True,
                             description=f'Beatmapset {beatmaps.title} is already in the database, skipping import.'
@@ -195,7 +196,7 @@ class BeatmapsLookupRequest(APIView):
                         beatmaps = get_beatmapset_by_id(beatmapset_id)
                         for beatmap in beatmapset:
                             import_beatmap_to_mirror(beatmap)
-                        BeatmapsetLookupAPIUsageLog.objects.create(
+                        BeatmapLookupAPIUsageLog.objects.create(
                             beatmapset_id=beatmapset_id,
                             success=True,
                             description=f'Import beatmapset {beatmaps.title} successfully'
@@ -205,6 +206,11 @@ class BeatmapsLookupRequest(APIView):
                 except Exception as e:
                     if settings.DEBUG:
                         traceback.print_exc()
+                    BeatmapLookupAPIUsageLog.objects.create(
+                        beatmapset_id=request.data['beatmapset_id'],
+                        success=False,
+                        description=f'Importing beatmapset failed: ({e.__class__.__name__}) {e}'
+                    )
                     sentry_sdk.set_context("payload", request.data)
                     sentry_sdk.capture_exception(e)
                     return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={
@@ -215,6 +221,100 @@ class BeatmapsLookupRequest(APIView):
                                     data={'message': 'Invalid beatmapset ID'})
                 else:
                     return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY, data={'message': 'missing parameters'})
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED, data={'message': 'client unauthorized'})
+
+
+class BeatmapsetsLookupRequest(APIView):
+    """
+    API for using in client's GetBeatmapsetRequest (beatmapsets/lookup) that don't need beatmap information update like
+    ImportBeatmapsetRequest.
+    This path is different from BeatmapsLookupRequest since in the osu! API beatmapset lookup path can add querystring
+    `beatmap_id` to get the beatmapset information of the beatmap.
+    To make this path not be used on outside the client this path require the client ID and secret authentication.
+    Note : lookup_type can be either "set_id" or "beatmap_id"
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        if int(request.data['client_id']) == CLIENT_ID and request.data['client_secret'] == CLIENT_SECRET:
+            if request.data['lookup_type'] and request.data['id'] > 0:
+                if request.data['lookup_type'] == "beatmap_id":
+                    beatmap = get_beatmap_by_id(int(request.data['id']))
+                    if beatmap:
+                        BeatmapsetLookupAPIUsageLog.objects.create(
+                            lookup_type=request.data['lookup_type'],
+                            lookup_id=request.data['id'],
+                            success=True,
+                            description=f'Beatmap {beatmap.version} ({beatmap.beatmapset_id}) is already in the database, skipping import.'
+                        )
+                        return Response(status=status.HTTP_202_ACCEPTED,
+                                        data={'message': f'Beatmap {beatmap.version} ({beatmap.beatmapset_id}) has already been imported!'})
+                    else:
+                        beatmap_from_api = get_beatmap_object_from_api(int(request.data['id']))
+                        if beatmap_from_api:
+                            beatmapset_id = beatmap_from_api.beatmapset_id
+                            import_beatmapset_from_api(beatmapset_id)
+                            import_beatmapset_to_mirror(get_beatmapset_by_id(beatmapset_id))
+                            beatmapset = get_beatmap_by_beatmapset(beatmapset_id)
+                            download_beatmap_pic_to_s3(beatmapset_id)
+                            beatmaps = get_beatmapset_by_id(beatmapset_id)
+                            for beatmap in beatmapset:
+                                import_beatmap_to_mirror(beatmap)
+                            BeatmapsetLookupAPIUsageLog.objects.create(
+                                lookup_type=request.data['lookup_type'],
+                                lookup_id=request.data['id'],
+                                success=True,
+                                description=f'Import beatmapset {beatmaps.title} successfully'
+                            )
+                        else:
+                            BeatmapsetLookupAPIUsageLog.objects.create(
+                                lookup_type=request.data['lookup_type'],
+                                lookup_id=request.data['id'],
+                                success=False,
+                                description=f'Beatmap {request.data["id"]} not found in the osu! API'
+                            )
+                            return Response(status=status.HTTP_404_NOT_FOUND,
+                                            data={'message': f'Beatmap {request.data["id"]} not found in the osu! API'})
+                elif request.data['lookup_type'] == "set_id":
+                    beatmapset = get_beatmapset_by_id(int(request.data['id']))
+                    if beatmapset:
+                        BeatmapsetLookupAPIUsageLog.objects.create(
+                            lookup_type=request.data['lookup_type'],
+                            lookup_id=request.data['id'],
+                            success=True,
+                            description=f'Beatmapset {beatmapset.title} is already in the database, skipping import.'
+                        )
+                        return Response(status=status.HTTP_202_ACCEPTED,
+                                        data={'message': f'Beatmapset {beatmapset.title} has already been imported!'})
+                    else:
+                        beatmapset_from_api = get_beatmapset_object_from_api(int(request.data['id']))
+                        if beatmapset_from_api:
+                            import_beatmapset_from_api(int(request.data['id']))
+                            import_beatmapset_to_mirror(get_beatmapset_by_id(int(request.data['id'])))
+                            beatmapset = get_beatmap_by_beatmapset(int(request.data['id']))
+                            download_beatmap_pic_to_s3(int(request.data['id']))
+                            for beatmap in beatmapset:
+                                import_beatmap_to_mirror(beatmap)
+                            BeatmapsetLookupAPIUsageLog.objects.create(
+                                lookup_type=request.data['lookup_type'],
+                                lookup_id=request.data['id'],
+                                success=True,
+                                description=f'Import beatmapset {beatmapset_from_api.title} successfully'
+                            )
+                        else:
+                            BeatmapsetLookupAPIUsageLog.objects.create(
+                                lookup_type=request.data['lookup_type'],
+                                lookup_id=request.data['id'],
+                                success=False,
+                                description=f'Beatmapset {request.data["id"]} not found in the osu! API'
+                            )
+                            return Response(status=status.HTTP_404_NOT_FOUND,
+                                            data={'message': f'Beatmapset {request.data["id"]} not found in the osu! API'})
+                else:
+                    return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY, data={'message': 'invalid lookup type'})
+            else:
+                return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY, data={'message': 'missing parameters'})
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED, data={'message': 'client unauthorized'})
 

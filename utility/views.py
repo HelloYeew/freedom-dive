@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from client_api.models import BeatmapsetImportAPIUsageLog, BeatmapConvertedStatisticsImportAPIUsageLog, \
-    BeatmapsetLookupAPIUsageLog
+    BeatmapsetLookupAPIUsageLog, BeatmapLookupAPIUsageLog
 from mirror.models import BeatmapSet
 from mirror.utils import import_beatmapset_to_mirror, import_beatmap_to_mirror
 from users.models import ColourSettings, SignUpRequest
@@ -157,6 +157,19 @@ def import_beatmap_converted_statistics_usage_log(request):
 def beatmaps_lookup_api_usage_log(request):
     if request.user.is_superuser:
         return render(request, 'utility/beatmaps_lookup_api_usage_log.html', {
+            'colour_settings': ColourSettings.objects.get(user=request.user),
+            'import_usage_log': BeatmapLookupAPIUsageLog.objects.all().order_by('-time')[:200],
+            'failed_log': BeatmapLookupAPIUsageLog.objects.filter(success=False).order_by('-time')[:200],
+            'failed_count': BeatmapLookupAPIUsageLog.objects.filter(success=False).count(),
+        })
+    else:
+        return render(request, '403.html', status=403)
+
+
+@login_required
+def beatmapsets_lookup_api_usage_log(request):
+    if request.user.is_superuser:
+        return render(request, 'utility/beatmapsets_lookup_api_usage_log.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'import_usage_log': BeatmapsetLookupAPIUsageLog.objects.all().order_by('-time')[:200],
             'failed_log': BeatmapsetLookupAPIUsageLog.objects.filter(success=False).order_by('-time')[:200],
