@@ -154,9 +154,9 @@ def import_beatmap_converted_statistics_usage_log(request):
 
 
 @login_required
-def beatmapset_lookup_api_usage_log(request):
+def beatmaps_lookup_api_usage_log(request):
     if request.user.is_superuser:
-        return render(request, 'utility/beatmapset_lookup_api_usage_log.html', {
+        return render(request, 'utility/beatmaps_lookup_api_usage_log.html', {
             'colour_settings': ColourSettings.objects.get(user=request.user),
             'import_usage_log': BeatmapsetLookupAPIUsageLog.objects.all().order_by('-time')[:200],
             'failed_log': BeatmapsetLookupAPIUsageLog.objects.filter(success=False).order_by('-time')[:200],

@@ -166,7 +166,7 @@ class ImportBeatmapsetRequest(APIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED, data={'message': 'client unauthorized'})
 
 
-class BeatmapsetLookupRequest(APIView):
+class BeatmapsLookupRequest(APIView):
     """
     API for using in client's GetBeatmapRequest (beatmaps/lookup) that don't need beatmap information update like ImpoerBeatmapsetRequest
     To make this path not be used on outside the client this path require the client ID and secret authentication.
