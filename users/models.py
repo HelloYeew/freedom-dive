@@ -56,7 +56,7 @@ class SignUpRequest(models.Model):
 
 class OsuOauthTemporaryCode(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    code = models.CharField(max_length=255)
+    code = models.CharField(max_length=1000)
 
     def __str__(self):
         return self.user.username + '\'s temporary code'
