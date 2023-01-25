@@ -26,7 +26,6 @@ def get_access_token(code: str, client_id: int = OSU_API_CLIENT_ID, client_secre
         return response.json()
     except Exception as e:
         sentry_sdk.set_context("payload", request_payload)
-        sentry_sdk.set_context("response", response)
         sentry_sdk.capture_exception(e)
         return Exception('Invalid response from osu! api')
 
