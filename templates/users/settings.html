@@ -16,9 +16,7 @@
         <h2>osu! Integration</h2>
         <a href="{{ osu_oauth_url }}" class="btn btn-ayaka"><i class="mdi mdi-login" aria-hidden="true" style="font-size: 14px"></i> Authenticate with osu!</a>
         {% if oauth_token %}
-        <p>Token : {{ oauth_token.access_token }}</p>
-        <p>Refresh Token : {{ oauth_token.refresh_token }}</p>
-        <p>Expires : {{ oauth_token.expires_in }}</p>
+        <p>Token expires in {{ oauth_token.expires_in }} seconds</p>
         {% else %}
         <p>Not authenticated</p>
         {% endif %}

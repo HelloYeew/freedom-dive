@@ -153,7 +153,7 @@ def osu_oauth_redirect(request):
                 user=request.user,
                 code=code
             )
-        token = get_access_token(code=code, redirect_uri="https://game.rulesets.info/oauth/redirect")
+        token = get_access_token(code=code)
         if token is None:
             return redirect('settings')
         else:
@@ -174,4 +174,4 @@ def osu_oauth_redirect(request):
                     expires_in=token['expires_in'],
                     token_type=token['token_type']
                 )
-                return redirect('settings')
+            return redirect('settings')
