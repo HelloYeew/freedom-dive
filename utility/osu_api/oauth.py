@@ -1,3 +1,5 @@
+import json
+
 import requests
 import urllib.parse
 
@@ -14,18 +16,21 @@ def generate_authorize_url(client_id: int = OSU_API_CLIENT_ID, redirect_uri: str
 
 
 def get_access_token(code: str, client_id: int = OSU_API_CLIENT_ID, client_secret: str = OSU_API_CLIENT_SECRET, redirect_uri: str = None):
-    request_payload = {
-        'client_id': client_id,
+    request_payload = json.dumps({
+        'client_id': int(client_id),
         'client_secret': client_secret,
         'code': code,
         'grant_type': 'authorization_code',
-        'redirect_uri': urllib.parse.quote(redirect_uri)
+        'redirect_uri': redirect_uri
+    })
+    headers = {
+        'Content-Type': 'application/json'
     }
-    response = requests.post('https://osu.ppy.sh/oauth/token', data=request_payload)
+    response = requests.request("POST", 'https://osu.ppy.sh/oauth/token', headers=headers, data=request_payload)
     try:
-        return response.json()
+        # return converted response.text to json
+        return json.loads(response.text)
     except Exception as e:
         sentry_sdk.set_context("payload", request_payload)
         sentry_sdk.capture_exception(e)
-        return Exception('Invalid response from osu! api')
-
+        return None
