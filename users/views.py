@@ -153,7 +153,7 @@ def osu_oauth_redirect(request):
                 user=request.user,
                 code=code
             )
-        token = get_access_token(code=code, redirect_uri=request.build_absolute_uri(reverse("osu_oauth_redirect")))
+        token = get_access_token(code=code, redirect_uri="https://game.rulesets.info/oauth/redirect")
         if token is None:
             return redirect('settings')
         else:
