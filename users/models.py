@@ -52,3 +52,23 @@ class SignUpRequest(models.Model):
 
     def __str__(self):
         return self.username + '\'s sign up request'
+
+
+class OsuOauthTemporaryCode(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.user.username + '\'s temporary code'
+
+
+class OsuOauthToken(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    access_token = models.CharField(max_length=255)
+    refresh_token = models.CharField(max_length=255)
+    expires_in = models.IntegerField(default=0)
+    token_type = models.CharField(max_length=255)
+    time_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username + '\'s oauth token'

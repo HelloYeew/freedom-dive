@@ -37,6 +37,7 @@ urlpatterns = [
     path('signup/', users_views.sign_up_from_request, name='sign_up_from_request'),
     path('logout/', users_views.LogoutAndRedirect.as_view(), name='logout'),
     path('settings/', users_views.settings, name='settings'),
+    path('oauth/redirect', users_views.osu_oauth_redirect, name='osu_oauth_redirect'),
     path('api/', include('client_api.urls')),
     path('', include('apps.urls')),
     path('', include('utility.urls')),

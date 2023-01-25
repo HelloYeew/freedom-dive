@@ -1,7 +1,6 @@
 import mysql.connector
 from decouple import config
 
-from utility.osu_api import get_beatmapset_object_from_api, get_beatmap_object_list_from_api
 from utility.osu_database.database_models import *
 from utility.osu_database.model_utils import create_user_from_database_row, create_score_from_database_row, \
     create_beatmap_from_database_row, insert_beatmapset_object_to_database, \
@@ -121,6 +120,7 @@ def get_beatmap_by_beatmapset(beatmapset_id: int) -> list[Beatmap]:
 
 def import_beatmapset_from_api(beatmapset_id: int):
     """Import a beatmapset and beatmap in beatmapset to osu! database"""
+    from utility.osu_api import get_beatmapset_object_from_api, get_beatmap_object_list_from_api
     beatmapset = get_beatmapset_object_from_api(beatmapset_id)
     if beatmapset is None:
         return
@@ -133,6 +133,7 @@ def import_beatmapset_from_api(beatmapset_id: int):
 
 def update_beatmapset_from_api(beatmapset_id: int):
     """Update a beatmapset and beatmap in beatmapset to osu! database"""
+    from utility.osu_api import get_beatmapset_object_from_api, get_beatmap_object_list_from_api
     beatmapset = get_beatmapset_object_from_api(beatmapset_id)
     if beatmapset is None:
         return

@@ -6,15 +6,19 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import views as auth_views
 from PIL import Image
+from django.urls import reverse
+from django.utils import timezone
 
 from users.forms import UserCreationForms, ColourSettingsForm, UserCreationFromRequestForms, UserProfileForms, \
     SiteSettingsForm
-from users.models import ColourSettings, SignUpRequest, SiteSettings
+from users.models import ColourSettings, SignUpRequest, SiteSettings, OsuOauthTemporaryCode, OsuOauthToken
+from utility.osu_api.oauth import generate_authorize_url, get_access_token
 from utility.osu_database import get_user_by_id, get_user_by_username, update_user_in_database
 from utility.s3.utils import get_s3_client
 
 S3_BUCKET_NAME = config('S3_BUCKET_NAME', default='')
 S3_URL = config('S3_URL', default='')
+
 
 class LogoutAndRedirect(auth_views.LogoutView):
     # Redirect to / after logout
@@ -127,5 +131,47 @@ def settings(request):
         'colour_settings': colour_settings,
         'colour_form': colour_form,
         'profile_settings': profile_settings,
-        'site_settings': site_settings
+        'site_settings': site_settings,
+        'osu_oauth_url': generate_authorize_url(redirect_uri=request.build_absolute_uri(reverse("osu_oauth_redirect"))),
+        'oauth_token': OsuOauthToken.objects.filter(user=request.user).first() if OsuOauthToken.objects.filter(user=request.user).count() > 0 else None
     })
+
+
+@login_required
+def osu_oauth_redirect(request):
+    code = request.GET.get('code')
+    if code is None:
+        return redirect('settings')
+    else:
+        temp_code = OsuOauthTemporaryCode.objects.filter(user=request.user)
+        if temp_code.count() > 0:
+            temp_code = temp_code.first()
+            temp_code.code = code
+            temp_code.save()
+        else:
+            OsuOauthTemporaryCode.objects.create(
+                user=request.user,
+                code=code
+            )
+        token = get_access_token(code=code, redirect_uri=request.build_absolute_uri(reverse("settings")))
+        if token is None:
+            return redirect('settings')
+        else:
+            temp_token = OsuOauthToken.objects.filter(user=request.user)
+            if temp_token.count() > 0:
+                temp_token = temp_token.first()
+                temp_token.access_token = token['access_token']
+                temp_token.refresh_token = token['refresh_token']
+                temp_token.expires_in = token['expires_in']
+                temp_token.token_type = token['token_type']
+                temp_token.time_created = timezone.now()
+                temp_token.save()
+            else:
+                OsuOauthToken.objects.create(
+                    user=request.user,
+                    access_token=token['access_token'],
+                    refresh_token=token['refresh_token'],
+                    expires_in=token['expires_in'],
+                    token_type=token['token_type']
+                )
+                return redirect('settings')
