@@ -64,8 +64,8 @@ class OsuOauthTemporaryCode(models.Model):
 
 class OsuOauthToken(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    access_token = models.CharField(max_length=1000)
-    refresh_token = models.CharField(max_length=1000)
+    access_token = models.CharField(max_length=3000)
+    refresh_token = models.CharField(max_length=3000)
     expires_in = models.IntegerField(default=0)
     token_type = models.CharField(max_length=255)
     time_created = models.DateTimeField(auto_now_add=True)
