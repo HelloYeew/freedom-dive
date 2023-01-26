@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}osu! OAuth{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 6rem; padding-left: 5rem; padding-right: 5rem; ">
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;"><i class="mdi mdi-login" aria-hidden="true" style="font-size: 40px;"></i> osu! OAuth</h1>
+    <p></p>
+    <div style="overflow:hidden">
+        {% if success %}
+            <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">Success!</h4>
+                <p class="text-success">Please copy this code below and paste it in the game settings.</p>
+                <p class="text-success">Note : If the beatmap listing still not loaded please restart the client.</p>
+                <label for="token-box" class="form-label text-success">Token</label>
+                <textarea id="token-box" name="token" rows="20" class="form-control">{{ token }}</textarea>
+                <p class="text-success">This token will expire at {{ expires_at }} GMT</p>
+                <p class="mb-0 text-success">You can now close this window.</p>
+            </div>
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Error!</h4>
+                <p class="text-danger">{{ message }}</p>
+                <hr>
+                <p class="text-danger">Please try again later.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

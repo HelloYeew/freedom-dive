@@ -13,14 +13,6 @@
         {{ profile_settings | crispy }}
         <h2>General</h2>
         {{ site_settings | crispy }}
-        <h2>osu! Integration</h2>
-        <a href="{{ osu_oauth_url }}" class="btn btn-ayaka"><i class="mdi mdi-login" aria-hidden="true" style="font-size: 14px"></i> Authenticate with osu!</a>
-        {% if oauth_token %}
-        <p>Token expires in {{ oauth_token.expires_in }} seconds</p>
-        {% else %}
-        <p>Not authenticated</p>
-        {% endif %}
-        <p></p>
         <h2>Theme</h2>
         {{ colour_form | crispy }}
         <button class="btn btn-ayaka" type="submit">Submit</button>

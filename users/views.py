@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from decouple import config
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -132,16 +134,22 @@ def settings(request):
         'colour_form': colour_form,
         'profile_settings': profile_settings,
         'site_settings': site_settings,
-        'osu_oauth_url': generate_authorize_url(redirect_uri=request.build_absolute_uri(reverse("osu_oauth_redirect"))),
-        'oauth_token': OsuOauthToken.objects.filter(user=request.user).first() if OsuOauthToken.objects.filter(user=request.user).count() > 0 else None
     })
+
+
+@login_required
+def osu_oauth_token(request):
+    return redirect(generate_authorize_url(redirect_uri=request.build_absolute_uri(reverse("osu_oauth_redirect"))))
 
 
 @login_required
 def osu_oauth_redirect(request):
     code = request.GET.get('code')
     if code is None:
-        return redirect('settings')
+        return render(request, 'users/osu_oauth.html', {
+            'success': False,
+            'message': 'No code provided'
+        })
     else:
         temp_code = OsuOauthTemporaryCode.objects.filter(user=request.user)
         if temp_code.count() > 0:
@@ -155,7 +163,10 @@ def osu_oauth_redirect(request):
             )
         token = get_access_token(code=code)
         if token is None:
-            return redirect('settings')
+            return render(request, 'users/osu_oauth.html', {
+                'success': False,
+                'message': 'Failed to get token from osu! API'
+            })
         else:
             temp_token = OsuOauthToken.objects.filter(user=request.user)
             if temp_token.count() > 0:
@@ -166,12 +177,20 @@ def osu_oauth_redirect(request):
                 temp_token.token_type = token['token_type']
                 temp_token.time_created = timezone.now()
                 temp_token.save()
+                saved_token = temp_token
             else:
-                OsuOauthToken.objects.create(
+                saved_token = OsuOauthToken.objects.create(
                     user=request.user,
                     access_token=token['access_token'],
                     refresh_token=token['refresh_token'],
                     expires_in=token['expires_in'],
                     token_type=token['token_type']
                 )
-            return redirect('settings')
+            # Get unix timestamp of when token expires (current time + expires_in)
+            expires_at = timezone.now() + timedelta(seconds=token['expires_in'])
+            return render(request, 'users/osu_oauth.html', {
+                'success': True,
+                'message': 'Token successfully created!',
+                'token': f'{saved_token.access_token}',
+                'expires_at': expires_at
+            })
