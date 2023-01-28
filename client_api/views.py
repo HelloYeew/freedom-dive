@@ -268,6 +268,8 @@ class BeatmapsetsLookupRequest(APIView):
                                 success=True,
                                 description=f'Import beatmapset {beatmaps.title} successfully'
                             )
+                            return Response(status=status.HTTP_200_OK, data={
+                                'message': f'Imported {BeatmapSet.objects.get(beatmapset_id=beatmapset_id).title} successfully! Now you can play it!'})
                         else:
                             BeatmapsetLookupAPIUsageLog.objects.create(
                                 lookup_type=request.data['lookup_type'],
@@ -303,6 +305,8 @@ class BeatmapsetsLookupRequest(APIView):
                                 success=True,
                                 description=f'Import beatmapset {beatmapset_from_api.title} successfully'
                             )
+                            return Response(status=status.HTTP_200_OK, data={
+                                'message': f'Imported {BeatmapSet.objects.get(beatmapset_id=int(request.data["id"])).title} successfully! Now you can play it!'})
                         else:
                             BeatmapsetLookupAPIUsageLog.objects.create(
                                 lookup_type=request.data['lookup_type'],
