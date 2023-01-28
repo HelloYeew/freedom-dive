@@ -30,6 +30,7 @@ def download_beatmap_pic_to_s3(beatmap_id: int):
     card_pic = requests.get(f"https://assets.ppy.sh/beatmaps/{beatmap_id}/covers/card.jpg")
     list_pic = requests.get(f"https://assets.ppy.sh/beatmaps/{beatmap_id}/covers/list.jpg")
     cover_pic = requests.get(f"https://assets.ppy.sh/beatmaps/{beatmap_id}/covers/cover.jpg")
+    fullsize_pic = requests.get(f"https://assets.ppy.sh/beatmaps/{beatmap_id}/covers/fullsize.jpg")
     thumbnail_pic = requests.get(f"https://b.ppy.sh/thumb/{beatmap_id}l.jpg")
     if ("Access Denied" or "Not Found") not in str(card_pic.content) and card_pic.status_code == 200:
         print("Uploading card pic...")
@@ -37,6 +38,16 @@ def download_beatmap_pic_to_s3(beatmap_id: int):
             Bucket=S3_BUCKET_NAME,
             Key=f"card/{beatmap_id}.jpg",
             Body=card_pic.content,
+            ContentType="image/jpeg",
+            ACL="public-read",
+            CacheControl="max-age=31536000"
+        )
+    if ("Access Denied" or "Not Found") not in str(fullsize_pic.content) and fullsize_pic.status_code == 200:
+        print("Uploading fullsize pic...")
+        s3_client.put_object(
+            Bucket=S3_BUCKET_NAME,
+            Key=f"fullsize/{beatmap_id}.jpg",
+            Body=fullsize_pic.content,
             ContentType="image/jpeg",
             ACL="public-read",
             CacheControl="max-age=31536000"

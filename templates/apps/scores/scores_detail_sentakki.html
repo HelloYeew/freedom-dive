@@ -8,7 +8,7 @@
 {% block content %}
     <style>
         #background {
-            background: url("{{ s3_url }}/cover/{{ beatmapset.beatmapset_id }}.jpg") no-repeat center center!important;
+            background: url("{{ s3_url }}/fullsize/{{ beatmapset.beatmapset_id }}.jpg"), url("{{ s3_url }}/cover/{{ beatmapset.beatmapset_id }}.jpg") top!important;
             background-size: cover!important;
         }
 
