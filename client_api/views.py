@@ -50,6 +50,9 @@ class SubmitSoloScoreView(APIView):
         # Note : On freedom-dive-server changed ruleset checking policy to not hacking since 2022-01-29
         if int(request.data['client_id']) == CLIENT_ID and request.data['client_secret'] == CLIENT_SECRET:
             try:
+                statistics = json.loads(request.data['statistics'])
+                if statistics['ruleset_id'] == -1:
+                    return Response(status=status.HTTP_200_OK, data={'message': 'success'})
                 ScoreStore.objects.create(
                     user_id=request.data['user_id'],
                     # use timezone.now() if not passed for failed score
