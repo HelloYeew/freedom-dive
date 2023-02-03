@@ -3,7 +3,7 @@ from apps.models import ScoreStore
 
 def get_readable_osu_score(score: ScoreStore.objects) -> dict:
     """Return a readable osu! score for rendering on the website."""
-    score = score.statistics
+    score = score.data
     if score['ruleset_id'] != 0:
         raise Exception("This is not an osu! ruleset score")
     statistics = score['statistics']
@@ -68,7 +68,7 @@ def get_readable_osu_score(score: ScoreStore.objects) -> dict:
 
 def get_readable_tau_score(score: ScoreStore.objects) -> dict:
     """Return a readable tau score for rendering on the website."""
-    score = score.statistics
+    score = score.data
     if score['ruleset_id'] != 4:
         raise Exception("This is not a tau ruleset score")
     statistics = score['statistics']
@@ -112,7 +112,7 @@ def get_readable_tau_score(score: ScoreStore.objects) -> dict:
 
 def get_readable_sentakki_score(score: ScoreStore.objects) -> dict:
     """Return a readable sentakki score for rendering on the website."""
-    score = score.statistics
+    score = score.data
     if score['ruleset_id'] != 5:
         raise Exception("This is not a Sentakki ruleset score")
     statistics = score['statistics']

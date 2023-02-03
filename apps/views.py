@@ -1,14 +1,13 @@
 import json
-import math
 import traceback
 
 from decouple import config
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 
-from apps.models import ScoreStore, ClientChangelog, WebChangelog, PerformanceStore
+from apps.models import ClientChangelog, WebChangelog, PerformanceStore
 from ayaka import settings
-from mirror.models import BeatmapSet, Beatmap, ConvertedBeatmapInfo
+from mirror.models import BeatmapSet, Beatmap, ConvertedBeatmapInfo, ScoreStore, Performance
 from users.models import ColourSettings, SiteSettings
 from utility.osu_database import get_beatmapset_by_id, get_user_by_id, get_beatmap_by_id
 from utility.ruleset.score_processor.utils import get_readable_score
@@ -38,7 +37,7 @@ def homepage(request):
         'user': user,
         'beatmap': beatmap,
         'beatmapset': beatmapset,
-        'score_json': latest_score.statistics
+        'score_json': latest_score.data
     }
     if request.user.is_authenticated:
         return render(request, 'homepage.html', {
@@ -127,7 +126,7 @@ def beatmap_detail(request, beatmapset_id, beatmap_id):
     # Also exclude if ruleset_id is -1 for safety
     converted_beatmap_info = ConvertedBeatmapInfo.objects.filter(beatmap_id=beatmap_id).exclude(ruleset_id=beatmap.play_mode).exclude(ruleset_id=-1).order_by('ruleset_id')
     # Get only passed scores
-    all_score = ScoreStore.objects.filter(beatmap_id=beatmap_id).order_by('-date').exclude(passed=False)
+    all_score = ScoreStore.objects.filter(beatmap_id=beatmap_id).order_by('-created_at').exclude(passed=False)
     # Create a new list that contain only unique ruleset_short_name in all_score
     ruleset_per_score = {}
     for score in all_score:
@@ -224,7 +223,7 @@ def score_detail(request, score_id):
         beatmapset = None
     user = get_user_by_id(score_object.user_id)
     failed = not score_object.passed
-    score_json = json.dumps(score_object.statistics, indent=4)
+    score_json = json.dumps(score_object.data, indent=4)
     # Check that this score can use a new score page or not
     rich_render = True
     try:
@@ -235,9 +234,9 @@ def score_detail(request, score_id):
         score = None
         rich_render = False
     # Extract PP from performance database
-    if PerformanceStore.objects.filter(score_id=score_object.score_id, user_id=score_object.user_id).exists():
+    if Performance.objects.filter(score_id=score_object.score_id, user_id=score_object.user_id).exists():
         try:
-            performance = PerformanceStore.objects.get(score_id=score_object.score_id, user_id=score_object.user_id).performance
+            performance = Performance.objects.get(score_id=score_object.score_id, user_id=score_object.user_id).performance
             pp = int(round(performance['pp']))
             # Calculate rich details of performance
             # Get all key of performance detail

@@ -10,10 +10,9 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.models import ScoreStore, PerformanceStore, PerformanceByGraphStore
 from client_api.models import BeatmapsetImportAPIUsageLog, BeatmapConvertedStatisticsImportAPIUsageLog, \
     BeatmapsetLookupAPIUsageLog, BeatmapLookupAPIUsageLog
-from mirror.models import BeatmapSet, ConvertedBeatmapInfo, Beatmap
+from mirror.models import BeatmapSet, ConvertedBeatmapInfo, ScoreStore, Performance, PerformanceByGraph
 from mirror.utils import import_beatmapset_to_mirror, import_beatmap_to_mirror
 from utility.osu_api import get_beatmap_object_from_api, get_beatmapset_object_from_api
 from utility.osu_database import get_beatmapset_by_id, import_beatmapset_from_api, get_beatmap_by_beatmapset, \
@@ -54,12 +53,13 @@ class SubmitSoloScoreView(APIView):
                 ScoreStore.objects.create(
                     user_id=request.data['user_id'],
                     # use timezone.now() if not passed for failed score
-                    date=request.data['date'] if request.data['passed'] else timezone.now(),
+                    created_at=request.data['date'] if request.data['passed'] else timezone.now(),
+                    updated_at=request.data['date'] if request.data['passed'] else timezone.now(),
                     beatmap_id=request.data['beatmap_id'],
                     ruleset_short_name=request.data['ruleset_short_name'],
                     passed=request.data['passed'],
                     # convert statistics from string to dict
-                    statistics=json.loads(request.data['statistics']),
+                    data=json.loads(request.data['statistics']),
                     score_id=request.data['score_id']
                 )
             except Exception as e:
@@ -397,7 +397,7 @@ class PerformanceSubmission(APIView):
     def post(self, request):
         if int(request.data['client_id']) == CLIENT_ID and request.data['client_secret'] == CLIENT_SECRET:
             try:
-                PerformanceStore.objects.create(
+                Performance.objects.create(
                     user_id=request.data['user_id'],
                     score_id=request.data['score_id'],
                     performance=request.data['pp']
@@ -424,7 +424,7 @@ class PerformanceSubmissionByGraph(APIView):
     def post(self, request):
         if int(request.data['client_id']) == CLIENT_ID and request.data['client_secret'] == CLIENT_SECRET:
             try:
-                PerformanceByGraphStore.objects.create(
+                PerformanceByGraph.objects.create(
                     user_id=request.data['user_id'],
                     score_id=request.data['score_id'],
                     performance=request.data['pp']
