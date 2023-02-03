@@ -38,7 +38,7 @@
                     {% endif %}
                     <td>{{ score.beatmap.version }}</td>
                     <td>{{ score.score.ruleset_short_name }}</td>
-                    <td>{{ score.score.date }}</td>
+                    <td>{{ score.score.created_at }}</td>
                     <td>
                         <a href="{% url 'score_detail' score.score.id %}" class="btn btn-ayaka"><i class="mdi mdi-eye" aria-hidden="true" style="font-size: 15px"></i> View</a>
                     </td>

@@ -9,7 +9,6 @@ from django.shortcuts import render, redirect
 
 from client_api.models import BeatmapsetImportAPIUsageLog, BeatmapConvertedStatisticsImportAPIUsageLog, \
     BeatmapsetLookupAPIUsageLog, BeatmapLookupAPIUsageLog
-from mirror.models import BeatmapSet
 from mirror.utils import import_beatmapset_to_mirror, import_beatmap_to_mirror
 from users.models import ColourSettings, SignUpRequest
 from utility.forms import ImportSpecificBeatmapSetForm, CreateSignUpRequestForm
