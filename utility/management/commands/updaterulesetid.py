@@ -8,7 +8,7 @@ class Command(BaseCommand):
     help = 'Update ruleset ID to very far from legacy ruleset ID'
 
     def handle(self, *args, **options):
-        self.stdout.write(self.style.SUCCESS(f'Transferring score from legacy store to new store...'))
+        self.stdout.write(self.style.SUCCESS(f'Transferring ruleset ID to a new one'))
         for score in ScoreStore.objects.all():
             try:
                 score.data['ruleset_id'] = get_ruleset_id(score.ruleset_short_name)
@@ -18,4 +18,4 @@ class Command(BaseCommand):
             except Exception as e:
                 print("Error updating score ID: " + score.score_id)
                 print(e)
-        self.stdout.write(self.style.SUCCESS(f'Finished transferring score from legacy store to new store'))
+        self.stdout.write(self.style.SUCCESS(f'Finished transferring ruleset ID to a new one'))
