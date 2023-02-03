@@ -47,11 +47,31 @@ ruleset_list = [
 ]
 
 
+def replace_legacy_ruleset_id(ruleset_id: int) -> int:
+    """
+    Replace legacy ruleset ID with the new one.
+    :param ruleset_id: The legacy ruleset ID.
+    """
+    if ruleset_id == 4:
+        return 1004
+    elif ruleset_id == 5:
+        return 1005
+    elif ruleset_id == 6:
+        return 1006
+    elif ruleset_id == 7:
+        return 1007
+    elif ruleset_id == 8:
+        return 1008
+    else:
+        return ruleset_id
+
+
 def get_ruleset_short_name(ruleset_id: int) -> str:
     """
     Get the short name of a ruleset by its ID.
     :param ruleset_id: The ID of the ruleset.
     """
+    ruleset_id = replace_legacy_ruleset_id(ruleset_id)
     for ruleset in ruleset_list:
         if ruleset['id'] == ruleset_id:
             return ruleset['short_name']
@@ -63,6 +83,7 @@ def get_ruleset_name(ruleset_id: int) -> str:
     Get the name of a ruleset by its ID.
     :param ruleset_id: The ID of the ruleset.
     """
+    ruleset_id = replace_legacy_ruleset_id(ruleset_id)
     for ruleset in ruleset_list:
         if ruleset['id'] == ruleset_id:
             return ruleset['name']
