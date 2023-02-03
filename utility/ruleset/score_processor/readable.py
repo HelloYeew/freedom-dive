@@ -69,7 +69,7 @@ def get_readable_osu_score(score: ScoreStore.objects) -> dict:
 def get_readable_tau_score(score: ScoreStore.objects) -> dict:
     """Return a readable tau score for rendering on the website."""
     score = score.data
-    if score['ruleset_id'] != 4:
+    if score['ruleset_id'] != 1004:
         raise Exception("This is not a tau ruleset score")
     statistics = score['statistics']
     maximum_statistics = score['maximum_statistics']
@@ -113,7 +113,7 @@ def get_readable_tau_score(score: ScoreStore.objects) -> dict:
 def get_readable_sentakki_score(score: ScoreStore.objects) -> dict:
     """Return a readable sentakki score for rendering on the website."""
     score = score.data
-    if score['ruleset_id'] != 5:
+    if score['ruleset_id'] != 1005:
         raise Exception("This is not a Sentakki ruleset score")
     statistics = score['statistics']
     maximum_statistics = score['maximum_statistics']

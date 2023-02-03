@@ -276,8 +276,8 @@ def score_detail(request, score_id):
                 's3_url': S3_URL,
                 'site_settings': SiteSettings.objects.get(user=request.user) if request.user.is_authenticated else None
             })
-        elif score['ruleset_id'] == 4:
-            beatmap.play_mode = 4
+        elif score['ruleset_id'] == 1004:
+            beatmap.play_mode = 1004
             return render(request, 'apps/scores/scores_detail_tau.html', {
                 'colour_settings': ColourSettings.objects.get(user=request.user) if request.user.is_authenticated else None,
                 'osu_user': osu_user,
@@ -294,8 +294,8 @@ def score_detail(request, score_id):
                 's3_url': S3_URL,
                 'site_settings': SiteSettings.objects.get(user=request.user) if request.user.is_authenticated else None
             })
-        elif score['ruleset_id'] == 5:
-            beatmap.play_mode = 5
+        elif score['ruleset_id'] == 1005:
+            beatmap.play_mode = 1005
             return render(request, 'apps/scores/scores_detail_sentakki.html', {
                 'colour_settings': ColourSettings.objects.get(user=request.user) if request.user.is_authenticated else None,
                 'osu_user': osu_user,

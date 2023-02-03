@@ -20,27 +20,27 @@ ruleset_list = [
         'short_name': 'mania',
     },
     {
-        'id': 4,
+        'id': 1004,
         'name': 'Tau',
         'short_name': 'tau',
     },
     {
-        'id': 5,
+        'id': 1005,
         'name': 'Sentakki',
         'short_name': 'Sentakki',
     },
     {
-        'id': 6,
+        'id': 1006,
         'name': 'Rush!',
         'short_name': 'rush',
     },
     {
-        'id': 7,
+        'id': 1007,
         'name': 'Hishigata',
         'short_name': 'hishigata',
     },
     {
-        'id': 8,
+        'id': 1008,
         'name': 'Soyokaze',
         'short_name': 'soyokaze',
     }
