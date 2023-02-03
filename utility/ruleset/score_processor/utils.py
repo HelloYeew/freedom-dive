@@ -8,9 +8,9 @@ def get_readable_score(score: ScoreStore.objects) -> dict:
     score_statistics = score.data
     if score_statistics['ruleset_id'] == 0 and score.ruleset_short_name == 'osu':
         return get_readable_osu_score(score)
-    elif score_statistics['ruleset_id'] == 4 and score.ruleset_short_name == 'tau':
+    elif (score_statistics['ruleset_id'] == 1004 or score_statistics['ruleset_id'] == 4) and score.ruleset_short_name == 'tau':
         return get_readable_tau_score(score)
-    elif score_statistics['ruleset_id'] == 5 and score.ruleset_short_name == 'Sentakki':
+    elif (score_statistics['ruleset_id'] == 1005 or score_statistics['ruleset_id'] == 5) and score.ruleset_short_name == 'Sentakki':
         return get_readable_sentakki_score(score)
     else:
         raise Exception("Ruleset not supported")
