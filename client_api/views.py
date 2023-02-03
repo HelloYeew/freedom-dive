@@ -53,6 +53,18 @@ class SubmitSoloScoreView(APIView):
                 statistics = json.loads(request.data['statistics'])
                 if statistics['ruleset_id'] == -1:
                     return Response(status=status.HTTP_200_OK, data={'message': 'success'})
+                # This part is just support the new ruleset ID to transfer to a new one on old client
+                # TODO: Remove this part at the end of February 2023
+                if statistics['ruleset_id'] == 4:
+                    statistics['ruleset_id'] = 1004
+                if statistics['ruleset_id'] == 5:
+                    statistics['ruleset_id'] = 1005
+                if statistics['ruleset_id'] == 6:
+                    statistics['ruleset_id'] = 1006
+                if statistics['ruleset_id'] == 7:
+                    statistics['ruleset_id'] = 1007
+                if statistics['ruleset_id'] == 8:
+                    statistics['ruleset_id'] = 1008
                 ScoreStore.objects.create(
                     user_id=request.data['user_id'],
                     # use timezone.now() if not passed for failed score
@@ -62,7 +74,7 @@ class SubmitSoloScoreView(APIView):
                     ruleset_short_name=request.data['ruleset_short_name'],
                     passed=request.data['passed'],
                     # convert statistics from string to dict
-                    data=json.loads(request.data['statistics']),
+                    data=statistics,
                     score_id=request.data['score_id']
                 )
             except Exception as e:
