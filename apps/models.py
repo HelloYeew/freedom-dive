@@ -5,7 +5,8 @@ from mdeditor.fields import MDTextField
 class ScoreStore(models.Model):
     """
     A database table to store all score sent by client
-    TODO: Move this to mirror database
+
+    This table is deprecated and will be removed in the future.
     """
     user_id = models.IntegerField()
     date = models.DateTimeField()
@@ -22,7 +23,8 @@ class ScoreStore(models.Model):
 class PerformanceStore(models.Model):
     """
     Store the calculated performance point with detailed performance.
-    TODO: Move this to mirror database
+
+    This table is deprecated and will be removed in the future.
     """
     user_id = models.IntegerField()
     score_id = models.CharField(max_length=100)
@@ -35,7 +37,8 @@ class PerformanceStore(models.Model):
 class PerformanceByGraphStore(models.Model):
     """
     Store the performance list sent by PerformanceGraph on client.
-    TODO: Move this to mirror database.
+
+    This table is deprecated and will be removed in the future.
     """
     user_id = models.IntegerField()
     score_id = models.CharField(max_length=100)
