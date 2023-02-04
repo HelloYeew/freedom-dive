@@ -1,7 +1,6 @@
-from apps.models import ScoreStore, PerformanceStore
 from django import template
 
-from mirror.models import Performance
+from mirror.models import Performance, ScoreStore
 
 register = template.Library()
 
@@ -14,7 +13,7 @@ def get_score_performance(score: ScoreStore.objects) -> Performance.objects:
     """
     try:
         return Performance.objects.get(user_id=score.user_id, score_id=score.score_id)
-    except PerformanceStore.DoesNotExist:
+    except Performance.DoesNotExist:
         return None
 
 

@@ -1,4 +1,4 @@
-from apps.models import ScoreStore
+from mirror.models import ScoreStore
 from django import template
 
 from utility.ruleset.score_processor.utils import get_readable_score
