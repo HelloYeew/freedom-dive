@@ -86,6 +86,9 @@ class ScoreStore(models.Model):
     ruleset_short_name = models.CharField(max_length=100)
     passed = models.BooleanField(default=False)
     data = models.JSONField(default=dict)
+    client_version = models.CharField(max_length=100, blank=True, null=True)
+    client_md5 = models.CharField(max_length=100, blank=True, null=True)
+    client_platform = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return str(self.user_id) + ' - ' + str(self.beatmap_id) + ' - ' + self.created_at.strftime('%Y-%m-%d %H:%M:%S') + ' - ' + self.ruleset_short_name

@@ -75,7 +75,10 @@ class SubmitSoloScoreView(APIView):
                     passed=request.data['passed'],
                     # convert statistics from string to dict
                     data=statistics,
-                    score_id=request.data['score_id']
+                    score_id=request.data['score_id'],
+                    client_version=request.data['version'],
+                    client_md5=request.data['hash'],
+                    client_platform=request.data['platform']
                 )
             except Exception as e:
                 sentry_sdk.set_context("payload", request.data)
