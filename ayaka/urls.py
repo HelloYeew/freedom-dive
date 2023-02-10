@@ -39,6 +39,7 @@ urlpatterns = [
     path('settings/', users_views.settings, name='settings'),
     path('osu-oauth/token', users_views.osu_oauth_token, name='osu_oauth_token'),
     path('osu-oauth/redirect', users_views.osu_oauth_redirect, name='osu_oauth_redirect'),
+    path('users/<int:osu_user_id>', users_views.profile, name='profile'),
     path('api/', include('client_api.urls')),
     path('', include('apps.urls')),
     path('', include('utility.urls')),

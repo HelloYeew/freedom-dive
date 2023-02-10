@@ -194,3 +194,13 @@ def osu_oauth_redirect(request):
                 'token': f'{saved_token.access_token}',
                 'expires_at': expires_at
             })
+
+
+def profile(request, osu_user_id):
+    osu_user = get_user_by_id(osu_user_id)
+    if osu_user is None:
+        return render(request, '404.html', status=404)
+    print(osu_user.__dict__)
+    return render(request, 'users/profile.html', {
+        'osu_user': osu_user
+    })

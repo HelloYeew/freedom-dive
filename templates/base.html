@@ -1,4 +1,5 @@
 {% load static %}
+{% load get_osu_user_by_username %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -118,6 +119,9 @@
                             <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a></li>
                             <li><hr class="dropdown-divider"></li>
                             {% endif %}
+                            {% with osu_user=user.username|get_osu_user_by_username %}
+                            <li><a class="dropdown-item" href="{% url 'profile' osu_user.user_id %}">Profile</a></li>
+                            {% endwith %}
                             <li><a class="dropdown-item" href="{% url 'settings' %}">Settings</a></li>
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
                             {% else %}
