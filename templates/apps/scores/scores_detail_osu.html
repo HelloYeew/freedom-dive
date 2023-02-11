@@ -169,7 +169,7 @@
                         </div>
                         {% if osu_user.avatar == "" %}
                         <div class="col">
-                            <p><img src="{{ s3_url }}/avatar/pfp.png" alt="{{ osu_user.username }}" class="rounded-circle" width="40px" height="40px" style="object-fit: cover;"> {{ osu_user.username }}</p>
+                            <p><img src="{% static "img/default_profile.png" %}" alt="{{ osu_user.username }}" class="rounded-circle" width="40px" height="40px" style="object-fit: cover;"> {{ osu_user.username }}</p>
                         </div>
                         {% else %}
                         <div class="col">
