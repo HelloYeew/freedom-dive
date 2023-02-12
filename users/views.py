@@ -11,9 +11,10 @@ from PIL import Image
 from django.urls import reverse
 from django.utils import timezone
 
+from mirror.models import ScoreStore
 from users.forms import UserCreationForms, ColourSettingsForm, UserCreationFromRequestForms, UserProfileForms, \
     SiteSettingsForm
-from users.models import ColourSettings, SignUpRequest, SiteSettings, OsuOauthTemporaryCode, OsuOauthToken
+from users.models import ColourSettings, SignUpRequest, SiteSettings, OsuOauthTemporaryCode, OsuOauthToken, Profile
 from utility.osu_api.oauth import generate_authorize_url, get_access_token
 from utility.osu_database import get_user_by_id, get_user_by_username, update_user_in_database
 from utility.s3.utils import get_s3_client
@@ -89,11 +90,11 @@ def sign_up_from_request(request):
 @login_required
 def settings(request):
     colour_settings = ColourSettings.objects.filter(user=request.user).first()
-    profile = request.user.profile
+    profile_updated = request.user.profile
     site_settings = SiteSettings.objects.get(user=request.user)
     if request.method == 'POST':
         colour_form = ColourSettingsForm(request.POST, instance=colour_settings)
-        profile_settings = UserProfileForms(request.POST, request.FILES, instance=profile)
+        profile_settings = UserProfileForms(request.POST, request.FILES, instance=profile_updated)
         site_settings = SiteSettingsForm(request.POST, instance=request.user.sitesettings)
         if colour_form.is_valid() and profile_settings.is_valid() and site_settings.is_valid():
             colour_form.save()
@@ -117,17 +118,38 @@ def settings(request):
                     }
                 )
                 # Update S3 URL
-                profile = request.user.profile
-                profile.avatar_s3_url = f'{S3_URL}/avatar/{saved_settings.name}'
-                profile.save()
+                profile_updated = request.user.profile
+                profile_updated.avatar_s3_url = f'{S3_URL}/avatar/{saved_settings.name}'
+                profile_updated.save()
                 # Sync user info to osu! database
                 osu_user.avatar = f'{osu_user.user_id}.{extension}'
                 update_user_in_database(osu_user)
+            if 'background' in request.FILES:
+                extension = request.FILES['background'].name.split('.')[-1]
+                saved_settings = profile_settings.save(commit=False)
+                saved_settings.background_name = f'{request.user.username}.{extension}'
+                saved_settings.save()
+                # upload to s3
+                s3_client = get_s3_client()
+                s3_client.upload_fileobj(
+                    # Get file from current background instead since it's already resized
+                    request.user.profile.background,
+                    S3_BUCKET_NAME,
+                    "background/" + saved_settings.background_name,
+                    ExtraArgs={
+                        'ACL': 'public-read',
+                        'ContentType': request.FILES['background'].content_type
+                    }
+                )
+                # Update S3 URL
+                profile_updated = request.user.profile
+                profile_updated.background_s3_url = f'{S3_URL}/background/{saved_settings.background_name}'
+                profile_updated.save()
             messages.success(request, 'Settings saved successfully!')
             return redirect('settings')
     else:
         colour_form = ColourSettingsForm(instance=colour_settings)
-        profile_settings = UserProfileForms(instance=profile)
+        profile_settings = UserProfileForms(instance=profile_updated)
         site_settings = SiteSettingsForm(instance=site_settings)
     return render(request, 'users/settings.html', {
         'colour_settings': colour_settings,
@@ -200,7 +222,18 @@ def profile(request, osu_user_id):
     osu_user = get_user_by_id(osu_user_id)
     if osu_user is None:
         return render(request, '404.html', status=404)
-    print(osu_user.__dict__)
+    try:
+        freedom_dive_user = User.objects.get(username=osu_user.username)
+    except User.DoesNotExist:
+        return render(request, '404.html', status=404)
+    freedom_dive_profile = Profile.objects.get(user=freedom_dive_user)
+    user_colour_settings = ColourSettings.objects.get(user=freedom_dive_user)
+    # filter score by latest 24 hours
+    latest_24hr_score = ScoreStore.objects.filter(user=freedom_dive_user, time__gte=timezone.now() - timedelta(days=1), passed=True).order_by('-time')
     return render(request, 'users/profile.html', {
+        'colour_settings': user_colour_settings,
+        's3_url': S3_URL,
+        'profile_user': freedom_dive_user,
+        'profile': freedom_dive_profile,
         'osu_user': osu_user
     })

@@ -1,14 +1,39 @@
 {% extends "base.html" %}
+{% load static %}
+{% load get_osu_country %}
 
-{% block title %}profile{% endblock %}
+{% block title %}{{ osu_user.username }}'s profile{% endblock %}
 
 {% block content %}
 <div class="container" style="padding-top: 6rem; padding-left: 5rem; padding-right: 5rem; ">
-    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{{ osu_user.username }}</h1>
-    <a href="#" class="btn btn-ayaka"><i class="mdi mdi-plus" aria-hidden="true" style="font-size: 20px"></i> Dummy</a>
+    {% if profile.background %}
+        <style>
+            #background {
+                background: url("{{ s3_url }}/background/{{ profile.background }}"), url("{{ profile.background.url }}") center center no-repeat!important;
+            }
+        </style>
+    {% endif %}
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{{ osu_user.username }}'s profile</h1>
+    {% if profile.user.id == user.id %}
+    <a href="{% url 'settings' %}" class="btn btn-ayaka"><i class="mdi mdi-pencil" aria-hidden="true" style="font-size: 20px"></i> Edit profile</a>
+    {% endif %}
     <p></p>
     <div style="overflow:hidden">
-
+        <div class="row">
+            <div class="col-md-2">
+                {% if osu_user.avatar == "" %}
+                    <img src="{% static "img/default_profile.png" %}" alt="{{ osu_user.username }}" class="rounded-circle" width="100%" style="object-fit: cover;">
+                {% else %}
+                    <img src="{{ s3_url }}/avatar/{{ osu_user.avatar }}" alt="{{ osu_user.username }}" class="rounded-circle" width="100%" style="object-fit: cover;">
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <h2>{{ osu_user.username }}</h2>
+                {% with country=osu_user.country_acronym|get_osu_country %}
+                <p>{{ country.name }}</p>
+                {% endwith %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

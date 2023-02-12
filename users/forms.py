@@ -23,10 +23,12 @@ class UserProfileForms(forms.ModelForm):
     """Form for updating user profile."""
     avatar = forms.ImageField(label='Profile Picture', widget=forms.FileInput(attrs={'class': 'form-control'}),
                                        help_text='Upload a new profile picture.', required=False)
+    background = forms.ImageField(label='Background', widget=forms.FileInput(attrs={'class': 'form-control'}),
+                                        help_text='Upload a new profile page background.', required=False)
 
     class Meta:
         model = Profile
-        fields = ['avatar']
+        fields = ['avatar', 'background']
 
 
 class ColourSettingsForm(forms.ModelForm):

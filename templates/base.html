@@ -47,7 +47,7 @@
     body {
         height: 100vh;
 
-        {% if not user.is_authenticated or use_default_theme or colour_settings == None %}
+        {% if use_default_theme or colour_settings == None %}
         --color-primary: #dfd9d6;
         --color-accent: #f9f7b4;
         --color-background:#0a0a0a;

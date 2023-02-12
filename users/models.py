@@ -30,6 +30,8 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='avatar', default='avatar/default.png')
     avatar_s3_url = models.URLField(default=S3_URL + '/avatar/pfp.png')
+    background = models.ImageField(upload_to='profile_background', default='background/default.jpg')
+    background_s3_url = models.URLField(default=S3_URL + '/background/default.jpg')
 
     def __str__(self):
         return self.user.username + '\'s profile'
@@ -42,6 +44,12 @@ class Profile(models.Model):
                 output_size = (256, 256)
                 img.thumbnail(output_size)
                 img.save(self.avatar.path)
+        if self.background:
+            img = Image.open(self.background.path)
+            if img.height > 1080 or img.width > 1920:
+                output_size = (1920, 1080)
+                img.thumbnail(output_size)
+                img.save(self.background.path)
 
 
 class SignUpRequest(models.Model):
