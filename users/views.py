@@ -99,8 +99,8 @@ def settings(request):
         if colour_form.is_valid() and profile_settings.is_valid() and site_settings.is_valid():
             colour_form.save()
             site_settings.save()
+            osu_user = get_user_by_username(request.user.username)
             if 'avatar' in request.FILES:
-                osu_user = get_user_by_username(request.user.username)
                 extension = request.FILES['avatar'].name.split('.')[-1]
                 saved_settings = profile_settings.save(commit=False)
                 saved_settings.name = f'{osu_user.user_id}.{extension}'
@@ -127,7 +127,7 @@ def settings(request):
             if 'background' in request.FILES:
                 extension = request.FILES['background'].name.split('.')[-1]
                 saved_settings = profile_settings.save(commit=False)
-                saved_settings.background_name = f'{request.user.username}.{extension}'
+                saved_settings.background_name = f'{osu_user.user_id}.{extension}'
                 saved_settings.save()
                 # upload to s3
                 s3_client = get_s3_client()
@@ -229,7 +229,7 @@ def profile(request, osu_user_id):
     freedom_dive_profile = Profile.objects.get(user=freedom_dive_user)
     user_colour_settings = ColourSettings.objects.get(user=freedom_dive_user)
     # filter score by latest 24 hours
-    latest_24hr_score = ScoreStore.objects.filter(user=freedom_dive_user, time__gte=timezone.now() - timedelta(days=1), passed=True).order_by('-time')
+    latest_24hr_score = ScoreStore.objects.filter(user_id=osu_user_id, created_at__gte=timezone.now() - timedelta(days=1), passed=True).order_by('-created_at')
     return render(request, 'users/profile.html', {
         'colour_settings': user_colour_settings,
         's3_url': S3_URL,

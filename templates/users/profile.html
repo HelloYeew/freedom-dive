@@ -9,7 +9,7 @@
     {% if profile.background %}
         <style>
             #background {
-                background: url("{{ s3_url }}/background/{{ profile.background }}"), url("{{ profile.background.url }}") center center no-repeat!important;
+                background: url("{{ profile.background_s3_url }}"), url("{{ profile.background.url }}") center center no-repeat!important;
             }
         </style>
     {% endif %}
