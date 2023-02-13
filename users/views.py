@@ -228,12 +228,13 @@ def profile(request, osu_user_id):
         return render(request, '404.html', status=404)
     freedom_dive_profile = Profile.objects.get(user=freedom_dive_user)
     user_colour_settings = ColourSettings.objects.get(user=freedom_dive_user)
-    # filter score by latest 24 hours
     latest_24hr_score = ScoreStore.objects.filter(user_id=osu_user_id, created_at__gte=timezone.now() - timedelta(days=1), passed=True).order_by('-created_at')
     return render(request, 'users/profile.html', {
         'colour_settings': user_colour_settings,
+        'site_settings': SiteSettings.objects.get(user=request.user) if request.user.is_authenticated else None,
         's3_url': S3_URL,
         'profile_user': freedom_dive_user,
         'profile': freedom_dive_profile,
-        'osu_user': osu_user
+        'osu_user': osu_user,
+        'latest_24hr_score': latest_24hr_score
     })

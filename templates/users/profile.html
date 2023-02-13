@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% load get_osu_country %}
+{% load get_readable_score %}
+{% load get_beatmap %}
 
 {% block title %}{{ osu_user.username }}'s profile{% endblock %}
 
@@ -13,7 +15,7 @@
             }
         </style>
     {% endif %}
-    <h1 style="padding-top: 1rem; padding-bottom: 1rem;">{{ osu_user.username }}'s profile</h1>
+    <h1 style="padding-top: 1rem; padding-bottom: 1rem;"><i class="mdi mdi-account" aria-hidden="true" style="font-size: 40px;"></i> Profile</h1>
     {% if profile.user.id == user.id %}
     <a href="{% url 'settings' %}" class="btn btn-ayaka"><i class="mdi mdi-pencil" aria-hidden="true" style="font-size: 20px"></i> Edit profile</a>
     {% endif %}
@@ -34,6 +36,38 @@
                 {% endwith %}
             </div>
         </div>
+        <p></p>
+        <h2><i class="mdi mdi-history" aria-hidden="true" style="font-size: 28px;"></i> Recent Plays (24hrs)</h2>
+        {% for score in latest_24hr_score %}
+        {% with processed_score=score.id|get_readable_score %}
+        <div class="row">
+            <div class="col-md-2">
+                <p>{{ processed_score.accuracy|floatformat:2 }}%</p>
+            </div>
+            {% with beatmap=score.beatmap_id|get_beatmap %}
+            <div class="col-md-3">
+                {% if site_settings and site_settings.use_traditional_metadata %}
+                <p>
+                    {% if beatmap.beatmapset.artist_unicode %}
+                    {{ beatmap.beatmapset.artist_unicode }}
+                    {% else %}
+                    {{ beatmap.beatmapset.artist }}
+                    {% endif %}
+                    -
+                    {% if beatmap.beatmapset.title_unicode %}
+                    {{ beatmap.beatmapset.title_unicode }}
+                    {% else %}
+                    {{ beatmap.beatmapset.title }}
+                    {% endif %}
+                </p>
+                {% else %}
+                <p>{{ beatmap.beatmapset.artist }} - {{ beatmap.beatmapset.title }}</p>
+                {% endif %}
+            </div>
+            {% endwith %}
+        </div>
+        {% endwith %}
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
