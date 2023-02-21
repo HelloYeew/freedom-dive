@@ -12,8 +12,11 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 import sentry_sdk
 from pathlib import Path
+from django.core.checks import register, Error, Warning, Tags
 from decouple import config, Csv
 from sentry_sdk.integrations.django import DjangoIntegration
+
+from ayaka.system_check import osu_database_connection_check
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -226,3 +229,8 @@ MDEDITOR_CONFIGS = {
         'language': 'en'  # zh / en / es
     }
 }
+
+# Register system runup check
+# https://docs.djangoproject.com/en/4.1/topics/checks/
+
+register(osu_database_connection_check, Tags.database)
