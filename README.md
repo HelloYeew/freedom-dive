@@ -1,7 +1,3 @@
-📌 This project is no longer maintained. See the last note [here](https://story.helloyeew.dev/the-sunset-of-freedom-dive/)
-
-------------
-
 # Freedom Dive
 An osu!lazer community server that support custom rulesets score submission.
 
