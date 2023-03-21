@@ -1,3 +1,7 @@
+☕️ [Let's taking a break!](https://story.helloyeew.dev/the-sunset-of-freedom-dive/)
+
+------------
+
 # Freedom Dive
 An osu!lazer community server that support custom rulesets score submission.
 
